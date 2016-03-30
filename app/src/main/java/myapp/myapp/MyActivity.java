@@ -66,7 +66,7 @@ public class MyActivity extends AppCompatActivity {
         startActivity(inent);
     }
 
-    public void signView(View view) {
+    public void signupView(View view) {
 
         Intent inent = new Intent(this, SigninActivity.class);
         startActivity(inent);
