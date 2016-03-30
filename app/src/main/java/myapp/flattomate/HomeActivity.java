@@ -1,4 +1,4 @@
-package myapp.myapp;
+package myapp.flattomate;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -10,12 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MyActivity extends AppCompatActivity {
+import myapp.myapp.R;
+
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_layout);
+        setContentView(R.layout.home_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

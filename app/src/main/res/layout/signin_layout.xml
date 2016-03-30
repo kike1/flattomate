@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="myapp.myapp.MyActivity">
+    android:background="@mipmap/pisos"
+    tools:context="myapp.flattomate.SigninActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,6 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_my" />
+    <include layout="@layout/content_signin" />
 
 </android.support.design.widget.CoordinatorLayout>

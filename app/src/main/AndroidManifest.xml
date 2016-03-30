@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MyActivity"
+            android:name="myapp.flattomate.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,15 +24,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="myapp.flattomate.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".MyActivity">
+            android:parentActivityName="myapp.flattomate.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.myapp.MyActivity" />
+                android:value="myapp.flattomate.HomeActivity" />
         </activity>
         <activity
-            android:name=".SigninActivity"
+            android:name="myapp.flattomate.SigninActivity"
             android:label="@string/title_activity_activity_signin"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
