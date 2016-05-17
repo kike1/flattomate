@@ -5,9 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import myapp.myapp.R;
@@ -25,19 +25,25 @@ public class HomeActivity extends AppCompatActivity {
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Lobster-Regular.ttf");
         tx.setTypeface(custom_font);
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
-        // Let's take a look at Toast and Log in action
-       /* Toast.makeText(this, "Can you see me",
-                Toast.LENGTH_SHORT).show();
-        Log.i("info", "Done creating the app");*/
+        /*String myLoginEmailAddress = getLoginEmailAddress();
+        if(myLoginEmailAddress != null || !myLoginEmailAddress.equals("")){
+            Snackbar.make(get, "Bienvenido"+myLoginEmailAddress, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }else {
+            loginInformation.setText("Your login email is missing");
+        }*/
+
+    }
+
+    private String getLoginEmailAddress(){
+        String storedEmail = "";
+        Intent mIntent = getIntent();
+        Bundle mBundle = mIntent.getExtras();
+        if(mBundle != null){
+            storedEmail = mBundle.getString("EMAIL");
+        }
+        return storedEmail;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void signupView(View view) {
 
-        Intent inent = new Intent(this, SigninActivity.class);
+        Intent inent = new Intent(this, RegisterActivity.class);
         startActivity(inent);
     }
 }

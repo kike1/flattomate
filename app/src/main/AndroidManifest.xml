@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -32,9 +33,13 @@
                 android:value="myapp.flattomate.HomeActivity" />
         </activity>
         <activity
-            android:name="myapp.flattomate.SigninActivity"
+            android:name="myapp.flattomate.RegisterActivity"
             android:label="@string/title_activity_activity_signin"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName="myapp.flattomate.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="myapp.flattomate.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
