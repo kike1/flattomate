@@ -14,6 +14,8 @@ import myapp.myapp.R;
 
 public class HomeActivity extends AppCompatActivity {
 
+    SessionManager manager = new SessionManager();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,7 @@ public class HomeActivity extends AppCompatActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Lobster-Regular.ttf");
         tx.setTypeface(custom_font);
 
+        manager.setPreferences(HomeActivity.this, "status", "0");
         /*String myLoginEmailAddress = getLoginEmailAddress();
         if(myLoginEmailAddress != null || !myLoginEmailAddress.equals("")){
             Snackbar.make(get, "Bienvenido"+myLoginEmailAddress, Snackbar.LENGTH_LONG)

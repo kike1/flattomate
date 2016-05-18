@@ -34,11 +34,11 @@ public class restAPI {
         @POST("users")
         Call<User> register(@Body User user);
 
-        @GET("users/login/{name}/{password}")
+        @GET("users/{name}/{password}")
         Call<User> login(@Path("name") String name, @Path("password") String password);
 
         @GET("users")
-        Call<User> emailUsed();
+        Call<User> emailUsed(String email);
 
     }
 
@@ -53,8 +53,5 @@ public class restAPI {
 
     public FlattomateService getService(){ return mService; }
 
-    public void login(String name, String password){
-
-    }
 
 }

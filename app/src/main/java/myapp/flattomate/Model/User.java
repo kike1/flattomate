@@ -38,6 +38,7 @@ public class User {
     @SerializedName("password")
     private String password;
 
+    public User(){}
 
     public User(String name, String email, String password){
         this.name = name;

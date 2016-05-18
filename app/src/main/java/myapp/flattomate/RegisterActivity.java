@@ -3,7 +3,6 @@ package myapp.flattomate;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_register);
         ButterKnife.inject(this);
 
         _nameText = (EditText)findViewById(R.id.input_name);
@@ -76,7 +75,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void signup() throws IOException {
-        Log.d(TAG, "Signup");
 
         if (!validate()) {
             onFailed();
@@ -97,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         //user is sent to a REST service
         User user = new User(name, email, password);
-        //System.out.println("usuario: "+user.getName());
 
         newUser(user);
 
@@ -106,31 +103,14 @@ public class RegisterActivity extends AppCompatActivity {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
-                        onSuccess();
+                       // onSuccess();
                         // onSignupFailed();
                         progressDialog.dismiss();
+                        finish();
                     }
                 }, 3000);
     }
 
-    public boolean emailUsed(String email){
-        final Call<User> call =
-                mRestApi.getService().register(user);
-
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                call.cancel();
-                onSuccess();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                call.cancel();
-                onFailed();
-            }
-        });
-    }
 
     public void newUser(User user) throws IOException {
 
@@ -140,8 +120,17 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                call.cancel();
-                onSuccess();
+                //call.cancel();
+               // Toast.makeText(getBaseContext(), "Cuenta creada con éxito", Toast.LENGTH_LONG).show();
+
+                if(response.code() == 423) //email existe
+                {
+                    _emailText.setText("");
+                    _emailText.setError("El email introducido está en uso");
+                    _emailText.requestFocus();
+                }else {
+                    onSuccess();
+                }
             }
 
             @Override
@@ -156,8 +145,8 @@ public class RegisterActivity extends AppCompatActivity {
     public void onSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        //finish();
         Toast.makeText(getBaseContext(), "Cuenta creada con éxito", Toast.LENGTH_LONG).show();
+
     }
 
     public void onFailed() {

@@ -1,11 +1,12 @@
 package myapp.flattomate;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +15,12 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import myapp.flattomate.Model.User;
+import myapp.flattomate.REST.restAPI;
 import myapp.myapp.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -25,19 +31,23 @@ public class LoginActivity extends AppCompatActivity {
     @InjectView(R.id.btn_login) Button _loginButton;
     @InjectView(R.id.link_signup) TextView _signupLink;
 
+    private restAPI mRestApi;
+    private boolean logged = false;
+
+    SessionManager manager;
+    User user;
+
+    public void setPreferences(Context context, String key, String value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences("Androidwarriors", Context.MODE_PRIVATE).edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-
-        _loginButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
@@ -48,10 +58,21 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
+
+        _loginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
+
+        mRestApi = new restAPI();
+        user = new User();
+        manager = new SessionManager();
     }
 
     public void login() {
-        Log.d(TAG, "Login");
 
         if (!validate()) {
             onLoginFailed();
@@ -63,37 +84,52 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("Iniciando sesión...");
         progressDialog.show();
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
+        //petición asincrona para loguear al usuario y obtener los datos para guardar sesión
+        Call<User> call = mRestApi.getService().login(email, password);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                //call.cancel();
+                if(response.code() == 401) //login incorrecto
+                {
+                    onLoginFailed();
+
+                }else if(response.code() == 200) {
+                    //TODO usuario nulo al venir de una peticion rest
+                    user = response.body();
+
+                    Log.d("DEBUG", user.getName());
+                    onLoginSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(getBaseContext(), "Error de conexión al servidor", Toast.LENGTH_LONG).show();
+            }
+        });
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
+                        //onLoginSuccess();
                         // onLoginFailed();
                         progressDialog.dismiss();
+                        if(logged)
+                            finish();
                     }
                 }, 3000);
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -101,16 +137,31 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+    public void onLoginFailed(){
+        /*View parentLayout = findViewById(R.id.textView);
+        Snackbar.make(parentLayout, "Usuario o contraseña incorrectos", Snackbar.LENGTH_LONG)
+                .show();*/
+        Toast.makeText(getBaseContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
+
+        _loginButton.setEnabled(true);
+    }
+
     public void onLoginSuccess() {
+        /*View parentLayout = findViewById(R.id.textView);
+        Snackbar.make(parentLayout, "Sesión iniciada", Snackbar.LENGTH_LONG)
+                .show();*/
+        Toast.makeText(getBaseContext(), "Sesion iniciada", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
-        finish();
+        logged = true;
+        manager.setPreferences(LoginActivity.this, "status", "1");
+
+        //set user data to sharedpreferences
+        manager.setPreferences(LoginActivity.this, user);
+        String name = manager.getPreferences(LoginActivity.this,"name");
+        Log.d("Nombre: ", name);
+        Toast.makeText(getBaseContext(), manager.getPreferences(LoginActivity.this, user.getName()), Toast.LENGTH_LONG).show();
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        _loginButton.setEnabled(true);
-    }
 
     public boolean validate() {
         boolean valid = true;
