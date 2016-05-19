@@ -1,16 +1,14 @@
 package myapp.flattomate.REST;
 
-import java.util.List;
+import android.util.Base64;
 
-import myapp.flattomate.Model.User;
-import retrofit2.Call;
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 
 /**
@@ -18,40 +16,43 @@ import retrofit2.http.Query;
  */
 public class restAPI {
 
-    private static final String ENDPOINT = "http://192.168.2.102:8000/";
-    private final FlattomateService mService;
+    public static final String API_BASE_URL = "http://192.168.2.102:8000/";
 
-    public interface FlattomateService{
-        @GET("users/{username}")
-        Call<User> getUser(@Path("username") Integer username);
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        @GET("users/index")
-        Call<List<User>> allUsers();
+    private static Retrofit.Builder builder =
+            new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create());
 
-        @GET("group/{id}/users")
-        Call<List<User>> groupList(@Path("id") int groupId, @Query("sort") String sort);
-
-        @POST("users")
-        Call<User> register(@Body User user);
-
-        @GET("users/{name}/{password}")
-        Call<User> login(@Path("name") String name, @Path("password") String password);
-
-        @GET("users")
-        Call<User> emailUsed(String email);
-
+    public static <S> S createService(Class<S> serviceClass) {
+        return createService(serviceClass, null, null);
     }
 
-    public restAPI(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    public static <S> S createService(Class<S> serviceClass, String username, String password) {
+        if (username != null && password != null) {
+            String credentials = username + ":" + password;
+            final String basic =
+                    "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
-        mService = retrofit.create(FlattomateService.class);
+            httpClient.addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request original = chain.request();
+
+                    Request.Builder requestBuilder = original.newBuilder()
+                        .header("Authorization", basic)
+                        .header("Accept", "application/json")
+                        .method(original.method(), original.body());
+
+                    Request request = requestBuilder.build();
+                    return chain.proceed(request);
+                }
+            });
+        }
+
+        OkHttpClient client = httpClient.build();
+        Retrofit retrofit = builder.client(client).build();
+        return retrofit.create(serviceClass);
     }
-
-    public FlattomateService getService(){ return mService; }
-
-
 }

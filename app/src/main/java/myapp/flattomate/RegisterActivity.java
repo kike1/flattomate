@@ -15,6 +15,7 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import myapp.flattomate.Model.User;
+import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
 import myapp.myapp.R;
 import retrofit2.Call;
@@ -113,9 +114,10 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     public void newUser(User user) throws IOException {
-
+        FlattomateService registerService =
+                restAPI.createService(FlattomateService.class, "user", "secretpassword");
         final Call<User> call =
-                mRestApi.getService().register(user);
+                registerService.register(user);
 
         call.enqueue(new Callback<User>() {
             @Override

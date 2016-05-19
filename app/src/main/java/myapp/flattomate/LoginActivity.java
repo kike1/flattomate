@@ -13,9 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import myapp.flattomate.Model.User;
+import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
 import myapp.myapp.R;
 import retrofit2.Call;
@@ -91,7 +94,9 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         //petición asincrona para loguear al usuario y obtener los datos para guardar sesión
-        Call<User> call = mRestApi.getService().login(email, password);
+        FlattomateService loginService =
+                restAPI.createService(FlattomateService.class, "user", "secretpassword");
+        Call<User> call = loginService.login(email, password);
 
         call.enqueue(new Callback<User>() {
             @Override
@@ -103,9 +108,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 }else if(response.code() == 200) {
                     //TODO usuario nulo al venir de una peticion rest
-                    user = response.body();
+                    if(response.isSuccessful()){
+                        user = response.body();
+                        Log.d("Call request", call.request().toString());
+                        Log.d("Response body", new Gson().toJson(response.body()));
+                       // Log.d("DEBUG",  user.getName());
 
-                    Log.d("DEBUG", user.getName());
+                       // Log.e("error:", user.getName() );
+                    }
+
                     onLoginSuccess();
                 }
             }
