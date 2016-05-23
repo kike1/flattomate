@@ -40,6 +40,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="myapp.flattomate.HomeActivity" />
         </activity>
+        <activity android:name="myapp.flattomate.DashboardActivity" />
+        <activity android:name="myapp.flattomate.EditProfile"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package myapp.flattomate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import myapp.flattomate.Model.User;
 
@@ -25,12 +26,18 @@ public class SessionManager {
         editor.putString("avatar", user.getAvatar());
         editor.putString("bio", user.getBio());
 
-        editor.apply();
+        if(editor.commit())
+            Log.d("DEBUG ", "Settings almacenado correctamente");
+
     }
     
     public  String getPreferences(Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences("settings",	Context.MODE_PRIVATE);
         String position = prefs.getString(key, "");
         return position;
+    }
+
+    public String getLoginEmailAddress(Context context){
+        return getPreferences(context, "email");
     }
 }

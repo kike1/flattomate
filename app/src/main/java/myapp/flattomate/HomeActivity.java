@@ -1,10 +1,13 @@
 package myapp.flattomate;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +18,7 @@ import myapp.myapp.R;
 public class HomeActivity extends AppCompatActivity {
 
     SessionManager manager = new SessionManager();
-
+    public Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,26 +31,17 @@ public class HomeActivity extends AppCompatActivity {
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Lobster-Regular.ttf");
         tx.setTypeface(custom_font);
 
-        manager.setPreferences(HomeActivity.this, "status", "0");
-        /*String myLoginEmailAddress = getLoginEmailAddress();
-        if(myLoginEmailAddress != null || !myLoginEmailAddress.equals("")){
-            Snackbar.make(get, "Bienvenido"+myLoginEmailAddress, Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }else {
-            loginInformation.setText("Your login email is missing");
-        }*/
+        //manager.setPreferences(HomeActivity.this, "status", "0");
+        String email = manager.getLoginEmailAddress(context);
+        if(email != null || !email.equals("")){
 
-    }
-
-    private String getLoginEmailAddress(){
-        String storedEmail = "";
-        Intent mIntent = getIntent();
-        Bundle mBundle = mIntent.getExtras();
-        if(mBundle != null){
-            storedEmail = mBundle.getString("EMAIL");
+            //redirect to dashboard activity
+            Intent intent = new Intent(context, DashboardActivity.class);
+            startActivity(intent);
         }
-        return storedEmail;
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

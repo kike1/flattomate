@@ -1,19 +1,15 @@
 package myapp.flattomate;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,11 +36,11 @@ public class LoginActivity extends AppCompatActivity {
     SessionManager manager;
     User user;
 
-    public void setPreferences(Context context, String key, String value) {
+    /*public void setPreferences(Context context, String key, String value) {
         SharedPreferences.Editor editor = context.getSharedPreferences("Androidwarriors", Context.MODE_PRIVATE).edit();
         editor.putString(key, value);
         editor.commit();
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,17 +103,13 @@ public class LoginActivity extends AppCompatActivity {
                     onLoginFailed();
 
                 }else if(response.code() == 200) {
-                    //TODO usuario nulo al venir de una peticion rest
+
                     if(response.isSuccessful()){
                         user = response.body();
-                        Log.d("Call request", call.request().toString());
-                        Log.d("Response body", new Gson().toJson(response.body()));
-                       // Log.d("DEBUG",  user.getName());
+                        onLoginSuccess();
+                    }else
+                        onLoginFailed();
 
-                       // Log.e("error:", user.getName() );
-                    }
-
-                    onLoginSuccess();
                 }
             }
 
@@ -158,19 +150,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        /*View parentLayout = findViewById(R.id.textView);
-        Snackbar.make(parentLayout, "Sesión iniciada", Snackbar.LENGTH_LONG)
-                .show();*/
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
+
         Toast.makeText(getBaseContext(), "Sesion iniciada", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
         logged = true;
         manager.setPreferences(LoginActivity.this, "status", "1");
 
-        //set user data to sharedpreferences
+        //set user data
         manager.setPreferences(LoginActivity.this, user);
-        String name = manager.getPreferences(LoginActivity.this,"name");
+        /*String name = manager.getPreferences(LoginActivity.this,"name");
+        String email = manager.getPreferences(LoginActivity.this, "email");
         Log.d("Nombre: ", name);
-        Toast.makeText(getBaseContext(), manager.getPreferences(LoginActivity.this, user.getName()), Toast.LENGTH_LONG).show();
+        Log.d("Email: ", email);
+        Toast.makeText(getBaseContext(), name, Toast.LENGTH_LONG).show();*/
     }
 
 
