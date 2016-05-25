@@ -1,6 +1,7 @@
 package myapp.flattomate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,8 @@ public class DashboardActivity extends AppCompatActivity {
             Snackbar.make(parentLayout, "Sesión iniciada como "+email, Snackbar.LENGTH_LONG).show();
             Log.d("debug", email);
 
+            Intent intent = new Intent(context, ProfileActivity.class);
+            startActivity(intent);
         }
 
     }

@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         Snackbar snackbar = Snackbar
-                .make(findViewById(android.R.id.content), "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
+                .make(findViewById(android.R.id.content), "Sesión iniciada como "+user.getEmail(), Snackbar.LENGTH_LONG);
 
         snackbar.show();
 
