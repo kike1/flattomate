@@ -15,6 +15,6 @@
     <string name="permission_rationale">"Permiso sobre la agenda es requerido para completar el registro por email."
     </string>
     <string name="title_activity_activity_signin">Registrarse</string>
-    <string name="edit">Editar</string>
-    <string name="action_edit"></string>
+    <string name="profile_edit_title">Editar perfil</string>
+    <string name="action_edit">Editar</string>
 </resources>

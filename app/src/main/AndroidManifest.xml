@@ -14,16 +14,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity
             android:name="myapp.flattomate.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name="myapp.flattomate.LoginActivity"
             android:label="@string/title_activity_login"
@@ -32,6 +30,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="myapp.flattomate.HomeActivity" />
         </activity>
+
         <activity
             android:name="myapp.flattomate.RegisterActivity"
             android:label="@string/title_activity_activity_signin"
@@ -40,14 +39,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="myapp.flattomate.HomeActivity" />
         </activity>
-        <activity android:name="myapp.flattomate.DashboardActivity" />
+
+        <activity android:name="myapp.flattomate.DashboardActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name="myapp.flattomate.EditProfile" />
+
         <activity
             android:name="myapp.flattomate.ProfileActivity"
-            android:parentActivityName="myapp.flattomate.HomeActivity">
+            android:parentActivityName="myapp.flattomate.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.HomeActivity"/>
+                android:value="myapp.flattomate.DashboardActivity"/>
 
         </activity>
     </application>

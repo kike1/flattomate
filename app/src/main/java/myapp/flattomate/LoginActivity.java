@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
@@ -25,10 +25,10 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    @InjectView(R.id.input_email) EditText _emailText;
-    @InjectView(R.id.input_password) EditText _passwordText;
-    @InjectView(R.id.btn_login) Button _loginButton;
-    @InjectView(R.id.link_signup) TextView _signupLink;
+    @Bind(R.id.input_email) EditText _emailText;
+    @Bind(R.id.input_password) EditText _passwordText;
+    @Bind(R.id.btn_login) Button _loginButton;
+    @Bind(R.id.link_signup) TextView _signupLink;
 
     private restAPI mRestApi;
     private boolean logged = false;
@@ -36,17 +36,11 @@ public class LoginActivity extends AppCompatActivity {
     SessionManager manager;
     User user;
 
-    /*public void setPreferences(Context context, String key, String value) {
-        SharedPreferences.Editor editor = context.getSharedPreferences("Androidwarriors", Context.MODE_PRIVATE).edit();
-        editor.putString(key, value);
-        editor.commit();
-    }*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
@@ -155,18 +149,12 @@ public class LoginActivity extends AppCompatActivity {
 
         snackbar.show();
 
-        Toast.makeText(getBaseContext(), "Sesion iniciada", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
         logged = true;
-        manager.setPreferences(LoginActivity.this, "status", "1");
-
         //set user data
+        manager.setPreferences(LoginActivity.this, "status", "1");
         manager.setPreferences(LoginActivity.this, user);
-        /*String name = manager.getPreferences(LoginActivity.this,"name");
-        String email = manager.getPreferences(LoginActivity.this, "email");
-        Log.d("Nombre: ", name);
-        Log.d("Email: ", email);
-        Toast.makeText(getBaseContext(), name, Toast.LENGTH_LONG).show();*/
+
     }
 
 

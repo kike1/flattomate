@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
@@ -26,11 +26,11 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
 
-    @InjectView(R.id.input_name) EditText _nameText;
-    @InjectView(R.id.input_email) EditText _emailText;
-    @InjectView(R.id.input_password) EditText _passwordText;
-    @InjectView(R.id.btn_signup) Button _signupButton;
-    @InjectView(R.id.link_login) TextView _loginLink;
+    @Bind(R.id.input_name) EditText _nameText;
+    @Bind(R.id.input_email) EditText _emailText;
+    @Bind(R.id.input_password) EditText _passwordText;
+    @Bind(R.id.btn_signup) Button _signupButton;
+    @Bind(R.id.link_login) TextView _loginLink;
 
     private restAPI mRestApi;
     //private List<User> userList;
@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         _nameText = (EditText)findViewById(R.id.input_name);
         _emailText = (EditText)findViewById(R.id.input_email);

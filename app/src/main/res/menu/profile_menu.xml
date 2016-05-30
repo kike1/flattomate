@@ -3,16 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_search"
-        android:title="@string/action_edit"
+        android:id="@+id/action_edit"
+        android:title="@string/profile_edit_title"
         android:icon="@mipmap/ic_edit_black_24dp"
-        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 
 </menu>

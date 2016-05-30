@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +33,8 @@ public class HomeActivity extends AppCompatActivity {
         //manager.setPreferences(HomeActivity.this, "status", "0");
         String email = manager.getLoginEmailAddress(context);
         if(email != null || !email.equals("")){
-
             //redirect to dashboard activity
+            Log.d("debug", "home activity");
             Intent intent = new Intent(context, DashboardActivity.class);
             startActivity(intent);
         }

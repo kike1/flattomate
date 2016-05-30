@@ -1,59 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_edit_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    tools:context="myapp.flattomate.EditProfile">
 
-    tools:context="myapp.flattomate.EditProfile"
-    android:weightSum="1">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:background="@color/colorPrimary"
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:id="@+id/profile_img" />
+        tools:context="myapp.flattomate.EditProfile"
+        android:weightSum="1">
 
-    <TextView
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:text="Nombre"
-        android:id="@+id/txt_name"
-        android:layout_below="@+id/profile_img"
-        android:layout_marginTop="10dp"
-        android:layout_weight="0.02"
-        android:layout_gravity="center_horizontal" />
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            />
 
-    <TextView
-        android:layout_width="136dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginTop="5dp"
-        android:text="Editar nombre"
-        android:id="@+id/txt_edit_name"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#f33d6b" />
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/edit_profile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            />
 
-    <TextView
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginTop="10dp"
-        android:text="Sobre mí"
-        android:id="@+id/textView2"
-        android:layout_gravity="left"
-        android:layout_weight="0.02" />
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:id="@+id/profile_img" />
 
-    <TextView
-        android:layout_width="184dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginTop="5dp"
-        android:text="Editar mi descripción"
-        android:id="@+id/txt_edit_name"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#f33d6b" />
-</LinearLayout>
+        <TextView
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:id="@+id/txt_name"
+            android:layout_below="@+id/profile_img"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.02"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="136dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="5dp"
+            android:text="Editar nombre"
+            android:id="@+id/txt_edit_name"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#f33d6b" />
+
+        <TextView
+            android:layout_width="116dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="10dp"
+            android:text="Sobre mí"
+            android:id="@+id/lbl_edit_bio"
+            android:layout_gravity="left"
+            android:layout_weight="0.02" />
+
+        <TextView
+            android:layout_width="184dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginTop="5dp"
+            android:text="Editar mi descripción"
+            android:id="@+id/txt_edit_bio"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#f33d6b" />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
+
+
