@@ -2,6 +2,7 @@ package myapp.flattomate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +17,10 @@ import myapp.myapp.R;
 
 public class HomeActivity extends AppCompatActivity {
 
-    SessionManager manager = new SessionManager();
-    public final Context context = this;
+    //public final Context context = this;
+    //SessionManager manager = new SessionManager(context);
+    SharedPreferences manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,13 +32,14 @@ public class HomeActivity extends AppCompatActivity {
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Lobster-Regular.ttf");
         tx.setTypeface(custom_font);
+        manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
 
-        //manager.setPreferences(HomeActivity.this, "status", "0");
-        String email = manager.getLoginEmailAddress(context);
-        if(email != null || !email.equals("")){
-            //redirect to dashboard activity
-            Log.d("debug", "home activity");
-            Intent intent = new Intent(context, DashboardActivity.class);
+        //if user is logged, redirect to dashboard
+        String email = manager.getString("email", null);
+        if(email != null && !email.equals("")){
+
+            Log.d("debug", email);
+            Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
         }
 

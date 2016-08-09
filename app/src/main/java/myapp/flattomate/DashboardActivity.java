@@ -2,6 +2,7 @@ package myapp.flattomate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +17,11 @@ import myapp.myapp.R;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private SessionManager manager = new SessionManager();
     private Context context = this;
+    //private SessionManager manager = new SessionManager(context);
+
+    SharedPreferences manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,14 +30,20 @@ public class DashboardActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String email = manager.getLoginEmailAddress(context);
-        if(email != null || !email.equals("")){
+        manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        String email = manager.getString("email", null);
+
+        //TESTING iteration 1, delete after testing
+        if(email != null){
             View parentLayout = findViewById(R.id.dashboard);
             Snackbar.make(parentLayout, "Sesión iniciada como "+email, Snackbar.LENGTH_LONG).show();
             Log.d("debug", email);
 
-            Intent intent = new Intent(context, ProfileActivity.class);
+            //now we redirect to user profile following iteration 1
+            Intent intent = new Intent(context, OwnProfileActivity.class);
             startActivity(intent);
+
         }else{
             Intent intent = new Intent(context, HomeActivity.class);
             startActivity(intent);

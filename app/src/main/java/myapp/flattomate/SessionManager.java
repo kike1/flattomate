@@ -2,7 +2,6 @@ package myapp.flattomate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import myapp.flattomate.Model.User;
 
@@ -10,34 +9,41 @@ import myapp.flattomate.Model.User;
  * Created by kike on 18/5/16.
  */
 public class SessionManager {
-    public void setPreferences(Context context, String key, String value) {
-        SharedPreferences.Editor editor = context.getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
-        editor.putString(key, value);
-        editor.commit();
+
+    SharedPreferences.Editor editor; //write
+    SharedPreferences prefs; //read
+
+
+    public SessionManager(Context context){
+        prefs = context.getSharedPreferences("settings", 0);
+        editor = context.getSharedPreferences("settings", 0).edit();
     }
 
-    public void setPreferences(Context context, User user) {
-        SharedPreferences.Editor editor = context.getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
+    public void setUserPreferences(User user) {
 
         //datos en la sesion del usuario
+        editor.putInt("id", user.getId());
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putString("activity", user.getActivity());
         editor.putString("avatar", user.getAvatar());
         editor.putString("bio", user.getBio());
 
-        if(editor.commit())
-            Log.d("DEBUG ", "Settings almacenado correctamente");
+       /* if(editor.commit())
+            Log.d("DEBUG ", "Settings almacenado correctamente");*/
+        editor.apply();
 
     }
     
-    public  String getPreferences(Context context, String key) {
-        SharedPreferences prefs = context.getSharedPreferences("settings",	Context.MODE_PRIVATE);
-        String position = prefs.getString(key, "");
-        return position;
+    public String getValue(String key) {
+
+        return prefs.getString(key, "");
     }
 
-    public String getLoginEmailAddress(Context context){
-        return getPreferences(context, "email");
+    public void setValue(String key, String value) {
+
+        editor.putString(key, value);
+        editor.apply();
     }
+
 }

@@ -17,4 +17,13 @@
     <string name="title_activity_activity_signin">Registrarse</string>
     <string name="profile_edit_title">Editar perfil</string>
     <string name="action_edit">Editar</string>
+    <string name="lbl_about_me">Sobre mí</string>
+    <string name="img_image_of_user">Image of user</string>
+    <string name="description">Descripción:</string>
+    <string name="languages">Idiomas:</string>
+    <string name="extra_information">Información extra:</string>
+    <string name="sociable">Sociable:</string>
+    <string name="tidy">Ordenado:</string>
+
+
 </resources>

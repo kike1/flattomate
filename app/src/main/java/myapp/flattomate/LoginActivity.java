@@ -1,10 +1,13 @@
 package myapp.flattomate;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,10 +33,10 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.link_signup) TextView _signupLink;
 
-    private restAPI mRestApi;
     private boolean logged = false;
+    Context context;
 
-    SessionManager manager;
+    SharedPreferences manager;
     User user;
 
     @Override
@@ -41,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        context = this;
+        user = new User();
+        manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
@@ -59,10 +66,6 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-
-        mRestApi = new restAPI();
-        user = new User();
-        manager = new SessionManager();
     }
 
     public void login() {
@@ -100,7 +103,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(response.isSuccessful()){
                         user = response.body();
+                        Log.d("USER NULL?", user.getName());
                         onLoginSuccess();
+
+                        //redirect to dashboard
+                        Intent intent = new Intent(context, DashboardActivity.class);
+                        startActivity(intent);
                     }else
                         onLoginFailed();
 
@@ -135,10 +143,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed(){
-        /*View parentLayout = findViewById(R.id.textView);
-        Snackbar.make(parentLayout, "Usuario o contraseña incorrectos", Snackbar.LENGTH_LONG)
-                .show();*/
-        Toast.makeText(getBaseContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
+        //View parentLayout = findViewById(R.id.textView);
+        Snackbar.make(findViewById(android.R.id.content), "Usuario o contraseña incorrectos", Snackbar.LENGTH_LONG)
+                .show();
+       // Toast.makeText(getBaseContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -151,12 +159,26 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(true);
         logged = true;
+
         //set user data
-        manager.setPreferences(LoginActivity.this, "status", "1");
-        manager.setPreferences(LoginActivity.this, user);
+        setUserPreferences(user);
+        Log.d("ID usuario: ", String.valueOf(user.getId()));
 
     }
 
+    private void setUserPreferences(User user){
+        SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+
+        //datos en la sesion del usuario
+        editor.putInt("id", user.getId());
+        editor.putString("name", user.getName());
+        editor.putString("email", user.getEmail());
+        editor.putString("activity", user.getActivity());
+        editor.putString("avatar", user.getAvatar());
+        editor.putString("bio", user.getBio());
+
+        editor.apply();
+    }
 
     public boolean validate() {
         boolean valid = true;
