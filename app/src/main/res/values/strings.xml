@@ -19,9 +19,9 @@
     <string name="action_edit">Editar</string>
     <string name="lbl_about_me">Sobre mí</string>
     <string name="img_image_of_user">Image of user</string>
-    <string name="description">Descripción:</string>
-    <string name="languages">Idiomas:</string>
-    <string name="extra_information">Información extra:</string>
+    <string name="description">DESCRIPCIÓN:</string>
+    <string name="languages">IDIOMAS:</string>
+    <string name="extra_information">INFORMACIÓN EXTRA:</string>
     <string name="sociable">Sociable:</string>
     <string name="tidy">Ordenado:</string>
 

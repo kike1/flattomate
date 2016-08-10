@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class restAPI {
 
-    public static final String API_BASE_URL = "http://192.168.1.101:8000/";
+    public static final String API_BASE_URL = "http://192.168.1.102:8000/";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -41,9 +41,9 @@ public class restAPI {
                     Request original = chain.request();
 
                     Request.Builder requestBuilder = original.newBuilder()
-                        .header("Authorization", basic)
-                        .header("Accept", "application/json")
-                        .method(original.method(), original.body());
+                            .header("Authorization", basic)
+                            .header("Accept", "application/json")
+                            .method(original.method(), original.body());
 
                     Request request = requestBuilder.build();
                     return chain.proceed(request);

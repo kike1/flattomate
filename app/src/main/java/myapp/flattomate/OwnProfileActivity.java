@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,11 @@ public class OwnProfileActivity extends AppCompatActivity {
     TextView tvSociable;
     @Bind(R.id.txt_tidy)
     TextView tvTidy;
+
+    @Bind(R.id.progressbarSociable)
+    ProgressBar progressBarSociable;
+    @Bind(R.id.progressbarTidy)
+    ProgressBar progressBarTidy;
 
     SharedPreferences manager;
     User user;
@@ -131,52 +137,56 @@ public class OwnProfileActivity extends AppCompatActivity {
         tvAge.setText(iAges+" años");
         tvLanguages.setText(sLanguages);
         tvBio.setText(sBio);
-        tvSociable.setText(""+iSociable);
-        tvTidy.setText(""+iTidy);
+        tvSociable.setText(iSociable+"/10");
+        tvTidy.setText(iTidy+"/10");
 
         //icons
         if(sex.equals("man")){
-            ivSex.setImageResource(R.drawable.male_24);
+            ivSex.setImageResource(R.drawable.male);
             tvSex.setText("Hombre");
         }else {
-            ivSex.setImageResource(R.drawable.female_24);
+            ivSex.setImageResource(R.drawable.female);
             tvSex.setText("Mujer");
         }
+        int color = Color.parseColor("#0288D1");
+        ivSex.setColorFilter(color);
 
         if(activity.equals("work")){
-            ivActivity.setImageResource(R.drawable.business_24);
+            ivActivity.setImageResource(R.drawable.business);
             tvActivity.setText("Trabaja");
         }else{
-            ivActivity.setImageResource(R.drawable.student_book_24);
+            ivActivity.setImageResource(R.drawable.student);
             tvActivity.setText("Estudia");
         }
+        ivActivity.setColorFilter(color);
 
         if(smoke == 1){
-            ivSmoke.setImageResource(R.drawable.smoking_24);
-            int color = Color.parseColor("#FFFFFF");
-            ivSmoke.setColorFilter(color);
+            ivSmoke.setImageResource(R.drawable.smoking);
             tvSmoke.setText("Fuma");
         }else{
-            ivSmoke.setImageResource(R.drawable.no_smoking_24);
+            ivSmoke.setImageResource(R.drawable.no_smoking);
             tvSmoke.setText("No fuma");
         }
+        ivSmoke.setColorFilter(color);
 
-
+        //setting progress of bars
+        progressBarSociable.setMax(10);
+        progressBarSociable.setProgress(user.getSociable());
+        progressBarSociable.setBackgroundColor(Color.parseColor("#000000"));
+        progressBarTidy.setMax(10);
+        progressBarTidy.setProgress(user.getTidy());
 
         //personalizing view of the user's profile
         if(sAvatar != null){
-
-            Log.d("debug", "cargando imagen");
-
             Transformation transformation = new RoundedTransformationBuilder()
-                    .borderColor(Color.BLACK)
-                    .borderWidthDp(2)
-                    .cornerRadiusDp(80)
+                    .borderColor(Color.WHITE)
+                    .borderWidthDp(1)
+                    .cornerRadiusDp(60)
                     .oval(false)
                     .build();
 
             Picasso.with(getApplicationContext())
-                    .load("http://simpleicon.com/wp-content/uploads/user1.png")
+                    .load(restAPI.API_BASE_URL+"imgs/"+user.getAvatar())
                     .fit()
                     .transform(transformation)
                     .into(ivProfileImg);
