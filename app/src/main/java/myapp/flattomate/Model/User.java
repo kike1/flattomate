@@ -185,7 +185,10 @@ public class User {
      * The birthday
      */
     public void setLanguages(String language) {
-        this.languages.concat("-"+language);
+        if(!languages.equals(""))
+            this.languages.concat(" - "+language);
+        else
+            languages = language;
     }
 
     /**

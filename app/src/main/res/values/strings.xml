@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flattomate</string>
+    <string name="app_name">flattomate</string>
     <string name="action_settings">Como funciona</string>
     <string name="title_activity_login">Iniciar sesión</string>
 
@@ -25,5 +25,38 @@
     <string name="sociable">Sociable:</string>
     <string name="tidy">Ordenado:</string>
 
+    <string name="title_activity_show_image_profile">ShowImageProfile</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_button">Dummy Button</string>
+
+    <!-- Edit profile -->
+    <string name="edit_name">NOMBRE:</string>
+    <string name="edit_birthdate">FECHA NACIMIENTO:</string>
+    <string name="hint_bio">Escriba algo sobre ti para que te conozcan un poco más</string>
+    <string-array name="sex_array">
+        <item>Hombre</item>
+        <item>Mujer</item>
+    </string-array>
+    <string-array name="activity_array">
+        <item>Trabaja</item>
+        <item>Estudia</item>
+    </string-array>
+    <string-array name="smoke_array">
+        <item>Fuma</item>
+        <item>No fuma</item>
+    </string-array>
+    <string name="sex_title">¿Hombre o mujer?</string>
+    <string name="activity_title">¿A que se dedica?</string>
+    <string name="smoke_title">¿Fumador?</string>
+    <string name="btn_add_language">Añadir</string>
+    <string name="language_title">Idiomas</string>
+    <string name="save_changes">ACTUALIZAR PERFIL</string>
+    <string-array name="languages_array">
+        <item>Español</item>
+        <item>Inglés</item>
+        <item>Alemán</item>
+        <item>Italiano</item>
+        <item>Francés</item>
+    </string-array>
 
 </resources>

@@ -6,15 +6,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="myapp.flattomate.ProfileActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"/>
+        android:theme="@style/AppTheme.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,21 +24,22 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
         android:elevation="4dp"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/AppTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@android:color/white" />
 
-    <RelativeLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_layout"
+        android:orientation="vertical"
         android:layout_marginTop="55dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/scrollView2" >
 
             <LinearLayout
@@ -61,13 +62,13 @@
                         android:weightSum="1"
                         android:id="@+id/img_name_layout"
                         android:paddingLeft="75dp"
-
                         android:paddingRight="75dp">
 
                         <ImageView
                             android:layout_width="125dp"
                             android:layout_height="125dp"
                             android:id="@+id/img_ownprofile"
+                            android:scaleType="centerInside"
                             android:layout_gravity="center_vertical" />
 
                         <LinearLayout
@@ -108,7 +109,7 @@
                     android:id="@+id/card_bio"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
                     card_view:cardCornerRadius="4dp"
                     style="@style/card">
 
@@ -122,7 +123,7 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="162dp"
+                            android:layout_height="wrap_content"
                             android:padding="15dp">
 
                             <TextView
@@ -130,12 +131,11 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/description"
                                 android:id="@+id/lbl_bio"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                                android:textColor="@color/secondary_text" />
+                                style="@style/title_card" />
 
                             <TextView
-                                android:layout_width="317dp"
-                                android:layout_height="66dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:id="@+id/txt_bio"
                                 android:layout_gravity="left|bottom"
                                 android:layout_below="@+id/lbl_bio"
@@ -174,7 +174,7 @@
                         android:paddingRight="20dp"
                         android:paddingBottom="10dp">
 
-                        <!-- LINEARLAYOUT SEX -->
+                        <!-- SEX -->
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="wrap_content"
@@ -199,7 +199,7 @@
                                 android:layout_gravity="bottom|center_horizontal" />
                         </LinearLayout>
 
-                        <!-- LINEARLAYOUT ACTIVITY -->
+                        <!-- ACTIVITY -->
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="wrap_content"
@@ -225,7 +225,7 @@
                                 android:layout_gravity="bottom|center_horizontal"/>
                         </LinearLayout>
 
-                        <!-- LINEARLAYOUT SMOKE -->
+                        <!-- SMOKE -->
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="wrap_content"
@@ -275,7 +275,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/languages"
-                            android:id="@+id/lbl_languages" />
+                            android:id="@+id/lbl_languages"
+                            style="@style/title_card" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -307,7 +308,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/extra_information"
-                            android:id="@+id/lbl_extra_information" />
+                            android:id="@+id/lbl_extra_information"
+                            style="@style/title_card"/>
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -376,7 +378,7 @@
             </LinearLayout>
         </ScrollView>
 
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 
 

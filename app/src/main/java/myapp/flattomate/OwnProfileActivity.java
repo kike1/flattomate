@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import myapp.myapp.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class OwnProfileActivity extends AppCompatActivity {
 
@@ -91,7 +93,6 @@ public class OwnProfileActivity extends AppCompatActivity {
         //obtain data for the user to see the profile
         //Bundle b = getIntent().getExtras();
         int idUser = manager.getInt("id", 0);
-        Log.d("ID USER ", String.valueOf(idUser));
         if(idUser != 0) {
             FlattomateService api =
                     restAPI.createService(FlattomateService.class, "user", "secretpassword");
@@ -119,6 +120,17 @@ public class OwnProfileActivity extends AppCompatActivity {
             });
 
         }
+
+        //Shows profile img in fullscreen
+        ivProfileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ShowImageProfile.class);
+                intent.putExtra("image", user.getAvatar());
+                intent.putExtra("username", user.getName());
+                startActivity(intent);
+            }
+        });
     }
 
     void fillUserInfo(){
@@ -188,6 +200,7 @@ public class OwnProfileActivity extends AppCompatActivity {
             Picasso.with(getApplicationContext())
                     .load(restAPI.API_BASE_URL+"imgs/"+user.getAvatar())
                     .fit()
+                    .centerCrop()
                     .transform(transformation)
                     .into(ivProfileImg);
         }
@@ -210,5 +223,11 @@ public class OwnProfileActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //establish the font
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }
