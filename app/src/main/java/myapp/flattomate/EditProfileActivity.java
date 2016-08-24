@@ -30,10 +30,13 @@ import com.squareup.picasso.Transformation;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import myapp.flattomate.Model.Language;
 import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
@@ -54,6 +57,8 @@ public class EditProfileActivity extends AppCompatActivity{
     ImageView ivBackgroundEdit;
     @Bind(R.id.et_edit_name)
     TextView etName;
+    @Bind(R.id.et_edit_email)
+    TextView etEmail;
     @Bind(R.id.et_edit_birthdate)
     TextView etBirthdate;
 
@@ -97,13 +102,20 @@ public class EditProfileActivity extends AppCompatActivity{
     @Bind(R.id.sliderTidy)
     SeekBar sliderTidy;
 
+    FlattomateService api;
+    int idUser;
     SharedPreferences manager;
     User user;
     CalendarView calendar;
     int year_x, month, day;
     static final int DIALOG_ID = 0;
     Calendar myCalendar = Calendar.getInstance();
+
+    //languages
     AlertDialog dialog;
+    boolean[] selectedItemsArray;
+    String[] items;
+    Set<String> languages;
 
 
     @Override
@@ -121,8 +133,13 @@ public class EditProfileActivity extends AppCompatActivity{
         ab.setDisplayHomeAsUpEnabled(true);
 
         manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
-
+        api = restAPI.createService(FlattomateService.class, "user", "secretpassword"); //init REST api
         initCalendar();
+
+        //Dialog multi languages
+        items = getResources().getStringArray(R.array.languages_array);
+        selectedItemsArray = new boolean[items.length];
+        languages = manager.getStringSet("languages", null);
 
         //set focuslistener in birthdate field showing a calendar in a dialog
         etBirthdate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -141,10 +158,8 @@ public class EditProfileActivity extends AppCompatActivity{
         });
 
         //obtain data for the user to see the profile
-        int idUser = manager.getInt("id", 0);
+        idUser = manager.getInt("id", 0);
         if(idUser != 0) {
-            FlattomateService api =
-                    restAPI.createService(FlattomateService.class, "user", "secretpassword");
             Call<User> call = api.getUser(idUser);
 
             call.enqueue(new Callback<User>() {
@@ -201,10 +216,11 @@ public class EditProfileActivity extends AppCompatActivity{
             }
         });
 
+        //set listeners for languages
         btnAddLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showLanguageDialog();
             }
         });
 
@@ -212,6 +228,7 @@ public class EditProfileActivity extends AppCompatActivity{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tvSociable.setText(progress+"/10");
+                user.setSociable(progress);
             }
 
             @Override
@@ -224,6 +241,7 @@ public class EditProfileActivity extends AppCompatActivity{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tvTidy.setText(progress+"/10");
+                user.setTidy(progress);
             }
 
             @Override
@@ -236,21 +254,34 @@ public class EditProfileActivity extends AppCompatActivity{
 
 
     void fillUserInfo(){
-        String sName = user.getName();
-        int iAges = user.getAges();
-        String sLanguages = user.getLanguages();
-        String sBio = user.getBio();
-        String sAvatar = user.getAvatar();
-        int iSociable = user.getSociable();
-        int iTidy = user.getTidy();
-        String sex = user.getSex();
-        String activity = user.getActivity();
-        int smoke = user.getSmoke();
+        //retrieve info
+        String undefined = String.valueOf(R.string.undefined);
+        String sName = manager.getString("name", undefined);
+        String sEmail = manager.getString("email", undefined);
+        int iAges = manager.getInt("age", 18);
+        Set<String> sLanguages = manager.getStringSet("languages", null);
+        String sBio = manager.getString("bio", undefined);
+        String sAvatar = manager.getString("avatar", undefined);
+        int iSociable = manager.getInt("sociable", 0);
+        int iTidy = manager.getInt("tidy", 0);
+        String sex = manager.getString("sex", undefined);
+        String activity = manager.getString("activity", undefined);
+        int smoke = manager.getInt("smoke", 0);
 
+        //set info
         etName.setText(sName);
-        //tvAge.setText(iAges+" años");
-        tvLanguages.setText(sLanguages);
+        etEmail.setText(sEmail);
+        etBirthdate.setText(manager.getString("birthdate", null));
+
         tvBio.setText(sBio);
+
+        if(sLanguages != null){
+            String languagesFormatted = sLanguages.toString();
+            languagesFormatted = formatLanguage(languagesFormatted);
+
+            tvLanguages.setText(languagesFormatted);
+        }
+
         tvSociable.setText(iSociable+"/10");
         tvTidy.setText(iTidy+"/10");
 
@@ -284,8 +315,8 @@ public class EditProfileActivity extends AppCompatActivity{
         ivSmoke.setColorFilter(color);
 
         //setting progress of sliders
-        sliderSociable.setProgress(user.getSociable());
-        sliderTidy.setProgress(user.getTidy());
+        sliderSociable.setProgress(iSociable);
+        sliderTidy.setProgress(iTidy);
 
        // String colorTransparent = Color.parseColor(String.valueOf(((int) (this.getResources().getColor(R.color.primary)))));
         //personalizing view of the user's profile
@@ -322,15 +353,16 @@ public class EditProfileActivity extends AppCompatActivity{
                     .transform(transformationEditIcon)
                     .into(ivBackgroundEdit);
 
-            //icon over the background
-            Picasso.with(getApplicationContext())
-                    .load(resourceEdit)
-                    .fit()
-                    .centerCrop()
-                    .transform(transformationEditIcon)
-                    .into(ivTransparentEdit);
-
         }
+    }
+
+    private String formatLanguage(String languagesFormatted) {
+        languagesFormatted = languagesFormatted.replace("[","");
+        languagesFormatted = languagesFormatted.replace("]","");
+        languagesFormatted = languagesFormatted.replace(", "," - ");
+        languagesFormatted = languagesFormatted.replace(", "," - ");
+
+        return languagesFormatted;
     }
 
     //sets calendar to a date 18 ages later as max date
@@ -462,21 +494,30 @@ public class EditProfileActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    //shows dialogs depend of the option chooosen (sex, activity, smoke)
     public void showLanguageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
-        String[] items = getResources().getStringArray(R.array.languages_array);
-        String contextDialog = null;
+
         builder.setTitle(R.string.language_title);
 
-        //element list
-        final boolean[] selectedItemsArray = new boolean[5];
+        //checks languages selected before in dialog
+        for(String language: languages){
+            int i = getIndexOfLanguage(language, items);
+            if(i != -1)
+                selectedItemsArray[i] = true;
+        }
+
         builder.setMultiChoiceItems(items, selectedItemsArray,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         // Lógica de elemento seleccionado
-
+                        if(isChecked) {
+                            Log.d("checking", items[which]);
+                            languages.add(items[which]);
+                        }else{
+                            Log.d("removing", items[which]);
+                            languages.remove(items[which]);
+                        }
                     }
                 });
 
@@ -486,24 +527,9 @@ public class EditProfileActivity extends AppCompatActivity{
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for (int i = 0; i < selectedItemsArray.length; i++){
-                            if(selectedItemsArray[i]){
-                                switch(i){
-                                    case 0: user.setLanguages("Español");
-                                        break;
-                                    case 1: user.setLanguages("Inglés");
-                                        break;
-                                    case 2: user.setLanguages("Alemán");
-                                        break;
-                                    case 3: user.setLanguages("Italiano");
-                                        break;
-                                    case 4: user.setLanguages("Francés");
-                                        break;
-
-                                }
-                            }
-                        }
-
+                        //update languages in UI
+                        String languagesFormatted = formatLanguage(languages.toString());
+                        tvLanguages.setText(languagesFormatted);
                     }
                 });
 
@@ -521,6 +547,60 @@ public class EditProfileActivity extends AppCompatActivity{
         dialog.show();
     }
 
+    private int getIndexOfLanguage(String language, String[] items) {
+        int index = -1;
+        for(int i = 0; i < items.length; i++){
+            if(items[i].equals(language))
+                index = i;
+        }
+        return index;
+    }
+
+
+    public void saveData(){
+
+        SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+
+        //languages
+        Call<List<Language>> call;
+        Log.d("LANGUAGES", languages.toString());
+        //look which languages were selected
+        for(int i = 0; i < selectedItemsArray.length; i++){
+
+            int idLanguage = i+1;
+
+            //if language is selected, add it
+            if(selectedItemsArray[i]){
+                Log.d("LANGUAGE", "adding "+idLanguage+" language");
+                call = api.setLanguage(idUser, idLanguage); //call to api
+                //languages.add(items[i]); //update Set UI
+                call.enqueue(new Callback<List<Language>>() {
+                    @Override
+                    public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {
+                    }
+                    @Override
+                    public void onFailure(Call<List<Language>> call, Throwable t) {}
+                });
+            }else{ //if language is unselected, remove it
+                Log.d("LANGUAGE", "removing "+i+1+" language");
+                call = api.removeLanguage(idUser, idLanguage);
+                //if(languages.remove(i)) //update Set UI
+                //    Log.d("SET REMOVE", "removed");
+                call.enqueue(new Callback<List<Language>>() {
+                    @Override
+                    public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {}
+                    @Override
+                    public void onFailure(Call<List<Language>> call, Throwable t) {}
+                });
+            }
+
+        }
+
+        //update SharedPreferences with new languages
+        editor.putStringSet("languages", languages);
+        editor.apply();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_profile_menu, menu);
@@ -532,13 +612,13 @@ public class EditProfileActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             case R.id.save_changes:
                 //TODO save data and go back
+                saveData();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
     /*public Dialog onCreateDialog(Bundle savedInstaceState){
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

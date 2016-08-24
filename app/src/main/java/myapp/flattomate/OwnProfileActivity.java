@@ -15,11 +15,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,9 +28,6 @@ import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
 import myapp.myapp.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class OwnProfileActivity extends AppCompatActivity {
@@ -72,6 +70,8 @@ public class OwnProfileActivity extends AppCompatActivity {
 
     SharedPreferences manager;
     User user;
+    FlattomateService api;
+    int idUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +89,13 @@ public class OwnProfileActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
 
         //obtain data for the user to see the profile
-        //Bundle b = getIntent().getExtras();
-        int idUser = manager.getInt("id", 0);
+        idUser = manager.getInt("id", 0);
         if(idUser != 0) {
-            FlattomateService api =
-                    restAPI.createService(FlattomateService.class, "user", "secretpassword");
-            Call<User> call = api.getUser(idUser);
+            fillUserInfo();
+            /*Call<User> call = api.getUser(idUser);
 
             call.enqueue(new Callback<User>() {
                 @Override
@@ -117,8 +116,7 @@ public class OwnProfileActivity extends AppCompatActivity {
                     call.cancel();
                     Toast.makeText(getBaseContext(), "Error de conexión al servidor", Toast.LENGTH_LONG).show();
                 }
-            });
-
+            });*/
         }
 
         //Shows profile img in fullscreen
@@ -134,20 +132,33 @@ public class OwnProfileActivity extends AppCompatActivity {
     }
 
     void fillUserInfo(){
-        String sName = user.getName();
-        int iAges = user.getAges();
-        String sLanguages = user.getLanguages();
-        String sBio = user.getBio();
-        String sAvatar = user.getAvatar();
-        int iSociable = user.getSociable();
-        int iTidy = user.getTidy();
-        String sex = user.getSex();
-        String activity = user.getActivity();
-        int smoke = user.getSmoke();
+        String undefined = String.valueOf(R.string.undefined);
+        String sName = manager.getString("name", undefined);
+        int iAges = manager.getInt("age", 18);
+        Set<String> sLanguages = manager.getStringSet("languages", null);
+        String sBio = manager.getString("bio", undefined);
+        String sAvatar = manager.getString("avatar", undefined);
+        int iSociable = manager.getInt("sociable", 0);
+        int iTidy = manager.getInt("tidy", 0);
+        String sex = manager.getString("sex", undefined);
+        String activity = manager.getString("activity", undefined);
+        int smoke = manager.getInt("smoke", 0);
 
         tvName.setText(sName);
         tvAge.setText(iAges+" años");
-        tvLanguages.setText(sLanguages);
+
+        if(sLanguages != null){
+            String languagesFormatted = sLanguages.toString();
+            Log.d("SET", sLanguages.toString());
+
+            languagesFormatted = languagesFormatted.replace("[","");
+            languagesFormatted = languagesFormatted.replace("]","");
+            languagesFormatted = languagesFormatted.replace(", "," - ");
+            languagesFormatted = languagesFormatted.replace(", "," - ");
+            Log.d("SET stringformatted", languagesFormatted.trim());
+            tvLanguages.setText(languagesFormatted);
+        }
+
         tvBio.setText(sBio);
         tvSociable.setText(iSociable+"/10");
         tvTidy.setText(iTidy+"/10");
@@ -183,10 +194,10 @@ public class OwnProfileActivity extends AppCompatActivity {
 
         //setting progress of bars
         progressBarSociable.setMax(10);
-        progressBarSociable.setProgress(user.getSociable());
+        progressBarSociable.setProgress(iSociable);
         progressBarSociable.setBackgroundColor(Color.parseColor("#000000"));
         progressBarTidy.setMax(10);
-        progressBarTidy.setProgress(user.getTidy());
+        progressBarTidy.setProgress(iTidy);
 
         //personalizing view of the user's profile
         if(sAvatar != null){
@@ -198,7 +209,7 @@ public class OwnProfileActivity extends AppCompatActivity {
                     .build();
 
             Picasso.with(getApplicationContext())
-                    .load(restAPI.API_BASE_URL+"imgs/"+user.getAvatar())
+                    .load(restAPI.API_BASE_URL+"imgs/"+sAvatar)
                     .fit()
                     .centerCrop()
                     .transform(transformation)

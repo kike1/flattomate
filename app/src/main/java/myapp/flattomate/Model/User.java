@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 
+import java.util.List;
+
 public class User {
 
     @SerializedName("id")
@@ -28,9 +30,9 @@ public class User {
     @Expose
     private String birthdate;
 
-    @SerializedName("languages")
-    @Expose
-    private String languages;
+//    @SerializedName("languages")
+//    @Expose
+    private List<Language> languages;
 
     @SerializedName("avatar")
     @Expose
@@ -157,7 +159,7 @@ public class User {
      * @return
      * The birthday
      */
-    public String getBirthday() {
+    public String getBirthdate() {
         return birthdate;
     }
 
@@ -166,7 +168,7 @@ public class User {
      * @param birthdate
      * The birthday
      */
-    public void setBirthday(String birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -175,20 +177,19 @@ public class User {
      * @return
      * The languages
      */
-    public String getLanguages() {
+    public List<Language> getLanguages() {
+
+
         return languages;
     }
 
     /**
      *
-     * @param language
+     * @param languagesnew
      * The birthday
      */
-    public void setLanguages(String language) {
-        if(!languages.equals(""))
-            this.languages.concat(" - "+language);
-        else
-            languages = language;
+    public void setLanguages(List<Language> languagesnew) {
+       languages = languagesnew;
     }
 
     /**

@@ -14,8 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import myapp.flattomate.Model.Language;
 import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
@@ -38,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
 
     SharedPreferences manager;
     User user;
+    int idUser;
+    FlattomateService api;
+    List<Language> languages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
         user = new User();
         manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
@@ -87,28 +97,42 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         //petición asincrona para loguear al usuario y obtener los datos para guardar sesión
-        FlattomateService loginService =
-                restAPI.createService(FlattomateService.class, "user", "secretpassword");
-        Call<User> call = loginService.login(email, password);
-
+        Call<User> call = api.login(email, password);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                //call.cancel();
                 if(response.code() == 401) //login incorrecto
                 {
                     onLoginFailed();
 
                 }else if(response.code() == 200) {
-
                     if(response.isSuccessful()){
                         user = response.body();
-                        Log.d("USER NULL?", user.getName());
-                        onLoginSuccess();
+                        idUser = user.getId(); //first I need user id for retrieve languages
 
-                        //redirect to dashboard
-                        Intent intent = new Intent(context, DashboardActivity.class);
-                        startActivity(intent);
+                        //second call for saving languages
+                        Call<List<Language>> callL = api.getLanguages(idUser);
+                        callL.enqueue(new Callback<List<Language>>() {
+                            @Override
+                            public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {
+                                if(response.code() == 404)
+                                {
+                                    Log.d("ERROR", String.valueOf(response.code()));
+                                }else if(response.code() == 200) {
+                                    languages = response.body();
+                                    onLoginSuccess();
+                                    //redirect to dashboard
+                                    Intent intent = new Intent(context, DashboardActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                            @Override
+                            public void onFailure(Call<List<Language>> call, Throwable t) {
+                                call.cancel();
+                                Toast.makeText(getBaseContext(), "ERROR: "+t.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+
                     }else
                         onLoginFailed();
 
@@ -162,20 +186,35 @@ public class LoginActivity extends AppCompatActivity {
 
         //set user data
         setUserPreferences(user);
-        Log.d("ID usuario: ", String.valueOf(user.getId()));
-
     }
 
     private void setUserPreferences(User user){
         SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
 
+        user.setLanguages(languages); //sets the languages that user speaks
+
+        //save languages in a Set
+        Set<String> setLanguages = new HashSet<String>();
+        if(languages != null)
+            for(Language language : languages){
+                Log.d("name: ", language.getName());
+                setLanguages.add(language.getName());
+            }
+
         //datos en la sesion del usuario
         editor.putInt("id", user.getId());
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
-        editor.putString("activity", user.getActivity());
+        editor.putInt("age", user.getAges());
+        editor.putString("birthdate", user.getBirthdate());
         editor.putString("avatar", user.getAvatar());
+        editor.putString("activity", user.getActivity());
+        editor.putString("sex", user.getSex());
+        editor.putInt("smoke", user.getSmoke());
+        editor.putInt("sociable", user.getSociable());
+        editor.putInt("tidy", user.getTidy());
         editor.putString("bio", user.getBio());
+        editor.putStringSet("languages", setLanguages);
 
         editor.apply();
     }

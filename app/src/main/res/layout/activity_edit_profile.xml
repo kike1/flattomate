@@ -47,6 +47,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <!-- PICTURE CARD -->
                 <android.support.v7.widget.CardView
                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/card_img_name"
@@ -91,51 +92,185 @@
                                 android:tint="@color/accent" />
                         </FrameLayout>
 
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="MODIFICAR FOTO PERFIL"
+                            android:id="@+id/button"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/roundedbutton"
+                            android:layout_marginLeft="30dp" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <!--PERSONAL INFO CARD-->
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_personality"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="4dp"
+                    style="@style/card"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <!-- LAYOUT PERSONAL INFO-->
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_personal_info"
+                        style="@style/layout_card">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lbl_personal_info"
+                            android:id="@+id/lbl_personal_info"
+                            style="@style/title_card" />
+
+                        <!-- LAYOUT NAME_EMAIL_BIRTHDATE-->
                         <LinearLayout
                             android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="125dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:paddingTop="10dp"
-                            android:layout_marginLeft="15dp"
                             android:layout_gravity="center_vertical"
-                            android:id="@+id/name_age_layout">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="@string/edit_name"
-                                android:id="@+id/lbl_name"
-                                android:textColor="@color/secondary_text" />
+                            android:id="@+id/name_age_layout"
+                            android:descendantFocusability="beforeDescendants"
+                            android:focusableInTouchMode="true">
 
                             <EditText
-                                android:layout_width="wrap_content"
-                                android:layout_height="35dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="nombre"
                                 android:inputType="textPersonName"
                                 android:ems="10"
                                 android:id="@+id/et_edit_name" />
 
-                            <TextView
+                            <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textColor="@color/secondary_text"
-                                android:text="@string/edit_birthdate"
-                                android:id="@+id/lbl_birthday" />
+                                android:inputType="textEmailAddress"
+                                android:hint="email"
+                                android:ems="10"
+                                android:id="@+id/et_edit_email" />
 
                             <EditText
                                 android:layout_width="match_parent"
-                                android:layout_height="35dp"
+                                android:layout_height="wrap_content"
                                 android:inputType="date"
                                 android:ems="10"
+                                android:hint="fecha de nacimiento"
                                 android:id="@+id/et_edit_birthdate"
                                 android:layout_gravity="center_horizontal" />
 
                         </LinearLayout>
 
+                        <!-- LINEARLAYOUT PERSONALITY -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="20dp"
+                            android:paddingBottom="10dp">
+
+                            <!-- SEX -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_sex"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_sex"
+                                    android:layout_gravity="center" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:text="Sex"
+                                    android:id="@+id/txt_sex"
+                                    android:textColor="@color/secondary_text"
+                                    android:layout_gravity="bottom|center_horizontal" />
+                            </LinearLayout>
+
+                            <!-- ACTIVITY -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginRight="30dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_activity"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_activity"
+                                    android:layout_gravity="center" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:id="@+id/txt_activity"
+                                    android:textColor="@color/secondary_text"
+                                    android:text="Activity"
+                                    android:layout_gravity="bottom|center_horizontal"/>
+                            </LinearLayout>
+
+                            <!-- SMOKE -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="15dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_smoke"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_smoke"
+                                    android:layout_gravity="center"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:text="Smoke"
+                                    android:id="@+id/txt_smoke"
+                                    android:textColor="@color/secondary_text"
+                                    android:layout_gravity="bottom|center_horizontal"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
                     </LinearLayout>
+
                 </android.support.v7.widget.CardView>
 
+                <!-- BIO CARD -->
                 <android.support.v7.widget.CardView
                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/card_bio"
@@ -153,10 +288,8 @@
                         android:layout_alignParentStart="true"
                         android:id="@+id/description_layout"
                         android:orientation="vertical"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp">
+                        style="@style/layout_card"
+                        >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -186,123 +319,12 @@
 
                 </android.support.v7.widget.CardView>
 
-                <!--PERSONALITY CARD-->
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_personality"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    card_view:cardCornerRadius="4dp"
-                    style="@style/card"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <!-- LINEARLAYOUT PERSONALITY -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="20dp"
-                        android:paddingBottom="10dp">
-
-                        <!-- SEX -->
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="50dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="30dp"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:id="@+id/layout_sex"
-                            android:background="@drawable/border"
-                            >
-
-                            <ImageView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:id="@+id/img_sex"
-                                android:layout_gravity="center" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="Sex"
-                                android:id="@+id/txt_sex"
-                                android:textColor="@color/secondary_text"
-                                android:layout_gravity="bottom|center_horizontal" />
-                        </LinearLayout>
-
-                        <!-- ACTIVITY -->
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="50dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
-                            android:gravity="center_vertical"
-                            android:id="@+id/layout_activity"
-                            android:background="@drawable/border"
-                            >
-
-                            <ImageView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:id="@+id/img_activity"
-                                android:layout_gravity="center" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:id="@+id/txt_activity"
-                                android:textColor="@color/secondary_text"
-                                android:text="Activity"
-                                android:layout_gravity="bottom|center_horizontal"/>
-                        </LinearLayout>
-
-                        <!-- SMOKE -->
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="50dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_marginRight="30dp"
-                            android:gravity="center_vertical"
-                            android:id="@+id/layout_smoke"
-                            android:background="@drawable/border"
-                            >
-
-                            <ImageView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:id="@+id/img_smoke"
-                                android:layout_gravity="center"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="Smoke"
-                                android:id="@+id/txt_smoke"
-                                android:textColor="@color/secondary_text"
-                                android:layout_gravity="bottom|center_horizontal"/>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
                 <android.support.v7.widget.CardView
                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/card_languages"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="69dp"
+                    android:layout_height="wrap_content"
                     card_view:cardCornerRadius="4dp"
                     style="@style/card">
 
@@ -321,32 +343,33 @@
                             android:id="@+id/lbl_languages"
                             style="@style/title_card" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_languages">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Languages"
+                                android:text="@string/nolanguages"
                                 android:id="@+id/txt_languages"
                                 android:textSize="16dp"
 
                                 android:textColor="@color/primary_text"
                                 android:layout_gravity="left"
-                                android:layout_weight="1"
                                 android:gravity="left"
-                                android:padding="5dp" />
+                                android:layout_marginRight="20dp"
+                                android:paddingRight="10dp" />
 
                             <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="70dp"
                                 android:text="@string/btn_add_language"
+                                android:layout_alignParentRight="true"
                                 android:background="@drawable/roundedbutton"
-                                android:id="@+id/btn_add_language"
-                                android:layout_weight="0.17" />
-                        </LinearLayout>
+                                android:layout_height="40dp"
+                                android:id="@+id/btn_add_language" />
+                        </RelativeLayout>
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -388,19 +411,19 @@
                             android:id="@+id/lbl_sociable"
                             android:textColor="@color/primary_text" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="5dp"
-                            android:weightSum="1">
+                            android:weightSum="1"
+                            android:id="@+id/layout">
 
                             <SeekBar
-                                android:layout_width="250dp"
+                                android:layout_width="280dp"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/sliderSociable"
-                                android:max="10"
-                                android:layout_weight="1" />
+                                android:max="10" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -408,8 +431,9 @@
                                 android:text="10"
                                 android:id="@+id/txt_sociable"
                                 android:layout_marginLeft="30dp"
+                                android:layout_alignParentRight="true"
                                 />
-                        </LinearLayout>
+                        </RelativeLayout>
 
                         <LinearLayout
                             android:orientation="vertical"
@@ -424,26 +448,27 @@
                                 android:id="@+id/lbl_tidy"
                                 android:textColor="@color/primary_text" />
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:weightSum="1">
 
                                 <SeekBar
-                                    android:layout_width="250dp"
+                                    android:layout_width="280dp"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/sliderTidy"
-                                    android:max="10"
-                                    android:layout_weight="1" />
+                                    android:max="10" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="10"
                                     android:id="@+id/txt_tidy"
-                                    android:layout_marginLeft="30dp" />
-                            </LinearLayout>
+                                    android:layout_marginLeft="30dp"
+                                    android:layout_alignParentRight="true"
+                                    />
+                            </RelativeLayout>
                         </LinearLayout>
 
                     </LinearLayout>

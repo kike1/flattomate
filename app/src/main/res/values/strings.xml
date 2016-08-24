@@ -21,6 +21,7 @@
     <string name="img_image_of_user">Image of user</string>
     <string name="description">DESCRIPCIÓN:</string>
     <string name="languages">IDIOMAS:</string>
+    <string name="nolanguages">Ninguno</string>
     <string name="extra_information">INFORMACIÓN EXTRA:</string>
     <string name="sociable">Sociable:</string>
     <string name="tidy">Ordenado:</string>
@@ -51,6 +52,8 @@
     <string name="btn_add_language">Añadir</string>
     <string name="language_title">Idiomas</string>
     <string name="save_changes">ACTUALIZAR PERFIL</string>
+    <string name="undefined">No definido</string>
+    <string name="lbl_personal_info">INFORMACIÓN PERSONAL:</string>
     <string-array name="languages_array">
         <item>Español</item>
         <item>Inglés</item>
