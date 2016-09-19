@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         String sName = user.getName();
         String sBio = user.getBio();
-        String sAvatar = user.getAvatar();
+        String sAvatar = user.getId()+".jpg";
         /*String sLocation = manager.getPreferences(getBaseContext(), "location");
         String sBio = manager.getPreferences(getBaseContext(), "bio");
         String sAvatar = manager.getPreferences(getBaseContext(), "avatar");*/

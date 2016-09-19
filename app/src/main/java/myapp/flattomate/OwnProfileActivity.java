@@ -15,8 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -28,6 +31,9 @@ import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
 import myapp.myapp.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class OwnProfileActivity extends AppCompatActivity {
@@ -94,8 +100,8 @@ public class OwnProfileActivity extends AppCompatActivity {
         //obtain data for the user to see the profile
         idUser = manager.getInt("id", 0);
         if(idUser != 0) {
-            fillUserInfo();
-            /*Call<User> call = api.getUser(idUser);
+            //fillUserInfo();
+            Call<User> call = api.getUser(idUser);
 
             call.enqueue(new Callback<User>() {
                 @Override
@@ -105,8 +111,10 @@ public class OwnProfileActivity extends AppCompatActivity {
                         if(response.isSuccessful()) {
                             user = response.body();
                             //user.setAges();
-                            Log.d("AGES", String.valueOf(user.getAges()));
-                            fillUserInfo();
+                            if(user != null) {
+                                Log.d("AGES", String.valueOf(user.getAges()));
+                                fillUserInfo();
+                            }
                         }
                     }
                 }
@@ -116,7 +124,7 @@ public class OwnProfileActivity extends AppCompatActivity {
                     call.cancel();
                     Toast.makeText(getBaseContext(), "Error de conexión al servidor", Toast.LENGTH_LONG).show();
                 }
-            });*/
+            });
         }
 
         //Shows profile img in fullscreen
@@ -124,7 +132,7 @@ public class OwnProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ShowImageProfile.class);
-                intent.putExtra("image", user.getAvatar());
+                intent.putExtra("image", user.getId()+".jpg");
                 intent.putExtra("username", user.getName());
                 startActivity(intent);
             }
@@ -137,7 +145,7 @@ public class OwnProfileActivity extends AppCompatActivity {
         int iAges = manager.getInt("age", 18);
         Set<String> sLanguages = manager.getStringSet("languages", null);
         String sBio = manager.getString("bio", undefined);
-        String sAvatar = manager.getString("avatar", undefined);
+        String sAvatar = user.getId()+".jpg";
         int iSociable = manager.getInt("sociable", 0);
         int iTidy = manager.getInt("tidy", 0);
         String sex = manager.getString("sex", undefined);
@@ -149,13 +157,8 @@ public class OwnProfileActivity extends AppCompatActivity {
 
         if(sLanguages != null){
             String languagesFormatted = sLanguages.toString();
-            Log.d("SET", sLanguages.toString());
+            languagesFormatted = formatLanguage(languagesFormatted);
 
-            languagesFormatted = languagesFormatted.replace("[","");
-            languagesFormatted = languagesFormatted.replace("]","");
-            languagesFormatted = languagesFormatted.replace(", "," - ");
-            languagesFormatted = languagesFormatted.replace(", "," - ");
-            Log.d("SET stringformatted", languagesFormatted.trim());
             tvLanguages.setText(languagesFormatted);
         }
 
@@ -199,6 +202,7 @@ public class OwnProfileActivity extends AppCompatActivity {
         progressBarTidy.setMax(10);
         progressBarTidy.setProgress(iTidy);
 
+        Log.d("avatar", restAPI.API_BASE_URL+"imgs/"+sAvatar);
         //personalizing view of the user's profile
         if(sAvatar != null){
             Transformation transformation = new RoundedTransformationBuilder()
@@ -210,11 +214,22 @@ public class OwnProfileActivity extends AppCompatActivity {
 
             Picasso.with(getApplicationContext())
                     .load(restAPI.API_BASE_URL+"imgs/"+sAvatar)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .fit()
                     .centerCrop()
                     .transform(transformation)
                     .into(ivProfileImg);
         }
+    }
+
+    private String formatLanguage(String languagesFormatted) {
+        languagesFormatted = languagesFormatted.replace("[","");
+        languagesFormatted = languagesFormatted.replace("]","");
+        languagesFormatted = languagesFormatted.replace(", "," - ");
+        languagesFormatted = languagesFormatted.replace(", "," - ");
+
+        return languagesFormatted;
     }
 
     @Override
@@ -229,12 +244,15 @@ public class OwnProfileActivity extends AppCompatActivity {
             case R.id.action_edit:
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(intent);
+                finish();
+                //refreshActivity();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     //establish the font
     @Override

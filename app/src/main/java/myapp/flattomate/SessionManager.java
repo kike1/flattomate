@@ -25,8 +25,13 @@ public class SessionManager {
         editor.putInt("id", user.getId());
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
+        editor.putString("avatar", user.getId()+".jpg");
+        editor.putString("birthdate", user.getBirthdate());
         editor.putString("activity", user.getActivity());
-        editor.putString("avatar", user.getAvatar());
+        editor.putString("sex", user.getSex());
+        editor.putInt("smoke", user.getSmoke());
+        editor.putInt("sociable", user.getSociable());
+        editor.putInt("tidy", user.getTidy());
         editor.putString("bio", user.getBio());
 
        /* if(editor.commit())

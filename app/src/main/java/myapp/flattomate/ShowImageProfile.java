@@ -1,9 +1,11 @@
 package myapp.flattomate;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -34,18 +36,34 @@ public class ShowImageProfile extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-
         }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String image = extras.getString("image");
             String username = extras.getString("username");
+
+            String tempPicture = extras.getString("temppicture");
+            if(tempPicture != null && !tempPicture.contains("content")) {
+                tempPicture = "file://" + extras.getString("temppicture");
+                Log.d("SHOWIMAGE", tempPicture);
+            }
+
             actionBar.setTitle(username);
 
-            Picasso.with(getApplicationContext()).
-                    load(restAPI.API_BASE_URL+"imgs/"+image).
-                    into(ivProfileImg);
+            //if we have a temp picture then load it
+            if(tempPicture != null){
+                Log.d("PICTURE", tempPicture);
+                ivProfileImg.setImageURI(Uri.parse(tempPicture));
+//                Picasso.with(getApplicationContext()).
+//                        load(tempPicture).
+//                        into(ivProfileImg);
+            }else{//if not, load from server
+                Picasso.with(getApplicationContext()).
+                        load(restAPI.API_BASE_URL+"imgs/"+image).
+                        into(ivProfileImg);
+            }
+
         }
     }
 

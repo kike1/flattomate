@@ -34,9 +34,13 @@ public class User {
 //    @Expose
     private List<Language> languages;
 
-    @SerializedName("avatar")
+    @SerializedName("city")
     @Expose
-    private String avatar;
+    private String city;
+
+    @SerializedName("country")
+    @Expose
+    private String country;
 
     @SerializedName("activity")
     @Expose
@@ -198,6 +202,7 @@ public class User {
      * The age of user
      */
     public int getAges() {
+
         LocalDate now = new LocalDate();
         Years ages = Years.yearsBetween(new LocalDate(birthdate), now);
         return ages.getYears();
@@ -206,19 +211,37 @@ public class User {
     /**
      *
      * @return
-     * The avatar
+     * The city
      */
-    public String getAvatar() {
-        return avatar;
+    public String getCity() {
+        return city;
     }
 
     /**
      *
-     * @param avatar
-     * The avatar
+     * @param city
+     * The city
      */
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    /**
+     *
+     * @return
+     * The country
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     *
+     * @param country
+     * The country
+     */
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     /**

@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
         //View parentLayout = findViewById(R.id.textView);
         Snackbar.make(findViewById(android.R.id.content), "Usuario o contraseña incorrectos", Snackbar.LENGTH_LONG)
                 .show();
-       // Toast.makeText(getBaseContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("email", user.getEmail());
         editor.putInt("age", user.getAges());
         editor.putString("birthdate", user.getBirthdate());
-        editor.putString("avatar", user.getAvatar());
+        editor.putString("avatar", user.getId()+".jpg");
         editor.putString("activity", user.getActivity());
         editor.putString("sex", user.getSex());
         editor.putInt("smoke", user.getSmoke());

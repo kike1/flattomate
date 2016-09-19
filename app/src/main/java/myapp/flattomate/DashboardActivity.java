@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +37,7 @@ public class DashboardActivity extends AppCompatActivity {
         if(email != null){
             View parentLayout = findViewById(R.id.dashboard);
             Snackbar.make(parentLayout, "Sesión iniciada como "+email, Snackbar.LENGTH_LONG).show();
-            Log.d("debug", email);
+            //Log.d("debug", email);
 
             //now we redirect to user profile following iteration 1
             Intent intent = new Intent(context, OwnProfileActivity.class);
