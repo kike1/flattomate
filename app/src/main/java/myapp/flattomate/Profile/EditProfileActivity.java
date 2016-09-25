@@ -1,4 +1,4 @@
-package myapp.flattomate;
+package myapp.flattomate.Profile;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -48,10 +48,12 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import myapp.flattomate.DateValidator;
 import myapp.flattomate.Model.Language;
 import myapp.flattomate.Model.User;
 import myapp.flattomate.REST.FlattomateService;
 import myapp.flattomate.REST.restAPI;
+import myapp.flattomate.Utility;
 import myapp.myapp.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -623,7 +625,7 @@ public class EditProfileActivity extends AppCompatActivity{
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(EditProfileActivity.this);
+                boolean result= Utility.checkPermission(EditProfileActivity.this);
                 if (items[item].equals("Hacer foto con la cámara")) {
                     userChoosenTask="Hacer foto con la cámara";
                     if(result)

@@ -1,4 +1,4 @@
-package myapp.flattomate;
+package myapp.flattomate.Profile;
 
 import android.content.Context;
 import android.content.Intent;

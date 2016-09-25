@@ -54,6 +54,8 @@
     <string name="save_changes">ACTUALIZAR PERFIL</string>
     <string name="undefined">No definido</string>
     <string name="lbl_personal_info">INFORMACIÓN PERSONAL:</string>
+    <string name="solicitar">Solicitar</string>
+    <string name="lbl_description">DESCRIPCIÓN</string>
     <string-array name="languages_array">
         <item>Español</item>
         <item>Inglés</item>
@@ -61,5 +63,6 @@
         <item>Italiano</item>
         <item>Francés</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

@@ -50,16 +50,22 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-    <style name="FullscreenTheme" parent="AppTheme">
+    <style name="divider">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
+    <!--<style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
         <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
         <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
-    </style>
+    </style>-->
 
-    <style name="FullscreenActionBarStyle" parent="AppTheme.AppBarOverlay">
+    <!--<style name="FullscreenActionBarStyle" parent="AppTheme.AppBarOverlay">
         <item name="android:background">#000000</item>
-    </style>
+    </style>-->
 
 </resources>

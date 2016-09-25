@@ -1,4 +1,4 @@
-package myapp.flattomate;
+package myapp.flattomate.Profile;
 
 import android.net.Uri;
 import android.os.Bundle;
