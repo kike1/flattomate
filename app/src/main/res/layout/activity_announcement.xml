@@ -7,7 +7,7 @@
     android:id="@+id/activity_announcement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="myapp.flattomate.Announcement.Announcement">
+    tools:context="com.flattomate.AnnouncementActivity">
 
     <!-- TOOLBAR -->
     <android.support.design.widget.AppBarLayout
@@ -39,23 +39,36 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
-                <com.daimajia.slider.library.SliderLayout
-                    android:id="@+id/slider"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    custom:pager_animation="Fade"
-                    custom:auto_cycle="true"
-                    custom:indicator_visibility="visible"
-                    custom:pager_animation_span="1100"
-                    android:layout_height="200dp"/>
+                    android:layout_height="match_parent">
 
-                <com.daimajia.slider.library.Indicators.PagerIndicator
-                    android:id="@+id/custom_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    />
+                    <com.daimajia.slider.library.SliderLayout
+                        android:id="@+id/slider"
+                        android:layout_width="match_parent"
+                        custom:pager_animation="Fade"
+                        custom:auto_cycle="true"
+                        custom:indicator_visibility="visible"
+                        custom:pager_animation_span="1100"
+                        android:layout_height="200dp"/>
+
+                    <com.daimajia.slider.library.Indicators.PagerIndicator
+                        android:id="@+id/custom_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        />
+
+                    <TextView
+                        android:layout_width="118dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/lbl_price"
+                        android:layout_gravity="bottom"
+                        tools:text="@string/lbl_price" />
+                </FrameLayout>
 
                 <!-- USER INFO -->
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -65,7 +78,7 @@
                         android:text="Title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView2"
+                        android:id="@+id/txt_title"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         style="@style/AppTheme.Widget.TextView" />
 
@@ -73,26 +86,26 @@
                         android:text="User name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView3"
-                        android:layout_below="@+id/textView2"
+                        android:id="@+id/txt_username"
+                        android:layout_below="@+id/txt_title"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="10dp" />
 
                     <RatingBar
-                        android:layout_width="100dp"
                         style="?android:attr/ratingBarStyleSmall"
                         android:id="@+id/ratingBar"
                         android:layout_height="20dp"
-                        android:layout_below="@+id/textView3"
+                        android:layout_below="@+id/txt_username"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:layout_width="80dp" />
 
                     <Button
                         android:text="@string/solicitar"
                         android:layout_width="180dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/button"
+                        android:id="@+id/btn_request"
                         android:background="@drawable/roundedbutton"
                         android:layout_below="@+id/ratingBar"
                         android:layout_alignParentLeft="true"
@@ -100,19 +113,20 @@
 
                     <ImageView
                         android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/ratingBar"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:id="@+id/imageView"
-                        android:layout_alignBottom="@+id/button" />
+                        android:id="@+id/img_username"
+                        android:layout_alignBottom="@+id/btn_request" />
 
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="20dp"
-                        android:layout_above="@+id/button"
+                        android:layout_above="@+id/btn_request"
                         android:layout_toRightOf="@+id/ratingBar"
-                        android:id="@+id/textView7" />
+                        android:id="@+id/lbl_reviews" />
+
                 </RelativeLayout>
 
                 <View
@@ -155,16 +169,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:weightSum="7"
                     >
 
                     <!-- BED -->
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="2">
 
                         <ImageView
                             android:layout_width="36dp"
@@ -176,46 +190,45 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Bed"
+                            style="@style/txt_basic_info"
                             android:id="@+id/txt_bed"
                             android:textColor="@color/secondary_text"
-                            android:layout_gravity="bottom|center_horizontal" />
+                            tools:text="@string/single_bed"
+                            android:layout_gravity="center" />
                     </LinearLayout>
 
-                    <!-- MONTH -->
+                    <!-- ROOM -->
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_weight="3">
 
                         <ImageView
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:id="@+id/img_month"
+                            android:id="@+id/img_shared_room"
                             android:layout_gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:id="@+id/txt_activity"
+                            style="@style/txt_basic_info"
+                            android:id="@+id/txt_shared_room"
                             android:textColor="@color/secondary_text"
-                            android:text="Month"
-                            android:layout_gravity="bottom|center_horizontal"/>
+                            android:layout_gravity="center"
+                            tools:text="@string/shared_room" />
                     </LinearLayout>
 
-                    <!-- Available? -->
+                    <!-- AVAILABILITY -->
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginRight="30dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_weight="2">
 
                         <ImageView
                             android:layout_width="36dp"
@@ -227,10 +240,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:text="Available"
+                            style="@style/txt_basic_info"
                             android:id="@+id/txt_available"
                             android:textColor="@color/secondary_text"
-                            android:layout_gravity="bottom|center_horizontal"/>
+                            android:layout_gravity="center"
+                            tools:text="@string/available" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -252,7 +266,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Address"
-                        android:id="@+id/lbl_address" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:id="@+id/lbl_address"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18sp" />
 
                     <fragment
                         android:name="com.google.android.gms.maps.MapFragment"
@@ -283,7 +300,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/@+id/layout_stay">
+                    android:id="@+id/layout_stay">
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -292,18 +309,21 @@
 
                         <ImageView
                             android:id="@+id/img_min_stay"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp" />
+                            android:layout_width="35dp"
+                            android:layout_height="35dp" />
 
                         <TextView
                             android:id="@+id/lbl_min_stay"
+                            android:text="@string/lbl_min_stay"
+                            style="@style/img_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:id="@+id/txt_min_stay"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            style="@style/img_text"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -313,18 +333,21 @@
 
                         <ImageView
                             android:id="@+id/img_max_stay"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp" />
+                            android:layout_width="35dp"
+                            android:layout_height="35dp" />
 
                         <TextView
                             android:id="@+id/lbl_max_stay"
+                            android:text="@string/lbl_max_stay"
                             android:layout_width="wrap_content"
+                            style="@style/img_text"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:id="@+id/txt_max_stay"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            style="@style/img_text"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -341,7 +364,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/@+id/layout_extra_info">
+                    android:id="@+id/layout_extra_info">
 
                     <LinearLayout
                         android:orientation="horizontal"

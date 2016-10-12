@@ -64,5 +64,16 @@
         <item>Francés</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="lbl_price">Price</string>
+
+    <!-- Announcement -->
+    <string name="beds">camas</string>
+    <string name="single_bed">Cama individual</string>
+    <string name="double_bed">Cama doble</string>
+    <string name="shared_room">Habitación compartida</string>
+    <string name="no_shared_room">Habitación privada</string>
+    <string name="available">Disponibilidad</string>
+    <string name="lbl_min_stay">Estancia mínima: </string>
+    <string name="lbl_max_stay">Estancia máxima: </string>
 
 </resources>

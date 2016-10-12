@@ -56,6 +56,16 @@
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginRight">15dp</item>
     </style>
+
+    <style name="txt_basic_info">
+        <!--<item name="android:layout_marginLeft"> 10dp </item>-->
+    </style>
+
+    <style name="img_text">
+        <item name="android:layout_marginLeft"> 10dp </item>
+        <item name="android:layout_gravity">center_vertical</item>
+
+    </style>
     <!--<style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>

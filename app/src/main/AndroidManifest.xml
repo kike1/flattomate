@@ -28,7 +28,7 @@
 
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name="myapp.flattomate.HomeActivity"
+            android:name="com.flattomate.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -40,54 +40,54 @@
 
         <!-- LOGIN ACTIVITY -->
         <activity
-            android:name="myapp.flattomate.LoginActivity"
+            android:name="com.flattomate.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName="myapp.flattomate.HomeActivity">
+            android:parentActivityName="com.flattomate.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.HomeActivity" />
+                android:value="com.flattomate.HomeActivity" />
         </activity>
 
         <!-- REGISTER ACTIVITY -->
         <activity
-            android:name="myapp.flattomate.RegisterActivity"
+            android:name="com.flattomate.RegisterActivity"
             android:label="@string/title_activity_activity_signin"
-            android:parentActivityName="myapp.flattomate.HomeActivity">
+            android:parentActivityName="com.flattomate.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.HomeActivity" />
+                android:value="com.flattomate.HomeActivity" />
         </activity>
 
         <!-- DASHBOARD ACTIVITY -->
-        <activity android:name="myapp.flattomate.DashboardActivity" />
+        <activity android:name="com.flattomate.DashboardActivity" />
 
         <!-- EDIT_PROFILE ACTIVITY -->
         <activity
-            android:name="myapp.flattomate.Profile.EditProfileActivity"
+            android:name="com.flattomate.Profile.EditProfileActivity"
             android:label="@string/profile_edit_title"
-            android:parentActivityName="myapp.flattomate.Profile.ProfileActivity">
+            android:parentActivityName="com.flattomate.Profile.ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.Profile.ProfileActivity" />
+                android:value="com.flattomate.Profile.ProfileActivity" />
         </activity>
 
         <!-- PROFILE ACTIVITY -->
         <activity
-            android:name="myapp.flattomate.Profile.ProfileActivity"
-            android:parentActivityName="myapp.flattomate.DashboardActivity">
+            android:name="com.flattomate.Profile.ProfileActivity"
+            android:parentActivityName="com.flattomate.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.HomeActivity" />
+                android:value="com.flattomate.HomeActivity" />
         </activity>
-        <activity android:name="myapp.flattomate.Profile.OwnProfileActivity" />
+        <activity android:name="com.flattomate.Profile.OwnProfileActivity" />
         <activity
-            android:name="myapp.flattomate.Profile.ShowImageProfile"
+            android:name="com.flattomate.Profile.ShowImageProfile"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_show_image_profile"
-            android:parentActivityName="myapp.flattomate.Profile.OwnProfileActivity">
+            android:parentActivityName="com.flattomate.Profile.OwnProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="myapp.flattomate.Profile.OwnProfileActivity" />
+                android:value="com.flattomate.Profile.OwnProfileActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,7 +95,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="myapp.flattomate.Announcement.Announcement" />
+        <activity android:name="com.flattomate.AnnouncementActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -109,7 +109,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="myapp.flattomate.MapsActivity"
+            android:name="com.flattomate.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
 
         <!-- GOOGLE MAPS -->
