@@ -1,18 +1,23 @@
 package com.flattomate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.flattomate.GoogleMaps.Map;
 import com.flattomate.GoogleMaps.Result;
@@ -21,6 +26,7 @@ import com.flattomate.Model.Announcement;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
+import com.flattomate.Profile.ShowImageProfile;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.GoogleMapsService;
 import com.flattomate.REST.restAPI;
@@ -28,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
@@ -102,6 +109,10 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     TextView txt_max_stay;
     @Bind(R.id.lbl_max_stay)
     TextView lbl_max_stay;
+
+    //extra info
+    @Bind(R.id.gridview_extra_info)
+    ExpandableHeightGridView gridview_extra_info;
 
 
     SliderLayout sliderShow;
@@ -221,11 +232,8 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                         images = response.body();
                         if(images != null)
                             for (Image image: images) {
-                                sliderView.image(API_URL+"announcements/"+image.getName()+".jpg");
-                                Log.d("im", API_URL+"announcements/"+image.getName()+".jpg");
-                                sliderShow.addSlider(sliderView);
+                                setImageOnSlideShow(image);
                             }
-
                     }
                 }
                 @Override
@@ -234,6 +242,11 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                     Toast.makeText(getBaseContext(), "Error de conexión al servidor", Toast.LENGTH_LONG).show();
                 }
             });
+
+            sliderShow.setPresetTransformer(SliderLayout.Transformer.Accordion);
+            sliderShow.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+            sliderShow.setCustomAnimation(new DescriptionAnimation());
+            sliderShow.setDuration(5000);
 
             //Getting announcement's services
             Call<ArrayList<Service>> callServices = api.getAnnouncementServices(idAnnouncement);
@@ -272,14 +285,32 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(map);
             mapFragment.getMapAsync(this);
+
+            img_username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ShowImageProfile.class);
+                    intent.putExtra("image", user.getId()+".jpg");
+                    intent.putExtra("username", user.getName());
+                    startActivity(intent);
+                }
+            });
         }
+    }
+
+    private void setImageOnSlideShow(Image image) {
+        sliderView = new DefaultSliderView(this);
+        sliderView.setScaleType(BaseSliderView.ScaleType.Fit)
+                .image(API_URL+"announcements/"+image.getName()+".jpg");
+        Log.d("im", API_URL+"announcements/"+image.getName()+".jpg");
+        sliderShow.addSlider(sliderView);
     }
 
     void fillAnnouncementInfo(){
 
         //head
-        lbl_price.setText(String.valueOf(announcement.getPrice())+"€");
-        txt_title.setText(announcement.getTitle());
+        lbl_price.setText(Html.fromHtml("<b>" + announcement.getPrice() +"€"+ "</b>") );
+        txt_title.setText(Html.fromHtml("<b>" + announcement.getTitle()+ "</b>"));
         txt_description.setText(announcement.getDescription());
 
         //3 icons - bed, room, availability
@@ -355,19 +386,29 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                     return;
 
                 for (Result res: map.getResults()) {
-                    Log.d("Result", String.valueOf(res.getGeometry().getLocation().getLatitude()));
+                    Log.d("Result", String.valueOf(res.getGeometry().getLocation().getLat()));
                 }
 
                 // Add a marker in address and move the camera
-                double lat = map.getResults().get(0).getGeometry().getLocation().getLatitude();
-                double lng = map.getResults().get(0).getGeometry().getLocation().getLongitude();
+                double lat = map.getResults().get(0).getGeometry().getLocation().getLat();
+                double lng = map.getResults().get(0).getGeometry().getLocation().getLng();
                 Log.e("LAT/LONG", String.valueOf(lat)+","+String.valueOf(lng));
                 LatLng acommodation_latlng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
                                 .position(acommodation_latlng).
                                 title(announcement.getTitle()).
                                 flat(true));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(acommodation_latlng));
+
+                //mMap.moveCamera(CameraUpdateFactory.newLatLng(acommodation_latlng));
+                //mMap.moveCamera(CameraUpdateFactory.zoomTo(22));
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(acommodation_latlng)// Sets the center of the map to Mountain View
+                        .zoom(17)                   // Sets the zoom
+                        .build();                   // Creates a CameraPosition from the builder
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+               // mMap.animateCamera(CameraUpdateFactory.zoomTo(100), 2000, null);
+
             }
             @Override
             public void onFailure(Call<Map> call, Throwable t) {
@@ -390,7 +431,28 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
 
     void fillServicesInfo(){
 
-        Log.e("services", "ok");
+        ArrayList<Integer> servicesIcons = new ArrayList<>();
+        ArrayList<String> servicesDescription = new ArrayList<>();
+
+        //get icons and description
+        for (Service service: services) {
+            Log.d("SERVICE", service.getName());
+            servicesIcons.add(service.getId());
+            servicesDescription.add(service.getName());
+        }
+
+        Log.d("SERVICES SIZE", String.valueOf(services.size()));
+        CustomGrid adapter = new CustomGrid(AnnouncementActivity.this, servicesDescription, servicesIcons);
+        gridview_extra_info.setExpanded(true);
+        gridview_extra_info.setAdapter(adapter);
+
+        /* gridview_extra_info.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Toast.makeText(MainActivity.this, "You Clicked at " +web[+ position], Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
     }
 
@@ -405,10 +467,11 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+       /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").flat(true));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(newLatLng(sydney));*/
 
     }
 

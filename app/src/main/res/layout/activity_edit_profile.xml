@@ -95,7 +95,8 @@
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="MODIFICAR FOTO PERFIL"
+                            android:text="@string/btn_modify_profile_photo"
+                            style="@style/RobotoButtonStyle"
                             android:id="@+id/btn_camera_gallery"
                             android:layout_gravity="center_vertical"
                             android:background="@drawable/roundedbutton"

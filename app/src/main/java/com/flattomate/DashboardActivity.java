@@ -42,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity {
             //now we redirect to user profile following iteration 1
 
             Intent intent = new Intent(context, AnnouncementActivity.class);
+            intent.putExtra("idUser", 1);
             intent.putExtra("idAnnouncement", 3);
             startActivity(intent);
 

@@ -14,9 +14,9 @@ public class Review {
     @SerializedName("id_user_wrote")
     @Expose
     private Integer idUserWrote;
-    @SerializedName("id_user_received")
+    @SerializedName("id_announcement")
     @Expose
-    private Integer idUserReceived;
+    private Integer idAnnouncement;
 
     /**
      *
@@ -75,19 +75,19 @@ public class Review {
     /**
      *
      * @return
-     * The idUserReceived
+     * The idAnnouncement
      */
-    public Integer getIdUserReceived() {
-        return idUserReceived;
+    public Integer getIdAnnouncement() {
+        return idAnnouncement;
     }
 
     /**
      *
-     * @param idUserReceived
-     * The id_user_received
+     * @param idAnnouncement
+     * The idAnnouncement
      */
-    public void setIdUserReceived(Integer idUserReceived) {
-        this.idUserReceived = idUserReceived;
+    public void setIdAnnouncement(Integer idAnnouncement) {
+        this.idAnnouncement = idAnnouncement;
     }
 
 }
