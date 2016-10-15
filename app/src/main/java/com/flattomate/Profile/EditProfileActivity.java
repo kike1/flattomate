@@ -305,7 +305,7 @@ public class EditProfileActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         // The activity is about to be destroyed.
-        Intent intent = new Intent(getApplicationContext(), OwnProfileActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
         startActivity(intent);
     }
 

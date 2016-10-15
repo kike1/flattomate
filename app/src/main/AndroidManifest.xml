@@ -79,15 +79,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.HomeActivity" />
         </activity>
-        <activity android:name="com.flattomate.Profile.OwnProfileActivity" />
+
         <activity
             android:name="com.flattomate.Profile.ShowImageProfile"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_show_image_profile"
-            android:parentActivityName="com.flattomate.Profile.OwnProfileActivity">
+            android:parentActivityName="com.flattomate.Profile.ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.flattomate.Profile.OwnProfileActivity" />
+                android:value="com.flattomate.Profile.ProfileActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

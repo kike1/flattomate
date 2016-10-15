@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,13 +21,12 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.flattomate.GoogleMaps.Map;
-import com.flattomate.GoogleMaps.Result;
 import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
-import com.flattomate.Profile.ShowImageProfile;
+import com.flattomate.Profile.ProfileActivity;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.GoogleMapsService;
 import com.flattomate.REST.restAPI;
@@ -41,6 +41,7 @@ import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -64,6 +65,8 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     //head
     @Bind(R.id.lbl_price)
     TextView lbl_price;
+    @Bind(R.id.img_favorite)
+    ImageView img_favorite;
     @Bind(R.id.txt_title)
     TextView txt_title;
     @Bind(R.id.txt_username)
@@ -74,6 +77,8 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     ImageView img_username;
     @Bind(R.id.lbl_reviews)
     TextView lbl_reviews;
+    @Bind(R.id.btn_request)
+    Button btn_request;
 
     @Bind(R.id.txt_description)
     TextView txt_description;
@@ -286,16 +291,48 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                     .findFragmentById(map);
             mapFragment.getMapAsync(this);
 
+            img_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favorite();
+                }
+            });
+
+            txt_username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    img_username.callOnClick();
+                }
+            });
             img_username.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ShowImageProfile.class);
-                    intent.putExtra("image", user.getId()+".jpg");
-                    intent.putExtra("username", user.getName());
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.putExtra("idUser", user.getId());
                     startActivity(intent);
                 }
             });
+
+            btn_request.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
+                    btn_request.setText(R.string.requested);
+                    //btn_request.setBackgroundColor(getResources().getColor(R.color.accent));
+                }
+            });
         }
+    }
+
+    private void favorite() {
+        
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.e("ONRESUME", "ONRESUME");
+
     }
 
     private void setImageOnSlideShow(Image image) {
@@ -310,6 +347,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
 
         //head
         lbl_price.setText(Html.fromHtml("<b>" + announcement.getPrice() +"€"+ "</b>") );
+        img_favorite.setImageResource(R.drawable.heart_empty);
         txt_title.setText(Html.fromHtml("<b>" + announcement.getTitle()+ "</b>"));
         txt_description.setText(announcement.getDescription());
 
@@ -320,16 +358,20 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         if(announcement.getIsSharedRoom()==1) { //shared room
             id = getResources().getIdentifier("shared_room", "string", getPackageName());
             if(id != 0)
-                txt_shared_room.setText(getString(id));
+                txt_shared_room.setText(getString(id)+"\n");
         }else{ //no shared room
             id = getResources().getIdentifier("no_shared_room", "string", getPackageName());
             if(id != 0)
-                txt_shared_room.setText(getString(id));
+                txt_shared_room.setText(getString(id)+"\n");
         }
 
         //availability
         img_available.setImageResource(calendar_days);
-        txt_available.setText(announcement.getAvailability());
+
+        // Format for output
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        String availability_date_format = dateFormatter.format(announcement.getAvailability());
+        txt_available.setText("Disponible: \n"+availability_date_format);
 
         //max and min stay
         img_min_stay.setImageResource(calendar_days);
@@ -348,12 +390,12 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         if (accommodation.getNBeds() == 1) {
             img_bed.setImageResource(R.drawable.one_bed);
             if(idSingleBed != 0){ //get the string
-                txt_bed.setText(getString(idSingleBed));
+                txt_bed.setText(getString(idSingleBed)+"\n");
             }
         }else {
             img_bed.setImageResource(R.drawable.two_bed);
             if(idDoubleBed != 0){ //get the string
-                txt_bed.setText(getString(idDoubleBed));
+                txt_bed.setText(getString(idDoubleBed)+"\n");
             }
         }
 
@@ -385,14 +427,14 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 if(map.getResults().size()<=0)
                     return;
 
-                for (Result res: map.getResults()) {
+                /*for (Result res: map.getResults()) {
                     Log.d("Result", String.valueOf(res.getGeometry().getLocation().getLat()));
-                }
+                }*/
 
                 // Add a marker in address and move the camera
                 double lat = map.getResults().get(0).getGeometry().getLocation().getLat();
                 double lng = map.getResults().get(0).getGeometry().getLocation().getLng();
-                Log.e("LAT/LONG", String.valueOf(lat)+","+String.valueOf(lng));
+                //Log.e("LAT/LONG", String.valueOf(lat)+","+String.valueOf(lng));
                 LatLng acommodation_latlng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
                                 .position(acommodation_latlng).

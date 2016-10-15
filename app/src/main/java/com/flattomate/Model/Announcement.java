@@ -1,6 +1,9 @@
 package com.flattomate.Model;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 
 public class Announcement {
 
@@ -15,7 +18,7 @@ public class Announcement {
     private String description;
     @SerializedName("availability")
     @Expose
-    private String availability;
+    private Date availability;
     @SerializedName("min_stay")
     @Expose
     private Integer minStay;
@@ -97,7 +100,7 @@ public class Announcement {
      * @return
      * The availability
      */
-    public String getAvailability() {
+    public Date getAvailability() {
         return availability;
     }
 
@@ -106,7 +109,7 @@ public class Announcement {
      * @param availability
      * The availability
      */
-    public void setAvailability(String availability) {
+    public void setAvailability(Date availability) {
         this.availability = availability;
     }
 

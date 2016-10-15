@@ -65,10 +65,20 @@
                         android:layout_gravity="bottom"
                         tools:text="@string/lbl_price"
                         android:textColor="@color/accent"
-                        android:textSize="20sp"
+                        android:textSize="24sp"
                         android:layout_marginBottom="5sp"
                         android:layout_marginLeft="10sp"
                         android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:id="@+id/img_favorite"
+                        android:layout_gravity="right|bottom"
+                        android:layout_marginBottom="5sp"
+                        android:layout_marginRight="10sp"
+                        android:tint="@color/heart_icon"
+                        />
                 </FrameLayout>
 
                 <LinearLayout

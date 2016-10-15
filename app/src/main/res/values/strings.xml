@@ -55,6 +55,7 @@
     <string name="undefined">No definido</string>
     <string name="lbl_personal_info">INFORMACIÓN PERSONAL:</string>
     <string name="solicitar">SOLICITAR</string>
+    <string name="requested">SOLICITADO</string>
     <string name="lbl_description">DESCRIPCIÓN</string>
     <string-array name="languages_array">
         <item>Español</item>
