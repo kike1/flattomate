@@ -8,7 +8,6 @@ import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -49,17 +48,22 @@ public interface FlattomateService{
                                           @Part MultipartBody.Part file);
                                            //@Path("id") Integer id);
 
+    @POST("user/{id}/chat/{idUserAnnouncement}/{idAnnouncement}")
+    Call<ResponseBody> requestNegotiation(@Path("id") Integer id,
+                                          @Path("idUserAnnouncement") Integer idUserAnnouncement,
+                                          @Path("idAnnouncement") Integer idAnnouncement);
+
     @POST("user/{name}/{password}")
     Call<User> login(@Path("name") String name, @Path("password") String password);
 
     @GET("user/{iduser}/languages")
-    Call<List<Language>> getLanguages(@Path("iduser") int iduser);
+    Call<ArrayList<Language>> getLanguages(@Path("iduser") int iduser);
 
     @POST("languages/add/{iduser}/{idlanguage}")
-    Call<List<Language>> setLanguage(@Path("iduser") Integer iduser, @Path("idlanguage") Integer idlanguage);
+    Call<ArrayList<Language>> setLanguage(@Path("iduser") Integer iduser, @Path("idlanguage") Integer idlanguage);
 
     @DELETE("languages/remove/{iduser}/{idlanguage}")
-    Call<List<Language>> removeLanguage(@Path("iduser") Integer iduser, @Path("idlanguage") Integer idlanguage);
+    Call<ArrayList<Language>> removeLanguage(@Path("iduser") Integer iduser, @Path("idlanguage") Integer idlanguage);
 
     /*
     * Announcement

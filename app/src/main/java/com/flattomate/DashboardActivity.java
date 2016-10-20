@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.flattomate.Announcement.AnnouncementActivity;
+
 import myapp.myapp.R;
 
 public class DashboardActivity extends AppCompatActivity {

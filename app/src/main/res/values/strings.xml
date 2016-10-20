@@ -47,7 +47,7 @@
         <item>No fuma</item>
     </string-array>
     <string name="sex_title">¿Hombre o mujer?</string>
-    <string name="activity_title">¿A que se dedica?</string>
+    <string name="activity_title">¿A que te dedicas?</string>
     <string name="smoke_title">¿Fumador?</string>
     <string name="btn_add_language">Añadir</string>
     <string name="language_title">Idiomas</string>
@@ -78,5 +78,11 @@
     <string name="lbl_max_stay">Estancia máxima: </string>
     <string name="lbl_reviews"> Evaluaciones</string>
     <string name="btn_modify_profile_photo">MODIFICAR FOTO PERFIL</string>
+    <string name="logout">CERRAR SESIÓN</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="lbl_no_account"><u>¿No tienes cuenta? Crea una</u></string>
+
+    <!-- CreateAnnouncement -->
+    <string name="lbl_img">Imágenes:</string>
 
 </resources>

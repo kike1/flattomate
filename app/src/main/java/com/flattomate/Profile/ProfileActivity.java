@@ -12,11 +12,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flattomate.HomeActivity;
+import com.flattomate.Model.Language;
 import com.flattomate.Model.User;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
@@ -26,7 +29,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -74,6 +77,9 @@ public class ProfileActivity extends AppCompatActivity {
     @Bind(R.id.progressbarTidy)
     ProgressBar progressBarTidy;
 
+    @Bind(R.id.btn_logout)
+    Button btn_logout;
+
     SharedPreferences manager;
     User user;
     FlattomateService api;
@@ -92,6 +98,9 @@ public class ProfileActivity extends AppCompatActivity {
             setContentView(R.layout.activity_own_profile);
 
             ButterKnife.bind(this);
+
+            //hide the button until user is the same than profile
+            btn_logout.setVisibility(View.GONE);
 
             Toolbar myToolbar = (Toolbar) findViewById(R.id.ownprofile_toolbar);
             setSupportActionBar(myToolbar);
@@ -118,7 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
                             user = response.body();
                             //user.setAges();
                             if(user != null) {
-                                Log.d("AGES", String.valueOf(user.getAges()));
+                                btn_logout.setVisibility(View.VISIBLE);
                                 fillUserInfo();
                             }
                         }
@@ -142,25 +151,39 @@ public class ProfileActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+            btn_logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //clear sharedpreferences
+                    SharedPreferences.Editor editor = manager.edit();
+                    editor.clear();
+                    editor.commit();
+                    //redirect to HomeActivity
+                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
 
     }
 
     void fillUserInfo(){
+
         String undefined = String.valueOf(R.string.undefined);
-        String sName = manager.getString("name", undefined);
-        int iAges = manager.getInt("age", 18);
-        Set<String> sLanguages = manager.getStringSet("languages", null);
-        String sBio = manager.getString("bio", undefined);
+        String sName = user.getName();
+        int iAges = user.getAges();
+        ArrayList<Language> sLanguages = user.getLanguages();
+        String sBio = user.getBio();
         String sAvatar = user.getId()+".jpg";
-        int iSociable = manager.getInt("sociable", 0);
-        int iTidy = manager.getInt("tidy", 0);
-        String sex = manager.getString("sex", undefined);
-        String activity = manager.getString("activity", undefined);
-        int smoke = manager.getInt("smoke", 0);
+        int iSociable = user.getSociable();
+        int iTidy = user.getTidy();
+        String sex = user.getSex();
+        String activity = user.getActivity();
+        int smoke = user.getSmoke();
 
         tvName.setText(sName);
-        tvAge.setText(iAges+" años");
+        tvAge.setText(String.valueOf(iAges)+" años");
 
         if(sLanguages != null){
             String languagesFormatted = sLanguages.toString();
@@ -253,8 +276,9 @@ public class ProfileActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_edit:
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                //startActivityForResult(intent);
                 startActivity(intent);
-                finish();
+                //finish();
                 //refreshActivity();
                 return true;
 

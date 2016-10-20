@@ -1,4 +1,4 @@
-package com.flattomate;
+package com.flattomate.Announcement;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,8 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.flattomate.CustomGrid;
+import com.flattomate.ExpandableHeightGridView;
 import com.flattomate.GoogleMaps.Map;
 import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
@@ -47,6 +49,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import myapp.myapp.R;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -313,19 +316,30 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 }
             });
 
+            //user request a negotiation with ads user
             btn_request.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
-                    btn_request.setText(R.string.requested);
-                    //btn_request.setBackgroundColor(getResources().getColor(R.color.accent));
+
+                    Call<ResponseBody> callRequest = api.requestNegotiation(idUser, user.getId(), announcement.getId());
+                    callRequest.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if(response.code() == 200) {
+                                btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
+                                btn_request.setText(R.string.requested);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {call.cancel();}
+                    });
                 }
             });
         }
     }
 
     private void favorite() {
-        
+
     }
 
     @Override
@@ -509,12 +523,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        // Add a marker in Sydney and move the camera
-       /* LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").flat(true));
-        mMap.moveCamera(newLatLng(sydney));*/
-
+        //mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
     //establishes the font

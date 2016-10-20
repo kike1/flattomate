@@ -47,8 +47,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -161,6 +163,7 @@ public class EditProfileActivity extends AppCompatActivity{
         ab.setTitle("Editar perfil");
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
+        ab.setShowHideAnimationEnabled(true);
 
         manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword"); //init REST api
@@ -171,8 +174,6 @@ public class EditProfileActivity extends AppCompatActivity{
                 .cornerRadiusDp(60)
                 .oval(false)
                 .build();
-
-        initCalendar();
 
         //Dialog multi languages
         items = getResources().getStringArray(R.array.languages_array);
@@ -305,19 +306,22 @@ public class EditProfileActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         // The activity is about to be destroyed.
-        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-        startActivity(intent);
+        /*Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(intent);*/
+        finish();
     }
 
     void fillUserInfo(){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
         //retrieve info
         String undefined = String.valueOf(R.string.undefined);
         String sName = manager.getString("name", undefined);
         String sEmail = manager.getString("email", undefined);
-        int iAges = manager.getInt("age", 18);
-        String sBirtdate = manager.getString("birthdate", null);
-        Set<String> sLanguages = manager.getStringSet("languages", null);
-        String sBio = manager.getString("bio", undefined);
+        String sBirtdate = dateFormatter.format(user.getBirthdate());
+        Set<String> empty = new HashSet<String>();
+        Set<String> sLanguages = manager.getStringSet("languages", empty);
+        String sBio = user.getBio();
         String sAvatar = restAPI.API_BASE_URL+"imgs/"+user.getId()+".jpg";//manager.getString("avatar", undefined);
         Log.d("avatar cmabiado", sAvatar);
         int iSociable = manager.getInt("sociable", 0);
@@ -329,10 +333,8 @@ public class EditProfileActivity extends AppCompatActivity{
         //set info
         etName.setText(sName);
         etEmail.setText(sEmail);
-        //format date in spanish way
-        String[] splitBirthdate = sBirtdate.split("-");
-        sBirtdate = splitBirthdate[2]+"/"+splitBirthdate[1]+"/"+splitBirthdate[0];
         etBirthdate.setText(sBirtdate);
+        initCalendar();
 
         tvBio.setText(sBio);
 
@@ -424,11 +426,21 @@ public class EditProfileActivity extends AppCompatActivity{
 
     //sets calendar to a date 18 ages later as max date
     void initCalendar(){
-        year_x = myCalendar.get(Calendar.YEAR);
+        /*year_x = myCalendar.get(Calendar.YEAR);
         myCalendar.set(Calendar.YEAR, year_x-18);
         myCalendar.set(Calendar.MONTH, 0);
-        myCalendar.set(Calendar.DAY_OF_MONTH, 1);
-        //myCalendar.set(Calendar.DAY_OF_WEEK, 1);
+        myCalendar.set(Calendar.DAY_OF_MONTH, 1);*/
+
+        Date date; // your date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(user.getBirthdate());
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, month);
+        myCalendar.set(Calendar.DAY_OF_MONTH, day);
     }
 
     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -779,9 +791,7 @@ public class EditProfileActivity extends AppCompatActivity{
         String birthdate = etBirthdate.getText().toString();
         DateValidator dateValidator = new DateValidator();
         if(dateValidator.validate(birthdate)){
-            String[] splitBirthdate = birthdate.split("/");
-            birthdate = splitBirthdate[2]+"-"+splitBirthdate[1]+"-"+splitBirthdate[0];
-            user.setBirthdate(birthdate);
+            user.setBirthdate(new Date(birthdate));
         }else
             Toast.makeText(EditProfileActivity.this, "Fecha de nacimiento errónea", Toast.LENGTH_SHORT).show();
 
@@ -792,7 +802,7 @@ public class EditProfileActivity extends AppCompatActivity{
         user.setBio(bio);
 
         //languages are sent in an independent REST call
-        Call<List<Language>> call;
+        Call<ArrayList<Language>> call;
         for(int i = 0; i < selectedItemsArray.length; i++){ //selected languages
 
             int idLanguage = i+1;
@@ -801,21 +811,21 @@ public class EditProfileActivity extends AppCompatActivity{
             if(selectedItemsArray[i]){
                 Log.d("LANGUAGE", "adding "+idLanguage+" language");
                 call = api.setLanguage(idUser, idLanguage); //call to api
-                call.enqueue(new Callback<List<Language>>() {
+                call.enqueue(new Callback<ArrayList<Language>>() {
                     @Override
-                    public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {
+                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {
                     }
                     @Override
-                    public void onFailure(Call<List<Language>> call, Throwable t) {}
+                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
                 });
             }else{ //if language is unselected, remove it
                 Log.d("LANGUAGE", "removing "+i+1+" language");
                 call = api.removeLanguage(idUser, idLanguage);
-                call.enqueue(new Callback<List<Language>>() {
+                call.enqueue(new Callback<ArrayList<Language>>() {
                     @Override
-                    public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {}
+                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {}
                     @Override
-                    public void onFailure(Call<List<Language>> call, Throwable t) {}
+                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
                 });
             }
 
@@ -836,7 +846,10 @@ public class EditProfileActivity extends AppCompatActivity{
                     if(response.isSuccessful()) {
                         saveSharedPreferences(); //saves user's information in sharedpreferences
                         Toast.makeText(getApplicationContext(), "Perfil actualizado con éxito! :)", Toast.LENGTH_LONG).show();
-                        finish(); //return to previous activity
+                        Intent intent = new Intent(context, ProfileActivity.class);
+                        intent.putExtra("idUser", idUser);
+                        startActivity(intent);
+                        //finish(); //return to previous activity
                     }
                 }else if(response.code() == 204) {
                     Toast.makeText(getApplicationContext(), "Hubo algún error actualizando tu perfil :(", Toast.LENGTH_LONG).show();
@@ -844,7 +857,7 @@ public class EditProfileActivity extends AppCompatActivity{
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(context, "Algunos datos parecen que son incorrectos", Toast.LENGTH_LONG);
+                Toast.makeText(context, "Algunos datos son incorrectos", Toast.LENGTH_LONG);
             }
         });
 
@@ -857,7 +870,7 @@ public class EditProfileActivity extends AppCompatActivity{
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putInt("age", user.getAges());
-        editor.putString("birthdate", user.getBirthdate());
+        editor.putString("birthdate", user.getBirthdate().toString());
         editor.putString("activity", user.getActivity());
         editor.putString("sex", user.getSex());
         editor.putInt("smoke", user.getSmoke());

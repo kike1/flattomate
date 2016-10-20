@@ -16,10 +16,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by funkyou on 11/10/2016.
- */
-
 public class AnnouncementController {
 
     FlattomateService api;

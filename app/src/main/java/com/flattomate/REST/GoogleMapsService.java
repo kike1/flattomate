@@ -6,10 +6,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-/**
- * Created by funkyou on 12/10/2016.
- */
-
 public interface GoogleMapsService {
     String BASE_URL = "https://maps.googleapis.com";
 

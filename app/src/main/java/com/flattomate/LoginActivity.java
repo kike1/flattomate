@@ -19,8 +19,8 @@ import com.flattomate.Model.User;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     User user;
     int idUser;
     FlattomateService api;
-    List<Language> languages;
+    ArrayList<Language> languages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,14 +108,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 }else if(response.code() == 200) {
                     if(response.isSuccessful()){
+                        Log.d("LOGGED", String.valueOf(response.code()));
                         user = response.body();
                         idUser = user.getId(); //first I need user id for retrieve languages
 
                         //second call for saving languages
-                        Call<List<Language>> callL = api.getLanguages(idUser);
-                        callL.enqueue(new Callback<List<Language>>() {
+                        Call<ArrayList<Language>> callL = api.getLanguages(idUser);
+                        callL.enqueue(new Callback<ArrayList<Language>>() {
                             @Override
-                            public void onResponse(Call<List<Language>> call, Response<List<Language>> response) {
+                            public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {
                                 if(response.code() == 404)
                                 {
                                     Log.d("ERROR", String.valueOf(response.code()));
@@ -128,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                             @Override
-                            public void onFailure(Call<List<Language>> call, Throwable t) {
+                            public void onFailure(Call<ArrayList<Language>> call, Throwable t) {
                                 call.cancel();
                                 Toast.makeText(getBaseContext(), "ERROR: "+t.toString(), Toast.LENGTH_LONG).show();
                             }
@@ -136,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }else
                         onLoginFailed();
-
                 }
             }
 
@@ -207,14 +207,14 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putInt("age", user.getAges());
-        editor.putString("birthdate", user.getBirthdate());
+        /*editor.putString("birthdate", user.getBirthdate());
         editor.putString("avatar", user.getId()+".jpg");
         editor.putString("activity", user.getActivity());
         editor.putString("sex", user.getSex());
         editor.putInt("smoke", user.getSmoke());
         editor.putInt("sociable", user.getSociable());
         editor.putInt("tidy", user.getTidy());
-        editor.putString("bio", user.getBio());
+        editor.putString("bio", user.getBio());*/
         editor.putStringSet("languages", setLanguages);
 
         editor.apply();

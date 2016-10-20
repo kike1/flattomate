@@ -19,7 +19,7 @@ public class restAPI {
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     private static Gson gson = new GsonBuilder()
-            .setDateFormat("dd/MM/yyyy")
+            .setDateFormat("yyyy/MM/dd")
             .create();
 
     private static Retrofit.Builder builder =

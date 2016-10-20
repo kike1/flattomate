@@ -26,7 +26,7 @@ public class SessionManager {
         editor.putString("name", user.getName());
         editor.putString("email", user.getEmail());
         editor.putString("avatar", user.getId()+".jpg");
-        editor.putString("birthdate", user.getBirthdate());
+        editor.putString("birthdate", user.getBirthdate().toString());
         editor.putString("activity", user.getActivity());
         editor.putString("sex", user.getSex());
         editor.putInt("smoke", user.getSmoke());

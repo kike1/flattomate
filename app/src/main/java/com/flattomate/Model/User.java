@@ -6,7 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class User {
 
@@ -28,11 +29,11 @@ public class User {
 
     @SerializedName("birthdate")
     @Expose
-    private String birthdate;
+    private Date birthdate;
 
 //    @SerializedName("languages")
 //    @Expose
-    private List<Language> languages;
+    private ArrayList<Language> languages;
 
     @SerializedName("city")
     @Expose
@@ -163,7 +164,7 @@ public class User {
      * @return
      * The birthday
      */
-    public String getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
@@ -172,7 +173,7 @@ public class User {
      * @param birthdate
      * The birthday
      */
-    public void setBirthdate(String birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -181,7 +182,7 @@ public class User {
      * @return
      * The languages
      */
-    public List<Language> getLanguages() {
+    public ArrayList<Language> getLanguages() {
 
 
         return languages;
@@ -192,7 +193,7 @@ public class User {
      * @param languagesnew
      * The birthday
      */
-    public void setLanguages(List<Language> languagesnew) {
+    public void setLanguages(ArrayList<Language> languagesnew) {
        languages = languagesnew;
     }
 
@@ -204,7 +205,9 @@ public class User {
     public int getAges() {
 
         LocalDate now = new LocalDate();
-        Years ages = Years.yearsBetween(new LocalDate(birthdate), now);
+        LocalDate birth = new LocalDate(birthdate.getTime());
+        Years ages = Years.yearsBetween(birth, now);
+
         return ages.getYears();
     }
 
