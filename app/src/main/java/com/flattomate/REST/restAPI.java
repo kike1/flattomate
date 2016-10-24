@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class restAPI {
 
     //public static final String API_BASE_URL = "http://192.168.1.34:8000/";
-    public static final String API_BASE_URL = "http://192.168.2.102:8000/";
+    public static final String API_BASE_URL = "http://52.16.159.214/";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 

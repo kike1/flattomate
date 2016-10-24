@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.flattomate.Announcement.AnnouncementActivity;
+import com.flattomate.Announcement.CreateAnnouncementActivity;
 
 import myapp.myapp.R;
 
@@ -43,7 +43,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             //now we redirect to user profile following iteration 1
 
-            Intent intent = new Intent(context, AnnouncementActivity.class);
+            Intent intent = new Intent(context, CreateAnnouncementActivity.class);
             intent.putExtra("idUser", 1);
             intent.putExtra("idAnnouncement", 3);
             startActivity(intent);

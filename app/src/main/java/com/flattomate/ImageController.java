@@ -1,12 +1,15 @@
 package com.flattomate;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
@@ -20,9 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * Created by kike on 25/8/16.
- */
+
 public class ImageController extends AppCompatActivity {
 
     File destination;
@@ -34,18 +35,45 @@ public class ImageController extends AppCompatActivity {
 
     int idUser;
     ImageView ivProfileImg;
+    Context context;
 
-    public ImageController(int id, ImageView iv){
+    public ImageController(Context c, int id, ImageView iv){
+        context = c;
         idUser = id;
         ivProfileImg = iv;
     }
 
 
+    public void selectImage() {
+        final CharSequence[] items = { "Hacer foto con la cámara", "Elegir de la galería",
+                "Cancelar" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        //builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result = Utility.checkPermission(context);
+                if (items[item].equals("Hacer foto con la cámara")) {
+                    userChoosenTask="Hacer foto con la cámara";
+                    if(result)
+                        cameraIntent();
+                } else if (items[item].equals("Elegir de la galería")) {
+                    userChoosenTask="Elegir de la galería";
+                    if(result)
+                        galleryIntent();
+                } else if (items[item].equals("Cancelar")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
     //intent for launch camera
     public void cameraIntent()
     {
-//        destination = new File(Environment.getExternalStorageDirectory(),
-//                idUser + ".jpg");
+        //        destination = new File(Environment.getExternalStorageDirectory(),
+        //                idUser + ".jpg");
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, destination.toString());
@@ -76,7 +104,7 @@ public class ImageController extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) throws IOException {
+    public void onSelectFromGalleryResult(Intent data) throws IOException {
         thumbnail = null;
         Uri imagePath = data.getData();
 
@@ -96,7 +124,7 @@ public class ImageController extends AppCompatActivity {
         }
     }
 
-    private void savePhoto(Bitmap photo, File destinationFile){
+    public void savePhoto(Bitmap photo, File destinationFile){
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
@@ -117,7 +145,7 @@ public class ImageController extends AppCompatActivity {
 
     }
 
-    private void onCaptureImageResult(Intent data) {
+    public void onCaptureImageResult(Intent data) {
         thumbnail = (Bitmap) data.getExtras().get("data");
         destination = new File(Environment.getExternalStorageDirectory(),
                 idUser + ".jpg");
@@ -151,4 +179,6 @@ public class ImageController extends AppCompatActivity {
     }
 
     File getDestination(){ return destination;}
+
+    void setImageView(ImageView im) { ivProfileImg = im; }
 }

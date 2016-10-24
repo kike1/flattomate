@@ -84,12 +84,19 @@ public class ProfileActivity extends AppCompatActivity {
     User user;
     FlattomateService api;
     int idUser;
+    static final String ID_USER = "idUser";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        idUser = getIntent().getExtras().getInt("idUser");
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            idUser = savedInstanceState.getInt(ID_USER);
+        } else {
+            idUser = getIntent().getExtras().getInt("idUser");
+        }
 
         if(idUser == 0){
             //TODO dialog error of activity
@@ -286,6 +293,23 @@ public class ProfileActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    /*public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        idUser = savedInstanceState.getInt(ID_USER);
+    }*/
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putInt(ID_USER, idUser);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

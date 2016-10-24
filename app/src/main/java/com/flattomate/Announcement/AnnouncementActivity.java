@@ -1,6 +1,5 @@
 package com.flattomate.Announcement;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -55,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.flattomate.REST.restAPI.API_BASE_URL;
 import static myapp.myapp.R.drawable.calendar_all;
@@ -316,7 +314,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 }
             });
 
-            //user request a negotiation with ads user
+            //user grid a negotiation with ads user
             btn_request.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -524,11 +522,5 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         mMap = googleMap;
 
         //mMap.getUiSettings().setZoomControlsEnabled(true);
-    }
-
-    //establishes the font
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

@@ -7,13 +7,15 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.flattomate.Model.Image;
+
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<String> images;
+    private ArrayList<Image> images;
 
-    public ImageAdapter(Context c, ArrayList<String> images) {
+    public ImageAdapter(Context c, ArrayList<Image> images) {
         mContext = c;
         this.images = images;
     }
@@ -44,6 +46,13 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         //imageView.setImageResource(images.get(position));
+
+        /*Picasso.with(getApplicationContext())
+                .load(API_BASE_URL+"imgs/"+user.getId()+".jpg")
+                .fit()
+                .centerCrop()
+                .transform(transformation)
+                .into(img_username);*/
 
         return imageView;
     }

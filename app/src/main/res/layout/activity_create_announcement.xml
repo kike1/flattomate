@@ -5,7 +5,7 @@
     android:id="@+id/activity_create_announcement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.flattomate.Announcement.CreateAnnouncement">
+    tools:context="com.flattomate.Announcement.CreateAnnouncementActivity">
 
     <!-- TOOLBAR -->
     <android.support.design.widget.AppBarLayout
@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <!-- Announcement info -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,18 +51,187 @@
                     android:id="@+id/lbl_img"
                     tools:text="@string/lbl_img" />
 
-                <com.flattomate.ExpandableHeightGridView
-                    android:numColumns="4"
+                <LinearLayout
                     android:paddingLeft="5dp"
                     android:gravity="center"
-                    android:columnWidth="50dp"
-                    android:stretchMode="columnWidth"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/gridview_imgs"
-                    />
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/img_1"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp" />
+                        <ImageView
+                            android:id="@+id/img_2"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"/>
+                        <ImageView
+                            android:id="@+id/img_3"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"/>
+                        <ImageView
+                            android:id="@+id/img_4"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/et_title"
+                    android:hint="@string/hint_title" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/et_price"
+                    android:hint="@string/hint_price" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/et_address"
+                    android:hint="@string/hint_address" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:ems="10"
+                    android:id="@+id/et_description"
+                    android:hint="@string/hint_description" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:background="#c0c0c0"
+                android:id="@+id/divider"
+                style="@style/divider"
+                android:paddingRight="10dp" />
+
+            <!-- Bed type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_bed"/>
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_single_bed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_single_bed"
+                        android:onClick="onRadioButtonClicked"/>
+                    <RadioButton android:id="@+id/radio_double_bed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_double_bed"
+                        android:onClick="onRadioButtonClicked"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:background="#c0c0c0"
+                android:id="@+id/divider_2"
+                style="@style/divider"
+                android:paddingRight="10dp" />
+
+            <!-- Rent type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_rent"/>
+
+                <Spinner
+                    android:id="@+id/rent_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Rent MIN stay-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_min_stay"/>
+
+                <EditText
+                    android:id="@+id/et_min_stay"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Rent MAX stay-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_max_stay"/>
+
+                <EditText
+                    android:id="@+id/et_max_stay"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:background="#c0c0c0"
+                android:id="@+id/divider_3"
+                style="@style/divider"
+                android:paddingRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_extra"/>
+
+            <com.flattomate.ExpandableHeightGridView
+                android:numColumns="2"
+                android:paddingLeft="5dp"
+                android:gravity="center"
+                android:columnWidth="50dp"
+                android:stretchMode="columnWidth"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/gridview_extra_info"
+                />
 
 
         </LinearLayout>

@@ -83,4 +83,7 @@ public interface FlattomateService{
 
     @GET("announcement/{id}/accommodation")
     Call<Accommodation> getAnnouncementAccommodation(@Path("id") Integer id);
+
+    @GET("service")
+    Call<ArrayList<Service>> getServices();
 }
