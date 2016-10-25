@@ -22,6 +22,7 @@ import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,8 +75,15 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         announcement = new Announcement();
         idUser = manager.getInt("idUser",0);
 
+        View.OnClickListener listnr=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent("AnotherActivity");
+                startActivity(i);
+            }
+        };
         //first init with one imageview and later we'll change
-        imageController = new ImageController(this, idUser, img_1);
+        imageController = new ImageController(this, this, idUser, img_1);
 
         setListenersOnImages();
         getServices();
@@ -125,30 +133,72 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
     }
 
     private void setListenersOnImages() {
-        img_1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageController.selectImage();
-            }
-        });
+
+        Picasso.with(getApplicationContext())
+                .load(getApplicationContext()
+                        .getResources()
+                        .getIdentifier("default_image","drawable", getPackageName()))
+                .resize(10,10)
+                .onlyScaleDown()
+                .fit()
+                .into(img_1);
+
+        Picasso.with(getApplicationContext())
+                .load(getApplicationContext()
+                        .getResources()
+                        .getIdentifier("default_image","drawable", getPackageName()))
+                .resize(25,25)
+                .centerInside()
+                .into(img_2);
+
+        Picasso.with(getApplicationContext())
+                .load(getApplicationContext()
+                        .getResources()
+                        .getIdentifier("default_image","drawable", getPackageName()))
+                .resize(25,25)
+                .centerInside()
+                .into(img_3);
+
+        Picasso.with(getApplicationContext())
+                .load(getApplicationContext()
+                        .getResources()
+                        .getIdentifier("default_image","drawable", getPackageName()))
+                .resize(25,25)
+                .centerInside()
+                .into(img_4);
+
+
 
         img_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageController.setImageView(img_1);
                 imageController.selectImage();
             }
         });
 
-        img_1.setOnClickListener(new View.OnClickListener() {
+        img_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                imageController.setImageView(img_2);
                 imageController.selectImage();
             }
         });
 
-        img_1.setOnClickListener(new View.OnClickListener() {
+        img_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                imageController.setImageView(img_3);
+                imageController.selectImage();
+            }
+        });
+
+        img_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageController.setImageView(img_4);
                 imageController.selectImage();
             }
         });

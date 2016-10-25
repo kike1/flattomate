@@ -18,7 +18,7 @@ public class CustomGrid extends BaseAdapter {
     private final ArrayList<String> service_name;
     private final ArrayList<Integer> Imageid;
 
-    public CustomGrid(Context c, ArrayList<String> service_name, ArrayList<Integer> Imageid ) {
+    public CustomGrid(Context c, ArrayList<String> service_name, ArrayList<Integer> Imageid) {
         mContext = c;
         this.Imageid = Imageid;
         this.service_name = service_name;

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -24,7 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-public class ImageController extends AppCompatActivity {
+public class ImageController extends AppCompatActivity{
 
     File destination;
     Bitmap thumbnail;
@@ -36,13 +38,21 @@ public class ImageController extends AppCompatActivity {
     int idUser;
     ImageView ivProfileImg;
     Context context;
+    Activity activity;
 
-    public ImageController(Context c, int id, ImageView iv){
+    public ImageController(Context c, Activity activity, int id, ImageView iv){
         context = c;
         idUser = id;
         ivProfileImg = iv;
-    }
+        this.activity = activity;
 
+        transformation = new RoundedTransformationBuilder()
+                .borderColor(Color.BLACK)
+                .borderWidthDp(1)
+                .cornerRadiusDp(2)
+                .oval(false)
+                .build();
+    }
 
     public void selectImage() {
         final CharSequence[] items = { "Hacer foto con la cámara", "Elegir de la galería",
@@ -72,12 +82,8 @@ public class ImageController extends AppCompatActivity {
     //intent for launch camera
     public void cameraIntent()
     {
-        //        destination = new File(Environment.getExternalStorageDirectory(),
-        //                idUser + ".jpg");
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, destination.toString());
-        startActivityForResult(intent, REQUEST_CAMERA);
+        activity.startActivityForResult(intent, REQUEST_CAMERA);
     }
     //intent for launch gallery
     public void galleryIntent()
@@ -85,22 +91,7 @@ public class ImageController extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Selecciona una foto"),SELECT_FILE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                try {
-                    onSelectFromGalleryResult(data);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
+        activity.startActivityForResult(Intent.createChooser(intent, "Selecciona una foto"),SELECT_FILE);
     }
 
     @SuppressWarnings("deprecation")
@@ -110,18 +101,35 @@ public class ImageController extends AppCompatActivity {
 
         if (data != null) {
 
-            thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imagePath);
+            thumbnail = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imagePath);
             destination = new File(Environment.getExternalStorageDirectory(), idUser+".jpg");
 
             savePhoto(thumbnail, destination);
 
-            Picasso.with(getApplicationContext())
+            Picasso.with(context)
                     .load(imagePath)
                     .fit()
                     .centerCrop()
                     .transform(transformation)
                     .into(ivProfileImg);
         }
+    }
+
+    public void onCaptureImageResult(Intent data) {
+        thumbnail = (Bitmap) data.getExtras().get("data");
+        destination = new File(Environment.getExternalStorageDirectory(),
+                idUser + ".jpg");
+
+        savePhoto(thumbnail, destination);
+
+        Uri imagePath = Uri.fromFile(destination);
+        Log.d("CAMERA",imagePath.toString());
+        Picasso.with(context)
+                .load(imagePath)
+                .fit()
+                .centerCrop()
+                .transform(transformation)
+                .into(ivProfileImg);
     }
 
     public void savePhoto(Bitmap photo, File destinationFile){
@@ -145,23 +153,6 @@ public class ImageController extends AppCompatActivity {
 
     }
 
-    public void onCaptureImageResult(Intent data) {
-        thumbnail = (Bitmap) data.getExtras().get("data");
-        destination = new File(Environment.getExternalStorageDirectory(),
-                idUser + ".jpg");
-
-        savePhoto(thumbnail, destination);
-
-        Uri imagePath = Uri.fromFile(destination);
-        Log.d("CAMERA",imagePath.toString());
-        Picasso.with(getApplicationContext())
-                .load(imagePath)
-                .fit()
-                .centerCrop()
-                .transform(transformation)
-                .into(ivProfileImg);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -180,5 +171,5 @@ public class ImageController extends AppCompatActivity {
 
     File getDestination(){ return destination;}
 
-    void setImageView(ImageView im) { ivProfileImg = im; }
+    public void setImageView(ImageView im) { ivProfileImg = im; }
 }
