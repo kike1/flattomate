@@ -2,7 +2,6 @@ package com.flattomate;
 
 import android.app.Application;
 
-import myapp.myapp.R;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**

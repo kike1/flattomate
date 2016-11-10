@@ -165,7 +165,7 @@
                                 android:inputType="date"
                                 android:ems="10"
                                 android:hint="*fecha de nacimiento"
-                                android:id="@+id/et_edit_birthdate"
+                                android:id="@+id/et_availability"
                                 android:layout_gravity="center_horizontal" />
 
                             <!--<EditText-->

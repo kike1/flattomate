@@ -93,12 +93,26 @@
     <string name="lbl_bed">CAMA</string>
     <string name="lbl_rent">ALQUILER</string>
     <string name="lbl_extra">EXTRAS</string>
+    <string name="create_announcement_title">Crear anuncio</string>
+    <string name="lbl_room">HABITACIÓN</string>
+    <string name="_single_room">Privada</string>
+    <string name="_shared_room">Compartida</string>
     <string-array name="rent_array">
         <item>Por días</item>
         <item>Por semanas</item>
         <item>Por meses</item>
         <item>Por años</item>
     </string-array>
+    <!-- errors -->
+    <string name="error_title">Escribe un título</string>
+    <string name="error_price">Escribe un precio</string>
+    <string name="error_address">Escribe una dirección</string>
+    <string name="error_description">Escribe una descripción</string>
+    <string name="error_availability">Escribe una fecha de disponibilidad</string>
+    <string name="error_availability_date">Fecha incorrecta</string>
+    <string name="error_min_stay">Escribe la estancia mínima</string>
+    <string name="error_max_stay">Escribe la estancia máxima</string>
+    <string name="any_fields_error">Faltan algunos datos o son incorrectos</string>
 
 
 </resources>

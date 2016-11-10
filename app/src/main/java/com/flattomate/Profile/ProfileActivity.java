@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.flattomate.HomeActivity;
 import com.flattomate.Model.Language;
 import com.flattomate.Model.User;
+import com.flattomate.R;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
@@ -33,7 +34,6 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import myapp.myapp.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

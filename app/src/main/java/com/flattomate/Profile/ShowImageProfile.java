@@ -8,12 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.flattomate.R;
+import com.flattomate.REST.restAPI;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.flattomate.REST.restAPI;
-import myapp.myapp.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

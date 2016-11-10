@@ -13,8 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import myapp.myapp.R;
-
 public class HomeActivity extends AppCompatActivity {
 
     //public final Context context = this;

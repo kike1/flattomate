@@ -18,6 +18,12 @@ public class Image {
     @Expose
     private Integer idAnnouncement;
 
+
+    public Image(String name, Integer idad){
+        this.name = name;
+        idAnnouncement = idad;
+    }
+
     /**
      *
      * @return

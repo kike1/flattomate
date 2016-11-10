@@ -69,6 +69,20 @@ public interface FlattomateService{
     * Announcement
     *
     */
+
+    //create new announcement
+    @POST("announcement")
+    Call<Announcement> createAnnouncement(@Body Announcement announcement);
+
+    //update announcement
+    @PUT("announcement/{id}")
+    Call<ResponseBody> updateAnnouncement(@Body Announcement announcement, @Path("id") Integer id);
+
+    @Multipart
+    @POST("announcement/upload")
+    Call<ResponseBody> uploadImageAnnouncement(@Part("description") RequestBody description,
+                                                @Part MultipartBody.Part file);
+
     @GET("announcement/{id}")
     Call<Announcement> getAnnouncement(@Path("id") Integer id);
 
@@ -84,6 +98,37 @@ public interface FlattomateService{
     @GET("announcement/{id}/accommodation")
     Call<Accommodation> getAnnouncementAccommodation(@Path("id") Integer id);
 
+    @GET("announcement/last")
+    Call<Announcement> getLastAnnouncement();
+
     @GET("service")
     Call<ArrayList<Service>> getServices();
+
+   /*
+    *
+    * Accommodation
+    */
+
+    //create new accommodation
+    @POST("accommodation")
+    Call<Accommodation> createAccommodation(@Body Accommodation accommodation);
+
+    //update accommodation
+    @PUT("accommodation/{id}")
+    Call<ResponseBody> updateAccommodation(@Body Accommodation accommodation, @Path("id") Integer id);
+
+
+    /*
+    * Image
+     */
+    @POST("image")
+    Call<Image> createImage(@Body Image image);
+
+
+    /*
+    * Service
+     */
+    @POST("accommodation/{services}")
+    Call<ResponseBody> setServices(@Path("services") ArrayList<Service> services);
+
 }

@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.flattomate.Announcement.CreateAnnouncementActivity;
 
-import myapp.myapp.R;
-
 public class DashboardActivity extends AppCompatActivity {
 
     private Context context = this;

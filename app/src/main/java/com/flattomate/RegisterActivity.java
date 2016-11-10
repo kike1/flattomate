@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flattomate.Model.User;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
 
@@ -17,9 +18,6 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.flattomate.Model.User;
-
-import myapp.myapp.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

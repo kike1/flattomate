@@ -28,6 +28,7 @@ import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
 import com.flattomate.Profile.ProfileActivity;
+import com.flattomate.R;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.GoogleMapsService;
 import com.flattomate.REST.restAPI;
@@ -47,7 +48,6 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import myapp.myapp.R;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,10 +55,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.flattomate.R.drawable.calendar_all;
+import static com.flattomate.R.drawable.calendar_days;
+import static com.flattomate.R.id.map;
 import static com.flattomate.REST.restAPI.API_BASE_URL;
-import static myapp.myapp.R.drawable.calendar_all;
-import static myapp.myapp.R.drawable.calendar_days;
-import static myapp.myapp.R.id.map;
 
 
 public class AnnouncementActivity extends AppCompatActivity implements OnMapReadyCallback {

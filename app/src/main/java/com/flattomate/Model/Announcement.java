@@ -27,7 +27,7 @@ public class Announcement {
     private Integer maxStay;
     @SerializedName("price")
     @Expose
-    private Integer price;
+    private Double price;
     @SerializedName("is_visible")
     @Expose
     private Integer isVisible;
@@ -154,7 +154,7 @@ public class Announcement {
      * @return
      * The price
      */
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -163,7 +163,7 @@ public class Announcement {
      * @param price
      * The price
      */
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

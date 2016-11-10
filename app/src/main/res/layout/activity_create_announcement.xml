@@ -45,11 +45,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
                 <TextView
-                    android:text="TextView"
+                    android:text="@string/lbl_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lbl_img"
-                    tools:text="@string/lbl_img" />
+                    android:id="@+id/lbl_img" />
 
                 <LinearLayout
                     android:paddingLeft="5dp"
@@ -89,7 +88,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapSentences"
                     android:ems="10"
                     android:id="@+id/et_title"
                     android:hint="@string/hint_title" />
@@ -105,7 +104,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapSentences"
                     android:ems="10"
                     android:id="@+id/et_address"
                     android:hint="@string/hint_address" />
@@ -118,14 +117,16 @@
                     android:id="@+id/et_description"
                     android:hint="@string/hint_description" />
 
-            </LinearLayout>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:ems="10"
+                    android:hint="Fecha disponibilidad"
+                    android:id="@+id/et_availability"
+                    android:layout_gravity="center_horizontal" />
 
-            <View
-                android:layout_width="wrap_content"
-                android:background="#c0c0c0"
-                android:id="@+id/divider"
-                style="@style/divider"
-                android:paddingRight="10dp" />
+            </LinearLayout>
 
             <!-- Bed type -->
             <LinearLayout
@@ -149,6 +150,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/_double_bed"
+                        android:onClick="onRadioButtonClicked"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <!-- Room type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_room"/>
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_single_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_single_room"
+                        android:onClick="onRadioButtonClicked"/>
+                    <RadioButton android:id="@+id/radio_shared_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_shared_room"
                         android:onClick="onRadioButtonClicked"/>
                 </RadioGroup>
             </LinearLayout>
@@ -189,6 +216,7 @@
                 <EditText
                     android:id="@+id/et_min_stay"
                     android:layout_marginLeft="15dp"
+                    android:inputType="number"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -206,6 +234,7 @@
                 <EditText
                     android:id="@+id/et_max_stay"
                     android:layout_marginLeft="15dp"
+                    android:inputType="number"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>

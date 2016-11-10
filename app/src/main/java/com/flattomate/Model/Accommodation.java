@@ -26,6 +26,9 @@ public class Accommodation {
     @SerializedName("id_announcement")
     @Expose
     private Integer idAnnouncement;
+    @SerializedName("id_user")
+    @Expose
+    private Integer idUser;
 
     /**
      *
@@ -151,6 +154,24 @@ public class Accommodation {
      */
     public void setIdAnnouncement(Integer idAnnouncement) {
         this.idAnnouncement = idAnnouncement;
+    }
+
+    /**
+     *
+     * @return
+     * The idUser
+     */
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    /**
+     *
+     * @param idUser
+     * The idUser
+     */
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
 }

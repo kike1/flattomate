@@ -11,14 +11,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import myapp.myapp.R;
-
 public class CustomGrid extends BaseAdapter {
     private Context mContext;
     private final ArrayList<String> service_name;
     private final ArrayList<Integer> Imageid;
+    View.OnClickListener listener;
+   // static int numOfView = 1;
+    //static ArrayList<Boolean> servicesPressed;
 
-    public CustomGrid(Context c, ArrayList<String> service_name, ArrayList<Integer> Imageid) {
+    public CustomGrid(Context c, ArrayList<String> service_name,
+                      ArrayList<Integer> Imageid) {
+        mContext = c;
+        this.Imageid = Imageid;
+        this.service_name = service_name;
+    }
+
+    public CustomGrid(Context c, ArrayList<String> service_name,
+                      ArrayList<Integer> Imageid, View.OnClickListener listener) {
+        this.listener = listener;
         mContext = c;
         this.Imageid = Imageid;
         this.service_name = service_name;
@@ -55,6 +65,26 @@ public class CustomGrid extends BaseAdapter {
         } else {
             grid = (View) convertView;
         }
+
+       /* final int pos = position;
+        //if listener is setted then add listener for colour selected
+        if(listener != null){
+            grid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //Service ON/OFF
+                    if(servicesPressed.get(pos).booleanValue()) {
+                        servicesPressed.set(pos, false);
+                        v.setBackgroundColor(Color.GRAY);
+                    }else {
+                        servicesPressed.set(pos, true);
+                        v.setBackgroundColor(Color.WHITE);
+                    }
+                }
+            });
+        }*/
+
 
         return grid;
     }

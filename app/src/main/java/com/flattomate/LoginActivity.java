@@ -25,7 +25,6 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import myapp.myapp.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

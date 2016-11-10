@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.flattomate.DateValidator;
 import com.flattomate.Model.Language;
 import com.flattomate.Model.User;
+import com.flattomate.R;
 import com.flattomate.REST.FlattomateService;
 import com.flattomate.REST.restAPI;
 import com.flattomate.Utility;
@@ -56,7 +57,6 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import myapp.myapp.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -81,7 +81,7 @@ public class EditProfileActivity extends AppCompatActivity{
     TextView etName;
     @Bind(R.id.et_edit_email)
     TextView etEmail;
-    @Bind(R.id.et_edit_birthdate)
+    @Bind(R.id.et_availability)
     TextView etBirthdate;
 
     @Bind(R.id.txt_languages)

@@ -12,6 +12,10 @@ public class Service {
     @Expose
     private String name;
 
+    public Service(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
     /**
      *
      * @return
