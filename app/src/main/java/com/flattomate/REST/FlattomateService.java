@@ -79,9 +79,9 @@ public interface FlattomateService{
     Call<ResponseBody> updateAnnouncement(@Body Announcement announcement, @Path("id") Integer id);
 
     @Multipart
-    @POST("announcement/upload")
-    Call<ResponseBody> uploadImageAnnouncement(@Part("description") RequestBody description,
-                                                @Part MultipartBody.Part file);
+    @POST("announcement/{id}/upload")
+    Call<ResponseBody> uploadImageAnnouncement(@Part MultipartBody.Part file,
+                                               @Path("id") Integer id);
 
     @GET("announcement/{id}")
     Call<Announcement> getAnnouncement(@Path("id") Integer id);
@@ -128,7 +128,7 @@ public interface FlattomateService{
     /*
     * Service
      */
-    @POST("accommodation/{services}")
-    Call<ResponseBody> setServices(@Path("services") ArrayList<Service> services);
+    @POST("accommodation/{id}/service/{service}")
+    Call<ResponseBody> setServices(@Path("id") Integer id, @Path("service") Integer service);
 
 }

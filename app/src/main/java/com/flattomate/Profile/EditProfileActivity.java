@@ -448,7 +448,6 @@ public class EditProfileActivity extends AppCompatActivity{
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -940,7 +939,7 @@ public class EditProfileActivity extends AppCompatActivity{
                     saveData();
                     return true;
                 }else {
-                    etBirthdate.setError("Fecha incorrecta");
+                    etBirthdate.setError(getResources().getString(R.string.error_availability_date));
                    // Toast.makeText(EditProfileActivity.this, "Fecha de nacimiento incorrecta", Toast.LENGTH_SHORT).show();
                     return false;
                 }

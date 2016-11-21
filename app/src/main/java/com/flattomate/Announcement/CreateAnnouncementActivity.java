@@ -37,7 +37,6 @@ import com.flattomate.ExpandableHeightGridView;
 import com.flattomate.ImageController;
 import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
-import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.R;
 import com.flattomate.REST.FlattomateService;
@@ -142,7 +141,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
         accommodation = new Accommodation();
         announcement = new Announcement();
-        idUser = manager.getInt("idUser",0);
+        idUser = manager.getInt("id",0);
 
         /*View.OnClickListener listnr=new View.OnClickListener() {
             @Override
@@ -175,7 +174,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
     }
 
     void initCalendar(){
-        Date date; // your date
+        //Date date; // your date
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
@@ -191,9 +190,9 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            myCalendar.set(Calendar.YEAR, year);
+            /*myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
             updateLabel();
         }
 
@@ -201,7 +200,8 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
     private void updateLabel() {
 
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        //spanish date
+        String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         etAvailability.setText(sdf.format(myCalendar.getTime()));
@@ -424,7 +424,10 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-
+    /*
+    * Set announcement and accommodation objects and registers both in database
+    * Associates services choosen to the announcement as well
+    */
     public void saveData() {
 
         String title = etTitle.getText().toString();
@@ -446,14 +449,12 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         // First we create a new arraylist
         // with the selected services and after we update the database
         ArrayList<Service> services = new ArrayList<>();
-        if(servicesPressed != null){
-            for(int i = 0; i < servicesPressed.length; i++){
+        if(servicesPressed != null)
+            for(int i = 0; i < servicesPressed.length; i++)
                 if (servicesPressed[i]){
                     String serviceName = this.services.get(i).getName();
                     services.add(new Service(i, serviceName));
                 }
-            }
-        }
 
         if(idUser != 0) {
             announcement.setIdUser(idUser);
@@ -462,64 +463,91 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         String address = etAddress.getText().toString();
         accommodation.setLocation(address);
 
+        Log.d("accommodation", accommodation.getLocation() + " - " +accommodation.getNBeds());
         //ACCOMMODATION AND ANNOUNCEMENT
-        Call<Accommodation> accommodationCall = api.createAccommodation(accommodation);
+        final Call<Accommodation> accommodationCall = api.createAccommodation(accommodation);
         accommodationCall.enqueue(new Callback<Accommodation>() {
             @Override
             public void onResponse(Call<Accommodation> call, Response<Accommodation> response) {
-                if(response.code() == 200)
+                if(response.code() == 200) {
                     accommodation = response.body();
+                    //Log.e("ACCOMMODATION", response.body().toString());
+
+                    if(accommodation != null){
+                        announcement.setIdAccommodation(accommodation.getId());
+
+                        //create announcement
+                        Call<Announcement> announcementCall = api.createAnnouncement(announcement);
+                        announcementCall.enqueue(new Callback<Announcement>() {
+                            @Override
+                            public void onResponse(Call<Announcement> call, Response<Announcement> response) {
+                                if(response.code() == 200)
+                                    announcement = response.body();
+
+                                if(announcement != null){
+                                    //update accommodation announcement id
+
+                                    accommodation.setIdAnnouncement(announcement.getId());
+                                    Log.d("acc ann id", String.valueOf(accommodation.getIdAnnouncement()));
+                                    Log.d("acc id", String.valueOf(accommodation.getId()));
+                                    Call<ResponseBody> accommodationUpdateCall = api.updateAccommodation(accommodation, accommodation.getId());
+                                    accommodationUpdateCall.enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            if(response.code() == 200)
+                                                Log.d("Accommodation update ", String.valueOf(accommodation.getId()));
+                                            else
+                                                Log.e("ERROR", "Accommodation can't be updated" + response.errorBody().toString());
+                                        }
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
+                                    });
+
+                                    //boolean is_main = true;
+                                    //images
+                                    for (Uri imagePath : images) {
+                                        Log.d("uploading id ann", String.valueOf(announcement.getId()));
+                                        Log.d("path file", imagePath.getPath());
+                                        File f = new File(imagePath.getPath());
+                                        //Image image = new Image(f.getName(), announcement.getId());
+                                        uploadFile(f, announcement.getId());
+                                    }
+                                }
+                                else {
+                                    Log.e("ERROR", "announcement can't be created " + response.code());
+                                }
+                            }
+                            @Override
+                            public void onFailure(Call<Announcement> call, Throwable t) { call.cancel(); }
+                        });
+                    }
+                }else
+                    Log.e("ERROR", "accommodation can't be created" + response.errorBody().toString());
             }
             @Override
             public void onFailure(Call<Accommodation> call, Throwable t) { call.cancel(); }
         });
 
-        announcement.setIdAccommodation(accommodation.getId());
 
-        //create announcement
-        Call<Announcement> announcementCall = api.createAnnouncement(announcement);
-        announcementCall.enqueue(new Callback<Announcement>() {
-            @Override
-            public void onResponse(Call<Announcement> call, Response<Announcement> response) {
-                if(response.code() == 200)
-                    announcement = response.body();
-            }
-            @Override
-            public void onFailure(Call<Announcement> call, Throwable t) { call.cancel(); }
-        });
-
-        //update accommodation announcement id
-        accommodation.setIdAnnouncement(announcement.getId());
-        Call<ResponseBody> accommodationUpdateCall = api.updateAccommodation(accommodation, accommodation.getId());
-        accommodationUpdateCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200)
-                    Log.d("Accommodation update", response.body().toString());
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
-        });
-
-        boolean is_main = true;
-        //images
-        for (Uri imagePath : images) {
-            File f = new File("" + imagePath);
-            Image image = new Image(f.getName(), announcement.getId());
-            uploadFile(new File(imagePath.getPath()), image);
-        }
 
         //SERVICES
-        Call<ResponseBody> servicesCall = api.setServices(services);
-        servicesCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200)
-                    Log.d("Accommodation services", response.body().toString());
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
-        });
+        for(Service service : services){
+            Call<ResponseBody> servicesCall = api.setServices(accommodation.getId(), service.getId());
+            servicesCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.code() == 200)
+                        Log.d("Accommodation services ", response.body().toString());
+                    else
+                        Log.e("ERROR", "Accommodation services can't be created" + response.errorBody().toString());
+                }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
+            });
+        }
+
+
+        Log.d("saving announcement", "end");
 
     }
 
@@ -544,7 +572,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                 max_stay.equals(""))
             result = false;
 
-        //now check if a specific field is empty, we alert of that
+        //now check if a specific field is empty, if so alert that
         if(title.equals(""))
             etTitle.setError(getResources().getString(R.string.error_title));
         if(price.equals(""))
@@ -553,26 +581,35 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
             etAddress.setError(getResources().getString(R.string.error_address));
         if(description.equals(""))
             etDescription.setError(getResources().getString(R.string.error_description));
+        if(min_stay.equals(""))
+            etMinStay.setError(getResources().getString(R.string.error_min_stay));
+        if(max_stay.equals(""))
+            etMaxStay.setError(getResources().getString(R.string.error_max_stay));
 
         if(availability.equals(""))
             etAvailability.setError(getResources().getString(R.string.error_availability));
         //now we transform to USA date and check it
-        String myFormat = "MM/dd/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        Log.d("date", sdf.format(myCalendar.getTime()));
-        if(!validator.validate(sdf.format(myCalendar.getTime())))
+        //String myFormat = "MM/dd/yyyy";
+        String date = etAvailability.getText().toString();
+        //SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        Log.d("date", date);
+        if(!validator.validate(date))
             etAvailability.setError(getResources().getString(R.string.error_availability_date));
 
         if(min_stay.equals(""))
             etMinStay.setError(getResources().getString(R.string.error_min_stay));
         if(max_stay.equals(""))
             etMaxStay.setError(getResources().getString(R.string.error_max_stay));
+        if(!(Integer.parseInt(min_stay.toString()) < Integer.parseInt(max_stay.toString()))) {
+            etMinStay.setError(getResources().getString(R.string.error_minmax_stay));
+            etMaxStay.setError(getResources().getString(R.string.error_minmax_stay));
+        }
 
         Log.d("CheckFields", String.valueOf(result));
         return result;
     }
 
-    private void uploadFile(File file, Image image) {
+    private void uploadFile(File file, int idAnn) {
         // create RequestBody instance from file
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -587,7 +624,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                         MediaType.parse("multipart/form-data"), file.getName());
 
         // finally, execute the request uploading the file
-        Call<ResponseBody> call = api.uploadImageAnnouncement(description, body);
+        Call<ResponseBody> call = api.uploadImageAnnouncement(body, idAnn);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call,
@@ -597,6 +634,8 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                     Log.v("Upload", "success");
                 }else if(response.code() == 204)
                     Log.v("Upload", "failed");
+                else
+                    Log.e("error uploading", response.message()); 
             }
 
             @Override
@@ -606,7 +645,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         });
 
         //now create a new Image object on database associating with the announcement
-        Call<Image> callImage = api.createImage(image);
+        /*Call<Image> callImage = api.createImage(image);
         callImage.enqueue(new Callback<Image>() {
             @Override
             public void onResponse(Call<Image> call,
@@ -617,7 +656,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Image> call, Throwable t) { call.cancel(); }
-        });
+        });*/
     }
 
     public void selectImage() {
