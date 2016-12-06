@@ -1,9 +1,12 @@
 package com.flattomate.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Service {
+public class Service implements Parcelable{
 
     @SerializedName("id")
     @Expose
@@ -50,6 +53,20 @@ public class Service {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if(id != null)
+            dest.writeInt(id);
+        if(name != null)
+            dest.writeString(name);
+
     }
 
 }

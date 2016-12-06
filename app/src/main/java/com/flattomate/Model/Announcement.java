@@ -1,11 +1,15 @@
 package com.flattomate.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Announcement {
+public class Announcement implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -239,4 +243,35 @@ public class Announcement {
         this.idUser = idUser;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if(id != null)
+            dest.writeInt(id);
+        if(title != null)
+            dest.writeString(title);
+        if(description != null)
+            dest.writeString(description);
+        if(availability != null)
+            dest.writeString(availability.toString());
+        if(minStay != null)
+            dest.writeInt(minStay);
+        if(maxStay != null)
+            dest.writeInt(maxStay);
+        if(price != null)
+            dest.writeDouble(price);
+        if(isVisible != null)
+            dest.writeInt(isVisible);
+        if(isSharedRoom != null)
+            dest.writeInt(isSharedRoom);
+        if(idAccommodation != null)
+            dest.writeInt(idAccommodation);
+        if(idUser != null)
+            dest.writeInt(idUser);
+
+    }
 }

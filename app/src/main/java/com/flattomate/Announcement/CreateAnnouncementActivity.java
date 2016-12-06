@@ -105,7 +105,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
     int idUser;
     SharedPreferences manager;
     FlattomateService api;
-    ArrayList<Uri> images = new ArrayList<>();
+    static public ArrayList<Uri> images = new ArrayList<>();
     Accommodation accommodation;
     Announcement announcement;
     ImageController imageController;
@@ -504,14 +504,18 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                                     });
 
                                     //boolean is_main = true;
-                                    //images
+                                    //images upload
                                     for (Uri imagePath : images) {
                                         Log.d("uploading id ann", String.valueOf(announcement.getId()));
                                         Log.d("path file", imagePath.getPath());
                                         File f = new File(imagePath.getPath());
                                         //Image image = new Image(f.getName(), announcement.getId());
-                                        uploadFile(f, announcement.getId());
+                                        if(f != null)
+                                            uploadFile(f, announcement.getId());
                                     }
+
+                                    Toast.makeText(CreateAnnouncementActivity.this, "Anuncio creado correctamente!", Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
                                 else {
                                     Log.e("ERROR", "announcement can't be created " + response.code());
@@ -610,6 +614,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
     }
 
     private void uploadFile(File file, int idAnn) {
+
         // create RequestBody instance from file
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -635,7 +640,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                 }else if(response.code() == 204)
                     Log.v("Upload", "failed");
                 else
-                    Log.e("error uploading", response.message()); 
+                    Log.e("error uploading", response.message());
             }
 
             @Override
@@ -751,6 +756,61 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    protected void onSaveInstanceState(Bundle icicle) {
+
+        if(imageController.destination != null)
+            icicle.putString("destination", imageController.destination.getPath());
+
+        if(images != null)
+            icicle.putParcelableArrayList("images", images);
+
+        if(services != null)
+            icicle.putParcelableArrayList("services", services);
+
+        icicle.putParcelable("announcement", announcement);
+        icicle.putParcelable("accommodation", accommodation);
+
+        //imageController.images = images;
+        super.onSaveInstanceState(icicle);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        if(savedInstanceState.getString("destination") != null){
+            imageController.destination = new File(savedInstanceState.getString("destination"));
+        }
+
+        if(savedInstanceState.getSerializable("images") != null) {
+            images = savedInstanceState.getParcelableArrayList("images");
+
+            int imagesSize = images.size();
+
+            for (Uri uri : images){
+                if(imagesSize == 1)
+                    imageController.setImageView(img_1);
+                if(imagesSize == 2)
+                    imageController.setImageView(img_2);
+                if(imagesSize == 3)
+                    imageController.setImageView(img_3);
+                if(imagesSize == 4)
+                    imageController.setImageView(img_4);
+
+                imagesSize--;
+                imageController.putImage(uri);
+            }
+        }
+
+        if(savedInstanceState.getParcelableArrayList("services") != null)
+            services = savedInstanceState.getParcelableArrayList("services");
+
+        if(savedInstanceState.getParcelable("announcement") != null)
+            announcement = savedInstanceState.getParcelable("announcement");
     }
 
 }

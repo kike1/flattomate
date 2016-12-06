@@ -1,9 +1,14 @@
 package com.flattomate.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Accommodation {
+import java.io.Serializable;
+
+public class Accommodation implements Parcelable{
 
     @SerializedName("id")
     @Expose
@@ -172,6 +177,32 @@ public class Accommodation {
      */
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        if(id != null)
+            dest.writeInt(id);
+        if(nPeople != null)
+            dest.writeInt(nPeople);
+        if(nBeds != null)
+            dest.writeInt(nBeds);
+        if(nBathrooms != null)
+            dest.writeInt(nBathrooms);
+        if(nRooms != null)
+            dest.writeInt(nRooms);
+        if(location != null)
+            dest.writeString(location);
+        if(idAnnouncement != null)
+            dest.writeInt(idAnnouncement);
+        if(idUser != null)
+            dest.writeInt(idUser);
     }
 
 }

@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
 
 
-public class ImageController extends AppCompatActivity{
+public class ImageController extends AppCompatActivity implements Parcelable{
 
     public File destination;
     public Bitmap thumbnail;
@@ -58,12 +60,13 @@ public class ImageController extends AppCompatActivity{
                 .build();
     }
 
+    public ImageController(Parcel in) {
+        destination = new File(in.readString());
+    }
+
     public ArrayList<Uri> getImages() {
         return images;
     }
-
-
-
 
     //intent for launch camera
    /*public void cameraIntent() throws IOException {
@@ -92,6 +95,8 @@ public class ImageController extends AppCompatActivity{
 
         if (data != null) {
             putImage(imagePath);
+            //Uri image = Uri.fromFile(destination);
+            //CreateAnnouncementActivity.images.add(image);
         }
     }
 
@@ -206,4 +211,26 @@ public class ImageController extends AppCompatActivity{
                 .transform(transformation)
                 .into(ivProfileImg);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(destination.getPath());
+    }
+
+    public static final Parcelable.Creator<ImageController> CREATOR
+            = new Parcelable.Creator<ImageController>() {
+        public ImageController createFromParcel(Parcel in) {
+            return new ImageController(in);
+        }
+
+        public ImageController[] newArray(int size) {
+            return new ImageController[size];
+        }
+    };
+
 }
