@@ -23,6 +23,9 @@ public class Announcement implements Parcelable {
     @SerializedName("availability")
     @Expose
     private Date availability;
+    @SerializedName("rent_kind")
+    @Expose
+    private Integer rent_kind;
     @SerializedName("min_stay")
     @Expose
     private Integer minStay;
@@ -273,5 +276,13 @@ public class Announcement implements Parcelable {
         if(idUser != null)
             dest.writeInt(idUser);
 
+    }
+
+    public Integer getRent_kind() {
+        return rent_kind;
+    }
+
+    public void setRent_kind(Integer rent_kind) {
+        this.rent_kind = rent_kind;
     }
 }
