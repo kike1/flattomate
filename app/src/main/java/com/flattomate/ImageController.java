@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -92,12 +93,18 @@ public class ImageController extends AppCompatActivity implements Parcelable{
     @SuppressWarnings("deprecation")
     public void onSelectFromGalleryResult(Intent data) throws IOException {
         Uri imagePath = data.getData();
+        destination = new File(imagePath.getPath());
 
         if (data != null) {
             putImage(imagePath);
-            //Uri image = Uri.fromFile(destination);
-            //CreateAnnouncementActivity.images.add(image);
         }
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {

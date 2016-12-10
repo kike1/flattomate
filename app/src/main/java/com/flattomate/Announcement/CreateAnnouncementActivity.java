@@ -46,6 +46,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -166,7 +167,12 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                     DatePickerDialog dialog = new DatePickerDialog(CreateAnnouncementActivity.this, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
-                    dialog.getDatePicker().setMaxDate(myCalendar.getTimeInMillis()); //TODO set maximum date a bunch of months, not today
+
+                    Calendar calendarInAYear = Calendar.getInstance();
+                    calendarInAYear.set(Calendar.YEAR, 2017);
+                    calendarInAYear.set(Calendar.MONTH, 12);
+                    calendarInAYear.set(Calendar.DAY_OF_MONTH, 31);
+                    dialog.getDatePicker().setMaxDate(calendarInAYear.getTimeInMillis()); //TODO set maximum date a bunch of months, not today
                     dialog.show();
                 }
             }
@@ -190,9 +196,9 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            /*myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel();
         }
 
@@ -371,8 +377,6 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
     }*/
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -382,8 +386,11 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
             case Activity.RESULT_OK:
 
                 try {
-                    if (requestCode == SELECT_FILE)
+                    if (requestCode == SELECT_FILE) {
                         imageController.onSelectFromGalleryResult(data);
+                        Uri image = Uri.parse(imageController.getRealPathFromURI(data.getData()));
+                        images.add(image);
+                    }
                     else if (requestCode == REQUEST_CAMERA) { //the photo is returned and positioned
 
                     }else if(requestCode == REQUEST_TAKE_PHOTO){
@@ -437,10 +444,10 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         announcement.setPrice(price);
         String description = etDescription.getText().toString();
         announcement.setDescription(description);
-        String availability = etAvailability.getText().toString();
+        String availability = parseDateToyyyyMMdd(etAvailability.getText().toString());
         announcement.setAvailability(new Date(availability));
-        //TODO get kind of availability (day, weeks, months..)
-        String selectedSpinner = spinner.getSelectedItem().toString();
+        int rent_kind = getSpinnerValue();
+        announcement.setRent_kind(rent_kind);
         String min_Stay = etMinStay.getText().toString();
         announcement.setMinStay(Integer.parseInt(min_Stay));
         String max_Stay = etMaxStay.getText().toString();
@@ -448,7 +455,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         //Extras.
         // First we create a new arraylist
         // with the selected services and after we update the database
-        ArrayList<Service> services = new ArrayList<>();
+        final ArrayList<Service> services = new ArrayList<>();
         if(servicesPressed != null)
             for(int i = 0; i < servicesPressed.length; i++)
                 if (servicesPressed[i]){
@@ -514,6 +521,22 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                                             uploadFile(f, announcement.getId());
                                     }
 
+                                    //SERVICES
+                                    for(Service service : services){
+                                        Call<ResponseBody> servicesCall = api.setServices(accommodation.getId(), service.getId());
+                                        servicesCall.enqueue(new Callback<ResponseBody>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                if(response.code() == 200)
+                                                    Log.d("Accommodation services ", response.body().toString());
+                                                else
+                                                    Log.e("ERROR", "Accommodation services can't be created" + response.errorBody().toString());
+                                            }
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
+                                        });
+                                    }
+
                                     Toast.makeText(CreateAnnouncementActivity.this, "Anuncio creado correctamente!", Toast.LENGTH_LONG).show();
                                     finish();
                                 }
@@ -534,25 +557,43 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
 
 
-        //SERVICES
-        for(Service service : services){
-            Call<ResponseBody> servicesCall = api.setServices(accommodation.getId(), service.getId());
-            servicesCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if(response.code() == 200)
-                        Log.d("Accommodation services ", response.body().toString());
-                    else
-                        Log.e("ERROR", "Accommodation services can't be created" + response.errorBody().toString());
-                }
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
-            });
-        }
-
-
         Log.d("saving announcement", "end");
 
+    }
+
+    public String parseDateToyyyyMMdd(String time) {
+        String outputPattern = "yyyy/MM/dd";
+        String inputPattern = "dd/MM/yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    private int getSpinnerValue() {
+
+        String text = spinner.getSelectedItem().toString();
+        int result = 0;
+
+        switch(text){
+            case "Por días": result = 0; break;
+            case "Por semanas": result = 1; break;
+            case "Por meses": result = 2; break;
+            case "Por años": result = 3; break;
+
+            default: result = 0;
+        }
+
+        return result;
     }
 
     //check fields if are correct
