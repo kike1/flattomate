@@ -4,6 +4,7 @@ import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Language;
+import com.flattomate.Model.Review;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
 
@@ -88,6 +89,8 @@ public interface FlattomateService{
 
     @GET("announcement/{id}/images")
     Call<ArrayList<Image>> getAnnouncementImages(@Path("id") Integer id);
+    @GET("announcement/{id}/mainimage")
+    Call<Image> getAnnouncementMainImage(@Path("id") Integer id);
 
     @GET("announcement/{id}/services")
     Call<ArrayList<Service>> getAnnouncementServices(@Path("id") Integer id);
@@ -103,6 +106,9 @@ public interface FlattomateService{
 
     @GET("service")
     Call<ArrayList<Service>> getServices();
+
+    @GET("announcement/{id}/reviews")
+    Call<ArrayList<Review>> getReviews(@Path("id") Integer id);
 
    /*
     *

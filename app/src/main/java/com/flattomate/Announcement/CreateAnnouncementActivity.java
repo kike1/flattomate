@@ -522,15 +522,16 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                                     }
 
                                     //SERVICES
-                                    for(Service service : services){
+                                    for(final Service service : services){
                                         Call<ResponseBody> servicesCall = api.setServices(accommodation.getId(), service.getId());
                                         servicesCall.enqueue(new Callback<ResponseBody>() {
                                             @Override
                                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                                 if(response.code() == 200)
                                                     Log.d("Accommodation services ", response.body().toString());
-                                                else
-                                                    Log.e("ERROR", "Accommodation services can't be created" + response.errorBody().toString());
+                                                else{
+                                                        Log.e("ERROR", service.getName() + " can't be created ");
+                                                }
                                             }
                                             @Override
                                             public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }

@@ -17,6 +17,9 @@ public class Review {
     @SerializedName("id_announcement")
     @Expose
     private Integer idAnnouncement;
+    @SerializedName("rating")
+    @Expose
+    private float rating;
 
     /**
      *
@@ -88,6 +91,24 @@ public class Review {
      */
     public void setIdAnnouncement(Integer idAnnouncement) {
         this.idAnnouncement = idAnnouncement;
+    }
+
+    /**
+     *
+     * @return
+     * The rating
+     */
+    public float getRating() {
+        return rating;
+    }
+
+    /**
+     *
+     * @param rating
+     * The rating
+     */
+    public void setId(float rating) {
+        this.rating = rating;
     }
 
 }
