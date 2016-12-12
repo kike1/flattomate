@@ -23,32 +23,18 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/dashboard"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1">
+        android:padding="10dp"
+        android:layout_marginTop="55dp">
 
-        <Button
+        <ListView
+            android:id="@+id/dashboard_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Buscar habitaciones"
-            android:id="@+id/btn_search_rooms"
-            android:layout_gravity="bottom"
-            android:background="@color/primary_dark"
-            android:layout_weight="0.29" />
+            android:layout_height="match_parent">
+        </ListView>
+    </RelativeLayout>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="buscar compañeros de piso"
-            android:id="@+id/btn_search_flatmates"
-            android:background="@color/primary_dark"
-            android:layout_weight="0.29" />
-
-    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

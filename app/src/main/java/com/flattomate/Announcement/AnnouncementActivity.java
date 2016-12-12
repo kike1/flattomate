@@ -152,6 +152,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
 
         int idAnnouncement = getIntent().getExtras().getInt("idAnnouncement");
+
         idUser = getIntent().getExtras().getInt("idUser");
 
         transformation = new RoundedTransformationBuilder()
@@ -350,8 +351,8 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     private void setImageOnSlideShow(Image image) {
         sliderView = new DefaultSliderView(this);
         sliderView.setScaleType(BaseSliderView.ScaleType.Fit)
-                .image(API_URL+"announcements/"+image.getName()+".jpg");
-        Log.d("im", API_URL+"announcements/"+image.getName()+".jpg");
+                .image(API_URL+"announcements/"+image.getName());
+        Log.d("im", API_URL+"announcements/"+image.getName());
         sliderShow.addSlider(sliderView);
     }
 
@@ -476,7 +477,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         txt_username.setText(user.getName());
 
         Picasso.with(getApplicationContext())
-                .load(API_BASE_URL+"imgs/"+user.getId()+".jpg")
+                .load(API_BASE_URL+"imgs/"+user.getId() + ".jpg")
                 .fit()
                 .centerCrop()
                 .transform(transformation)

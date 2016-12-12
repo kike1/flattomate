@@ -84,6 +84,8 @@ public interface FlattomateService{
     Call<ResponseBody> uploadImageAnnouncement(@Part MultipartBody.Part file,
                                                @Path("id") Integer id);
 
+    @GET("announcement")
+    Call<ArrayList<Announcement>> getAnnouncements();
     @GET("announcement/{id}")
     Call<Announcement> getAnnouncement(@Path("id") Integer id);
 

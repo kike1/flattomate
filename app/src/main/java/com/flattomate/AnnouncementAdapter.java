@@ -1,15 +1,19 @@
 package com.flattomate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.flattomate.Announcement.AnnouncementActivity;
 import com.flattomate.Model.Announcement;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Review;
@@ -19,7 +23,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,61 +31,42 @@ import retrofit2.Response;
  * Adapter that load a list of announcements and put dinamycally on views
  */
 
-public class AnnouncementAdapter extends BaseAdapter{
-
-    @Bind(R.id.ad_adapter_image)
-    ImageView ad_adapter_image;
-    @Bind(R.id.ad_adapter_price)
-    TextView ad_adapter_price;
-    @Bind(R.id.ad_adapter_title)
-    TextView ad_adapter_title;
-    @Bind(R.id.ad_adapter_user_ratingbar)
-    RatingBar ad_adapter_user_ratingbar;
-    @Bind(R.id.ad_adapter_user_num_reviews)
-    TextView ad_adapter_user_num_reviews;
+public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
 
     private Context _context;
     private ArrayList<Announcement> _announcements;
     private ArrayList<Review> _reviews;
+    int _resource;
 
     FlattomateService api;
+    SharedPreferences manager;
 
-    public AnnouncementAdapter(Context context, ArrayList<Announcement> announcements){
-        super();
 
+    public AnnouncementAdapter(Context context, int resource, ArrayList<Announcement> announcements){
+        super(context, resource, announcements);
         _context = context;
         _announcements = announcements;
-
+        _resource = resource;
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
-
-    }
-
-    @Override
-    public int getCount() {
-        return 0;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
+        manager = _context.getSharedPreferences("settings", Context.MODE_PRIVATE);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         //int idUser = _announcements.get(position).getIdUser();
-        int idAnnouncement = _announcements.get(position).getId();
-
+        final int idAnnouncement = _announcements.get(position).getId();
+        //Toast.makeText(_context, "ad " + idAnnouncement, Toast.LENGTH_SHORT).show();
         if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.announcement_adapter, null, true);
 
-            convertView = inflater.inflate(R.layout.announcement_adapter, null);
+            LinearLayout dashboard_adapter_layout = (LinearLayout) convertView.findViewById(R.id.dashboard_adapter_layout);
+            final ImageView ad_adapter_image = (ImageView) convertView.findViewById(R.id.ad_adapter_image);
+            final TextView ad_adapter_title = (TextView) convertView.findViewById(R.id.ad_adapter_title);
+            final TextView ad_adapter_price = (TextView) convertView.findViewById(R.id.ad_adapter_price);
+            final RatingBar ad_adapter_user_ratingbar = (RatingBar) convertView.findViewById(R.id.ad_adapter_user_ratingbar);
+            final TextView ad_adapter_user_num_reviews = (TextView) convertView.findViewById(R.id.ad_adapter_user_num_reviews);
 
             //get main image from announcement and put in the ImageView
             Call<Image> imageCall = api.getAnnouncementMainImage(idAnnouncement);
@@ -94,10 +78,11 @@ public class AnnouncementAdapter extends BaseAdapter{
                             Picasso.with(_context)
                                     .load(restAPI.API_BASE_URL+"announcements/"+response.body().getName())
                                     .into(ad_adapter_image);
-                        }
+                        }else
+                            Log.e("ERROR", "No images for ad " + idAnnouncement );
                     }
                     else
-                        Log.e("ERROR", "Reviews can not be retrieved");
+                        Log.e("ERROR", "Image can not be retrieved");
                 }
                 @Override
                 public void onFailure(Call<Image> call, Throwable t) { call.cancel(); }
@@ -105,6 +90,8 @@ public class AnnouncementAdapter extends BaseAdapter{
 
             //set title
             ad_adapter_title.setText(_announcements.get(position).getTitle());
+
+            //set price
             int rentKindNumber = _announcements.get(position).getRent_kind();
             String rentKind;
             switch(rentKindNumber){
@@ -145,6 +132,16 @@ public class AnnouncementAdapter extends BaseAdapter{
                 }
                 @Override
                 public void onFailure(Call<ArrayList<Review>> call, Throwable t) { call.cancel(); }
+            });
+
+            dashboard_adapter_layout.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
+                    Intent activityAnnouncement = new Intent(_context, AnnouncementActivity.class);
+                    activityAnnouncement.putExtra("idAnnouncement", idAnnouncement);
+                    activityAnnouncement.putExtra("idUser", manager.getInt("id", 0));
+                    _context.startActivity(activityAnnouncement);
+                }
             });
         }
 

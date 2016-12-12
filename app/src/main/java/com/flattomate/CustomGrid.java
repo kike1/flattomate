@@ -56,14 +56,13 @@ public class CustomGrid extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            grid = new View(mContext);
             grid = inflater.inflate(R.layout.grid_single, null);
             TextView textView = (TextView) grid.findViewById(R.id.grid_text);
             ImageView imageView = (ImageView)grid.findViewById(R.id.grid_image);
             textView.setText(service_name.get(position));
             imageView.setImageResource(getIdResource(Imageid.get(position)));
         } else {
-            grid = (View) convertView;
+            grid = convertView;
         }
 
        /* final int pos = position;
