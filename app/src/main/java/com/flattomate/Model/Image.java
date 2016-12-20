@@ -19,8 +19,10 @@ public class Image {
     private Integer idAnnouncement;
 
 
-    public Image(String name, Integer idad){
+    public Image(Integer id, String name, Integer isMain, Integer idad){
+        this.id = id;
         this.name = name;
+        this.isMain = isMain;
         idAnnouncement = idad;
     }
 

@@ -73,8 +73,12 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
             imageCall.enqueue(new Callback<Image>() {
                 @Override
                 public void onResponse(Call<Image> call, Response<Image> response) {
+                    Log.e("CODIGO imagen" , String.valueOf(response.code()));
+
                     if(response.code() == 200) {
+                        Log.e("IMAGEN PRINCIPAL1" , "");
                         if (response.body() != null){
+                            Log.e("IMAGEN PRINCIPAL2" , response.body().getName());
                             Picasso.with(_context)
                                     .load(restAPI.API_BASE_URL+"announcements/"+response.body().getName())
                                     .into(ad_adapter_image);
@@ -85,7 +89,7 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
                         Log.e("ERROR", "Image can not be retrieved");
                 }
                 @Override
-                public void onFailure(Call<Image> call, Throwable t) { call.cancel(); }
+                public void onFailure(Call<Image> call, Throwable t) { call.cancel(); Log.e("ERROR" , "PETE");}
             });
 
             //set title

@@ -178,19 +178,6 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
 
-            /*
-            AnnouncementController controller;
-            try {
-                controller = new AnnouncementController(idAnnouncement, announcement, user, services);
-                controller.setData();
-                announcement = controller.getAnnouncement();
-                user = controller.getUser();
-                services = controller.getServices();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            */
-
             //Getting Announcement
             Call<Announcement> callAnnouncement = api.getAnnouncement(idAnnouncement);
             callAnnouncement.enqueue(new Callback<Announcement>() {

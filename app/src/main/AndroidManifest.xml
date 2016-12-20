@@ -73,7 +73,7 @@
         </activity>
 
         <!-- DASHBOARD ACTIVITY -->
-        <activity android:name="com.flattomate.DashboardActivity" />
+        <activity android:name="com.flattomate.DashboardActivity" android:label="@string/dashboard_title" />
 
         <!-- PROFILE ACTIVITY -->
         <activity
@@ -92,11 +92,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.Profile.ProfileActivity" />
 
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <!-- EDIT_PROFILE ACTIVITY -->

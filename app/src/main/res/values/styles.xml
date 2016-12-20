@@ -16,7 +16,7 @@
 
     <style name="AppTheme.Widget" />
 
-    <style name="AppTheme.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 

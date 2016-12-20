@@ -62,7 +62,7 @@ public class restAPI {
         // add your other interceptors …
 
         // add logging as last interceptor
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
+       // httpClient.addInterceptor(logging);  // <-- this is the important line!
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)

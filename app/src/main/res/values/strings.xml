@@ -114,6 +114,11 @@
     <string name="error_max_stay">Escribe la estancia máxima</string>
     <string name="error_minmax_stay">Estancia mínima debe de ser mayor que la máxima</string>
     <string name="any_fields_error">Faltan algunos datos o son incorrectos</string>
+    <string name="title_tab_ad_list">ANUNCIOS</string>
+    <string name="title_tab_my_account">MI CUENTA</string>
+    <string name="title_tab_chats">CHATS</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="search">Buscar</string>
 
 
 </resources>
