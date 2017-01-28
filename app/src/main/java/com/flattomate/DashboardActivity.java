@@ -5,24 +5,33 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.flattomate.Announcement.CreateAnnouncementActivity;
+import com.flattomate.Profile.ProfileFragment;
 import com.flattomate.Tabs.CollectionPagerAdapter;
 import com.flattomate.Tabs.TabAnnouncementList;
 import com.flattomate.Tabs.TabChats;
-import com.flattomate.Tabs.TabMyAccount;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -31,14 +40,19 @@ public class DashboardActivity extends AppCompatActivity {
     @Bind(R.id.pager)
     ViewPager mViewPager;
 
-    PagerAdapter pagerAdapter;
+    //PagerAdapter pagerAdapter;
     TabAnnouncementList tabAnnouncementList = new TabAnnouncementList();
     TabChats tabChats = new TabChats();
-    TabMyAccount tabMyAcoount = new TabMyAccount();
+    ProfileFragment tabMyAccount = new ProfileFragment();
     private Context context = this;
     //private SessionManager manager = new SessionManager(context);
     //FlattomateService api;
     SharedPreferences manager;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     //ArrayList<Announcement> announcements;
 
@@ -49,17 +63,28 @@ public class DashboardActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setToolbar(); // Añadir la toolbar
-        // Setear adaptador al viewpager.
-        setupViewPager(mViewPager);
-        // Preparar las pestañas
-        tabs.setupWithViewPager(mViewPager);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CreateAnnouncementActivity.class);
+                startActivity(intent);
+            }
+        });
 
         manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
         //api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
         String email = manager.getString("email", null);
+        int idUser = manager.getInt("id", 0);
+        //if user is found then create a ProfileFragment object
+        if (idUser != 0) {
+            tabMyAccount = ProfileFragment.newInstance(idUser, manager);
+        } else
+            Log.d("IDUSER", "User is 0");
 
         //if user is not logged then redirect to Home
-        if (email == null) {
+        if (email == null || idUser == 0) {
             //View parentLayout = findViewById(R.id.dashboard);
             // Snackbar.make(parentLayout, "Sesión iniciada como "+email, Snackbar.LENGTH_LONG).show();
             //Log.d("debug", email);
@@ -74,7 +99,15 @@ public class DashboardActivity extends AppCompatActivity {
             //Get announcements and create the adapter list
             Intent intent = new Intent(context, HomeActivity.class);
             startActivity(intent);
+        } else {
+            // Setear adaptador al viewpager.
+            setupViewPager(mViewPager);
+            // Preparar las pestañas
+            tabs.setupWithViewPager(mViewPager);
         }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -101,16 +134,16 @@ public class DashboardActivity extends AppCompatActivity {
         CollectionPagerAdapter adapter = new CollectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(tabAnnouncementList, getString(R.string.title_tab_ad_list));
         adapter.addFragment(tabChats, getString(R.string.title_tab_chats));
-        adapter.addFragment(tabMyAcoount, getString(R.string.title_tab_my_account));
+        adapter.addFragment(tabMyAccount, getString(R.string.title_tab_my_account));
         viewPager.setAdapter(adapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
-        for(int i = 0; i < menu.size(); i++){
+        for (int i = 0; i < menu.size(); i++) {
             Drawable drawable = menu.getItem(i).getIcon();
-            if(drawable != null) {
+            if (drawable != null) {
                 drawable.mutate();
                 drawable.setColorFilter(getResources().getColor(R.color.icons), PorterDuff.Mode.SRC_ATOP);
             }
@@ -129,4 +162,47 @@ public class DashboardActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //establish the font
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Dashboard Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
 }

@@ -49,12 +49,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -207,10 +206,26 @@ public class EditProfileActivity extends AppCompatActivity{
                     if(response.code() == 200) {
                         if(response.isSuccessful()) {
                             user = response.body();
-                            fillUserInfo();
-                        }
-                    }else { //show error and back
 
+                            if(user != null) {
+                                Call<ArrayList<Language>> languages = api.getLanguages(idUser);
+
+                                languages.enqueue(new Callback<ArrayList<Language>>() {
+                                    @Override
+                                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {
+                                        if (response.code() == 200)
+                                            user.setLanguages(response.body());
+
+                                            fillUserInfo();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {
+                                        call.cancel();
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
 
@@ -321,8 +336,7 @@ public class EditProfileActivity extends AppCompatActivity{
         String sName = manager.getString("name", undefined);
         String sEmail = manager.getString("email", undefined);
         String sBirtdate = dateFormatter.format(user.getBirthdate());
-        Set<String> empty = new HashSet<String>();
-        Set<String> sLanguages = manager.getStringSet("languages", empty);
+        //ArrayList<Language> sLanguages = user.getLanguages();
         String sBio = user.getBio();
         String sAvatar = restAPI.API_BASE_URL+"imgs/"+user.getId()+".jpg";//manager.getString("avatar", undefined);
         Log.d("avatar cmabiado", sAvatar);
@@ -340,12 +354,7 @@ public class EditProfileActivity extends AppCompatActivity{
 
         tvBio.setText(sBio);
 
-        if(sLanguages != null){
-            String languagesFormatted = sLanguages.toString();
-            languagesFormatted = formatLanguage(languagesFormatted);
-
-            tvLanguages.setText(languagesFormatted);
-        }
+        formatLanguage();
 
         tvSociable.setText(iSociable+"/10");
         tvTidy.setText(iTidy+"/10");
@@ -389,6 +398,7 @@ public class EditProfileActivity extends AppCompatActivity{
 
             Picasso.with(getApplicationContext())
                     .load(sAvatar)
+                    .placeholder(R.drawable.user_default)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .fit()
@@ -417,13 +427,22 @@ public class EditProfileActivity extends AppCompatActivity{
         }
     }
 
-    private String formatLanguage(String languagesFormatted) {
-        languagesFormatted = languagesFormatted.replace("[","");
-        languagesFormatted = languagesFormatted.replace("]","");
-        languagesFormatted = languagesFormatted.replace(", "," - ");
-        languagesFormatted = languagesFormatted.replace(", "," - ");
+    /*
+    * Get languages from ArrayList of User and format them in a String
+    *
+     */
+    private void formatLanguage() {
 
-        return languagesFormatted;
+        String languagesFormatted = "";
+        for(Language language: user.getLanguages()){
+            languagesFormatted = languagesFormatted.concat(language.getName()+" - ");
+        }
+        if(!languagesFormatted.equals("")) {
+            languagesFormatted = languagesFormatted.substring(0, languagesFormatted.length() - 3);
+            tvLanguages.setText(languagesFormatted);
+        }
+
+
     }
 
     //sets calendar to a date 18 ages later as max date
@@ -460,8 +479,7 @@ public class EditProfileActivity extends AppCompatActivity{
 
     private void updateLabel() {
 
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         etBirthdate.setText(sdf.format(myCalendar.getTime()));
     }
@@ -570,14 +588,13 @@ public class EditProfileActivity extends AppCompatActivity{
         builder.setTitle(R.string.language_title);
 
         //checks languages selected before in dialog
-        if(languages != null){
-            for(String language: languages){
-                int i = getIndexOfLanguage(language, items);
+        if(user.getLanguages() != null){
+            for(Language language: user.getLanguages()){
+                int i = getIndexOfLanguage(language.getName(), items);
                 if(i != -1)
                     selectedItemsArray[i] = true;
             }
         }
-
 
         builder.setMultiChoiceItems(items, selectedItemsArray,
                 new DialogInterface.OnMultiChoiceClickListener() {
@@ -586,10 +603,10 @@ public class EditProfileActivity extends AppCompatActivity{
                         // Lógica de elemento seleccionado
                         if(isChecked) {
                             Log.d("checking", items[which]);
-                            languages.add(items[which]);
+                            //user.getLanguages().add(items[which]);
                         }else{
                             Log.d("removing", items[which]);
-                            languages.remove(items[which]);
+                            //languages.remove(items[which]);
                         }
                     }
                 });
@@ -600,9 +617,42 @@ public class EditProfileActivity extends AppCompatActivity{
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //update languages in UI
-                        String languagesFormatted = formatLanguage(languages.toString());
-                        tvLanguages.setText(languagesFormatted);
+                        //update languages ArrayList
+                        Call<ArrayList<Language>> call;
+                        ArrayList<Language> languagesUpdated = new ArrayList<Language>();
+                        for(int i = 0; i < selectedItemsArray.length; i++){ //selected languages
+
+                            int idLanguage = i+1;
+
+                            //if language is selected, add it
+                            if(selectedItemsArray[i]){
+                                Log.d("LANGUAGE", "adding "+idLanguage+" language");
+                                //update array of languages from user
+                                languagesUpdated.add(new Language(i, items[i]));
+                                call = api.setLanguage(idUser, idLanguage); //call to api
+                                call.enqueue(new Callback<ArrayList<Language>>() {
+                                    @Override
+                                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {
+                                    }
+                                    @Override
+                                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
+                                });
+                            }else{ //if language is unselected, remove it
+                                Log.d("LANGUAGE", "removing "+i+1+" language");
+                                call = api.removeLanguage(idUser, idLanguage);
+                                call.enqueue(new Callback<ArrayList<Language>>() {
+                                    @Override
+                                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {}
+                                    @Override
+                                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
+                                });
+                            }
+
+                        }
+
+                        user.getLanguages().clear();
+                        user.setLanguages(languagesUpdated);
+                        formatLanguage();
                     }
                 });
 
@@ -704,6 +754,7 @@ public class EditProfileActivity extends AppCompatActivity{
 
             Picasso.with(getApplicationContext())
                     .load(imagePath)
+                    .placeholder(R.drawable.user_default)
                     .fit()
                     .centerCrop()
                     .transform(transformation)
@@ -751,7 +802,6 @@ public class EditProfileActivity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-
     }
 
     @Override
@@ -779,7 +829,7 @@ public class EditProfileActivity extends AppCompatActivity{
             uploadFile(destination);
             Log.e("UPLOAD", "subiendo...");
         }else
-            Log.e("UPLOAD", "error subiendo");
+            Log.e("UPLOAD", "no hay foto para subir");
         //name
         String name = etName.getText().toString();
         user.setName(name);
@@ -792,7 +842,18 @@ public class EditProfileActivity extends AppCompatActivity{
         String birthdate = etBirthdate.getText().toString();
         DateValidator dateValidator = new DateValidator();
         if(dateValidator.validate(birthdate)){
-            user.setBirthdate(new Date(birthdate));
+            SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date;
+            try {
+                date = originalFormat.parse(birthdate);
+                user.setBirthdate(date);
+                System.out.println("Old Format :   " + originalFormat.format(date));
+                System.out.println("New Format :   " + targetFormat.format(date));
+
+            } catch (ParseException ex) {
+                // Handle Exception.
+            }
         }else
             Toast.makeText(EditProfileActivity.this, "Fecha de nacimiento errónea", Toast.LENGTH_SHORT).show();
 
@@ -802,43 +863,11 @@ public class EditProfileActivity extends AppCompatActivity{
         String bio = tvBio.getText().toString();
         user.setBio(bio);
 
-        //languages are sent in an independent REST call
-        Call<ArrayList<Language>> call;
-        for(int i = 0; i < selectedItemsArray.length; i++){ //selected languages
-
-            int idLanguage = i+1;
-
-            //if language is selected, add it
-            if(selectedItemsArray[i]){
-                Log.d("LANGUAGE", "adding "+idLanguage+" language");
-                call = api.setLanguage(idUser, idLanguage); //call to api
-                call.enqueue(new Callback<ArrayList<Language>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {
-                    }
-                    @Override
-                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
-                });
-            }else{ //if language is unselected, remove it
-                Log.d("LANGUAGE", "removing "+i+1+" language");
-                call = api.removeLanguage(idUser, idLanguage);
-                call.enqueue(new Callback<ArrayList<Language>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<Language>> call, Response<ArrayList<Language>> response) {}
-                    @Override
-                    public void onFailure(Call<ArrayList<Language>> call, Throwable t) {}
-                });
-            }
-
-        }
-
-        //extra info is established when user moves sliders
-
-        //languages
-        editor.putStringSet("languages", languages);
-        editor.apply();
+        for (Language lang: user.getLanguages())
+            languages.add(lang.getName());
 
         //API REST call for rest of data
+        user.getLanguages().clear();
         Call<ResponseBody> callUpdate = api.updateUser(user, user.getId()); //call to api
         callUpdate.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -847,14 +876,12 @@ public class EditProfileActivity extends AppCompatActivity{
                     if(response.isSuccessful()) {
                         saveSharedPreferences(); //saves user's information in sharedpreferences
                         Toast.makeText(getApplicationContext(), "Perfil actualizado con éxito! :)", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(context, ProfileActivity.class);
-                        intent.putExtra("idUser", idUser);
-                        startActivity(intent);
-                        //finish(); //return to previous activity
+                        finish(); //return to previous activity
                     }
                 }else if(response.code() == 204) {
                     Toast.makeText(getApplicationContext(), "Hubo algún error actualizando tu perfil :(", Toast.LENGTH_LONG).show();
-                }
+                }else
+                    Log.e("ERROR", "Actualizando perfil: " + response.code() + response.errorBody());
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
@@ -872,6 +899,8 @@ public class EditProfileActivity extends AppCompatActivity{
         editor.putString("email", user.getEmail());
         editor.putInt("age", user.getAges());
         editor.putString("birthdate", user.getBirthdate().toString());
+        //languages.addAll(user.getLanguages());
+        editor.putStringSet("languages",languages);
         editor.putString("activity", user.getActivity());
         editor.putString("sex", user.getSex());
         editor.putInt("smoke", user.getSmoke());

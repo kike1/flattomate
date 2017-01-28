@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class Announcement implements Parcelable {
@@ -47,6 +46,39 @@ public class Announcement implements Parcelable {
     @SerializedName("id_user")
     @Expose
     private Integer idUser;
+
+    @SerializedName("accommodation")
+    Accommodation accommodation;
+
+    public Announcement(){}
+
+    protected Announcement(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        description = in.readString();
+        String avail = in.readString();
+        availability = new Date(avail);
+        rent_kind = in.readInt();
+        minStay = in.readInt();
+        maxStay = in.readInt();
+        price = in.readDouble();
+        isVisible = in.readInt();
+        isSharedRoom = in.readInt();
+        idAccommodation = in.readInt();
+        idUser = in.readInt();
+    }
+
+    public static final Creator<Announcement> CREATOR = new Creator<Announcement>() {
+        @Override
+        public Announcement createFromParcel(Parcel in) {
+            return new Announcement(in);
+        }
+
+        @Override
+        public Announcement[] newArray(int size) {
+            return new Announcement[size];
+        }
+    };
 
     /**
      *
@@ -109,6 +141,14 @@ public class Announcement implements Parcelable {
      */
     public Date getAvailability() {
         return availability;
+    }
+
+    public Accommodation getAccommodation() {
+        return accommodation;
+    }
+
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
     }
 
     /**

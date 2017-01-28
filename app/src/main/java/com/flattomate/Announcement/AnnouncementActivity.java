@@ -39,6 +39,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -57,6 +59,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.flattomate.R.drawable.calendar_all;
 import static com.flattomate.R.drawable.calendar_days;
+import static com.flattomate.R.drawable.kind_rent_calendar;
 import static com.flattomate.R.id.map;
 import static com.flattomate.REST.restAPI.API_BASE_URL;
 
@@ -103,6 +106,12 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     TextView lbl_address;
 
     //stay
+    @Bind(R.id.img_kind_rent)
+    ImageView img_kind_rent;
+    @Bind(R.id.lbl_kind_rent)
+    TextView lbl_kind_rent;
+    @Bind(R.id.txt_kind_rent)
+    TextView txt_kind_rent;
     @Bind(R.id.img_min_stay)
     ImageView img_min_stay;
     @Bind(R.id.txt_min_stay)
@@ -176,6 +185,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle("Anuncio");
             }
 
             //Getting Announcement
@@ -259,23 +269,6 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 }
             });
 
-            //Getting Announcement's user creator
-            Call<User> callUser = api.getAnnouncementUser(idAnnouncement);
-            callUser.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if(response.code() == 200) {
-                        user = response.body();
-                        if(user != null)
-                            fillUserInfo();
-                    }
-                }
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    call.cancel();
-                }
-            });
-
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(map);
             mapFragment.getMapAsync(this);
@@ -293,32 +286,51 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                     img_username.callOnClick();
                 }
             });
-            img_username.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                    intent.putExtra("idUser", user.getId());
-                    startActivity(intent);
-                }
-            });
 
-            //user grid a negotiation with ads user
-            btn_request.setOnClickListener(new View.OnClickListener() {
+            //Getting Announcement's user creator
+            Call<User> callUser = api.getAnnouncementUser(idAnnouncement);
+            callUser.enqueue(new Callback<User>() {
                 @Override
-                public void onClick(View v) {
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if(response.code() == 200) {
+                        user = response.body();
+                        if(user != null){
+                            img_username.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                    intent.putExtra("idUser", user.getId());
+                                    startActivity(intent);
+                                }
+                            });
 
-                    Call<ResponseBody> callRequest = api.requestNegotiation(idUser, user.getId(), announcement.getId());
-                    callRequest.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if(response.code() == 200) {
-                                btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
-                                btn_request.setText(R.string.requested);
-                            }
+                            //user grid a negotiation with ads user
+                            btn_request.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    Call<ResponseBody> callRequest = api.requestNegotiation(idUser, user.getId(), announcement.getId());
+                                    callRequest.enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            if(response.code() == 200) {
+                                                btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
+                                                btn_request.setText(R.string.requested);
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) {call.cancel();}
+                                    });
+                                }
+                            });
+
+                            fillUserInfo();
                         }
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {call.cancel();}
-                    });
+                    }
+                }
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    call.cancel();
                 }
             });
         }
@@ -374,8 +386,26 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         txt_available.setText("Disponible: \n"+availability_date_format);
 
         //max and min stay
+        img_kind_rent.setImageResource(kind_rent_calendar);
         img_min_stay.setImageResource(calendar_days);
         img_max_stay.setImageResource(calendar_all);
+        lbl_kind_rent.setText(R.string.lbl_kind_rent);
+
+        switch (announcement.getRent_kind()){
+            case 0: txt_kind_rent.setText("por días");
+                break;
+            case 1: txt_kind_rent.setText("por semanas");
+                break;
+            case 2: txt_kind_rent.setText("por meses");
+                break;
+            case 3: txt_kind_rent.setText("por años");
+                break;
+            default:
+                txt_kind_rent.setText("por meses");
+                break;
+        }
+
+
         txt_min_stay.setText(String.valueOf(announcement.getMinStay()));
         txt_max_stay.setText(String.valueOf(announcement.getMaxStay()));
 
@@ -469,6 +499,29 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 .centerCrop()
                 .transform(transformation)
                 .into(img_username);
+
+        Call<JsonObject> call = api.isRequestedNegotiation(idUser, user.getId(), announcement.getId());
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                String jsonString = response.body().toString();
+                Gson gson = new Gson();
+                restStatus status = gson.fromJson(jsonString, restStatus.class);
+                //Log.i(LOG_TAG, String.valueOf(status.status_code));
+
+                if(response.code() == 200 && status.requested){
+                    btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
+                    btn_request.setText(R.string.requested);
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
     }
 
     void fillServicesInfo(){
@@ -510,5 +563,9 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         mMap = googleMap;
 
         //mMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    class restStatus{
+        boolean requested;
     }
 }

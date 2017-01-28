@@ -15,6 +15,11 @@ public class Pivot {
     @Expose
     private int idLanguage;
 
+    public Pivot(int idu, int idl){
+        idUser = idu;
+        idLanguage = idl;
+    }
+
     /**
      *
      * @return

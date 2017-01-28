@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/dashboard_adapter_layout"
-    android:paddingBottom="5dp">
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/ad_adapter_image"

@@ -15,9 +15,11 @@ public class Language {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("pivot")
-    @Expose
-    private Pivot pivot;
+
+    public Language(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
 
     /**
      *
@@ -55,22 +57,5 @@ public class Language {
         this.name = name;
     }
 
-    /**
-     *
-     * @return
-     * The pivot
-     */
-    public Pivot getPivot() {
-        return pivot;
-    }
-
-    /**
-     *
-     * @param pivot
-     * The pivot
-     */
-    public void setPivot(Pivot pivot) {
-        this.pivot = pivot;
-    }
 
 }

@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 public class Utility {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 124;
+    public static final int MY_PERMISSIONS_REQUEST_GPS = 125;
 
 
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -78,6 +79,41 @@ public class Utility {
                 ActivityCompat.requestPermissions(activity,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkGPS(final Activity activity){
+        //write sdcard
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permiso necesario");
+                alertBuilder.setMessage("Permiso para obtener tu posición");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) activity,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_GPS);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_GPS);
             }
             return false;
         }

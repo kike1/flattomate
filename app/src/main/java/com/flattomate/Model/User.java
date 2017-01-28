@@ -31,8 +31,7 @@ public class User {
     @Expose
     private Date birthdate;
 
-//    @SerializedName("languages")
-//    @Expose
+    @SerializedName("languages")
     private ArrayList<Language> languages;
 
     @SerializedName("city")

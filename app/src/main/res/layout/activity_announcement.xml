@@ -330,6 +330,30 @@
                             android:layout_height="match_parent">
 
                             <ImageView
+                                android:id="@+id/img_kind_rent"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp" />
+
+                            <TextView
+                                android:id="@+id/lbl_kind_rent"
+                                android:text="@string/lbl_min_stay"
+                                style="@style/img_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/txt_kind_rent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/img_text"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
                                 android:id="@+id/img_min_stay"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp" />

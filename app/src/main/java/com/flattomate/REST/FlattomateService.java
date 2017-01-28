@@ -7,6 +7,7 @@ import com.flattomate.Model.Language;
 import com.flattomate.Model.Review;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -53,6 +54,11 @@ public interface FlattomateService{
     Call<ResponseBody> requestNegotiation(@Path("id") Integer id,
                                           @Path("idUserAnnouncement") Integer idUserAnnouncement,
                                           @Path("idAnnouncement") Integer idAnnouncement);
+
+    @GET("user/{id}/chat/{idUserAnnouncement}/{idAnnouncement}")
+    Call<JsonObject> isRequestedNegotiation(@Path("id") Integer id,
+                                            @Path("idUserAnnouncement") Integer idUserAnnouncement,
+                                            @Path("idAnnouncement") Integer idAnnouncement);
 
     @POST("user/{name}/{password}")
     Call<User> login(@Path("name") String name, @Path("password") String password);
@@ -138,5 +144,4 @@ public interface FlattomateService{
      */
     @POST("accommodation/{id}/service/{service}")
     Call<ResponseBody> setServices(@Path("id") Integer id, @Path("service") Integer service);
-
 }

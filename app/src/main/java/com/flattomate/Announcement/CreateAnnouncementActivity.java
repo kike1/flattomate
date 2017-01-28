@@ -153,7 +153,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         };*/
 
         //first init with one imageview and later we'll change
-        imageController = new ImageController(this, this, idUser, img_1);
+        imageController = new ImageController(context, this, idUser, img_1);
 
         setListenersOnImages();
         getServices();
@@ -388,8 +388,9 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                 try {
                     if (requestCode == SELECT_FILE) {
                         imageController.onSelectFromGalleryResult(data);
-                        Uri image = Uri.parse(imageController.getRealPathFromURI(data.getData()));
-                        images.add(image);
+                        //Uri image = imageController.getRealPathFromURI();
+                        //imageController.putImage(data.getData());
+                        images.add(data.getData());
                     }
                     else if (requestCode == REQUEST_CAMERA) { //the photo is returned and positioned
 
@@ -727,6 +728,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
                 } else if (items[item].equals("Elegir de la galería")) {
                     userChoosenTask="Elegir de la galería";
+                    result = Utility.checkWriteExternalStorage(activity);
                     if(result)
                         imageController.galleryIntent();
                 } else if (items[item].equals("Cancelar")) {

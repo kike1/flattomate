@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
             Log.d("debug", email);
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
+            finish();
         }
 
     }

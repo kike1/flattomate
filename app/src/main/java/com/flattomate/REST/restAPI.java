@@ -62,11 +62,11 @@ public class restAPI {
         // add your other interceptors …
 
         // add logging as last interceptor
-       // httpClient.addInterceptor(logging);  // <-- this is the important line!
+        httpClient.addInterceptor(logging);  // <-- this is the important line!
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(httpClient.build())
                 .build();
         return retrofit.create(serviceClass);

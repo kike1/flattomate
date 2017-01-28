@@ -10,7 +10,7 @@
 
     <!-- For handling of images from camera/gallery -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -29,7 +29,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.flattomate.fileprovider"
@@ -37,12 +36,12 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name="com.flattomate.HomeActivity"
+            android:name=".HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -54,9 +53,9 @@
 
         <!-- LOGIN ACTIVITY -->
         <activity
-            android:name="com.flattomate.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName="com.flattomate.HomeActivity">
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.HomeActivity" />
@@ -64,52 +63,62 @@
 
         <!-- REGISTER ACTIVITY -->
         <activity
-            android:name="com.flattomate.RegisterActivity"
+            android:name=".RegisterActivity"
             android:label="@string/title_activity_activity_signin"
-            android:parentActivityName="com.flattomate.HomeActivity">
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.HomeActivity" />
         </activity>
 
         <!-- DASHBOARD ACTIVITY -->
-        <activity android:name="com.flattomate.DashboardActivity" android:label="@string/dashboard_title" />
+        <activity
+            android:name=".DashboardActivity"
+            android:label="@string/dashboard_title" />
 
         <!-- PROFILE ACTIVITY -->
         <activity
-            android:name="com.flattomate.Profile.ProfileActivity"
-            android:parentActivityName="com.flattomate.DashboardActivity">
+            android:name=".Profile.ProfileActivity"
+            android:parentActivityName=".DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.HomeActivity" />
         </activity>
         <activity
-            android:name="com.flattomate.Profile.ShowImageProfile"
+            android:name=".Profile.ShowImageProfile"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_show_image_profile"
-            android:parentActivityName="com.flattomate.Profile.ProfileActivity">
+            android:parentActivityName=".Profile.ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.Profile.ProfileActivity" />
 
-            <!--<intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
 
         <!-- EDIT_PROFILE ACTIVITY -->
         <activity
-            android:name="com.flattomate.Profile.EditProfileActivity"
+            android:name=".Profile.EditProfileActivity"
             android:label="@string/profile_edit_title"
-            android:parentActivityName="com.flattomate.Profile.ProfileActivity">
+            android:parentActivityName=".Profile.ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.flattomate.Profile.ProfileActivity" />
         </activity>
 
         <!-- ANNOUNCEMENT ACTIVITY -->
-        <activity android:name="com.flattomate.Announcement.AnnouncementActivity" />
+        <activity
+            android:name=".Announcement.AnnouncementActivity"
+            android:parentActivityName=".DashboardActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.flattomate.DashboardActivity" />
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -123,7 +132,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.flattomate.MapsActivity"
+            android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
 
         <!-- GOOGLE MAPS -->
@@ -132,7 +141,11 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="com.flattomate.Announcement.CreateAnnouncementActivity"></activity>
+        <activity android:name=".Announcement.CreateAnnouncementActivity" />
+
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

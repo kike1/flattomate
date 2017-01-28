@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 public class Accommodation implements Parcelable{
 
     @SerializedName("id")
@@ -34,6 +32,24 @@ public class Accommodation implements Parcelable{
     @SerializedName("id_user")
     @Expose
     private Integer idUser;
+
+    public Accommodation() {}
+
+    protected Accommodation(Parcel in) {
+        location = in.readString();
+    }
+
+    public static final Creator<Accommodation> CREATOR = new Creator<Accommodation>() {
+        @Override
+        public Accommodation createFromParcel(Parcel in) {
+            return new Accommodation(in);
+        }
+
+        @Override
+        public Accommodation[] newArray(int size) {
+            return new Accommodation[size];
+        }
+    };
 
     /**
      *
