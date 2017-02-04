@@ -25,6 +25,8 @@
         android:elevation="4dp"
         android:background="@drawable/background_toolbar_translucent"
         android:titleTextColor="#FFFFFF"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
     <!-- REST OF UI -->

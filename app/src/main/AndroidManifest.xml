@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP"></uses-permission>
 
     <!-- For handling of images from camera/gallery -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -141,7 +142,11 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Announcement.CreateAnnouncementActivity" />
+        <activity android:name=".Announcement.CreateAnnouncementActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.flattomate.DashboardActivity" />
+        </activity>
 
         <service
             android:name=".FetchAddressIntentService"

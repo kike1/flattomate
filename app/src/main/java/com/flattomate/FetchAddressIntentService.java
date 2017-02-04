@@ -6,14 +6,18 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.flattomate.Model.Announcement;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 public class FetchAddressIntentService extends IntentService {
 
@@ -28,20 +32,33 @@ public class FetchAddressIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
+        TreeMap<Integer, Address> announcementsAddress = new TreeMap<>();
         String errorMessage = "";
 
         resultReceiver = intent.getParcelableExtra(Constants.RECEIVER);
+        //ArrayList<Announcement> announcements = intent.getParcelableExtra(Constants.ANNOUNCEMENTS);
         int fetchType = intent.getIntExtra(Constants.FETCH_TYPE_EXTRA, 0);
         if(fetchType == Constants.USE_ADDRESS_NAME) {
-            String name = intent.getStringExtra(Constants.LOCATION_NAME_DATA_EXTRA);
-            try {
-                addresses = geocoder.getFromLocationName(name, 1);
-            } catch (IOException e) {
-                errorMessage = "Service not available";
-                Log.e(TAG, errorMessage, e);
-            }
-        }
-        else if(fetchType == Constants.USE_ADDRESS_LOCATION) {
+            ArrayList<Announcement> ads = intent.getParcelableArrayListExtra(Constants.ANNOUNCEMENTS);
+            if (ads != null && ads.size() > 0)
+                for (Announcement ad : ads) {
+                    try {
+                        //return addresses from announcements for calculate distances between ads and user
+                        if (ad.getAccommodation() != null &&
+                                ad.getAccommodation().getLocation() != null &&
+                                !ad.getAccommodation().getLocation().equals("")) {
+
+                            addresses = geocoder.getFromLocationName(ad.getAccommodation().getLocation(), 1);
+                            announcementsAddress.put(ad.getId(), addresses.get(0));
+                        }
+                    } catch (IOException e) {
+                        errorMessage = "Service not available";
+                        Log.e(TAG, errorMessage, e);
+                    }
+                    // String name = intent.getStringExtra(Constants.LOCATION_NAME_DATA_EXTRA);
+
+                }
+        }else if(fetchType == Constants.USE_ADDRESS_LOCATION) {
             Location location = intent.getParcelableExtra(
                     Constants.LOCATION_DATA_EXTRA);
 
@@ -62,7 +79,7 @@ public class FetchAddressIntentService extends IntentService {
             errorMessage = "Unknown Type";
         }
 
-        if (addresses == null || addresses.size()  == 0) {
+        if (announcementsAddress == null || announcementsAddress.size()  == 0) {
             if (errorMessage.isEmpty()) {
                 errorMessage = "Not Found";
             }
@@ -83,13 +100,13 @@ public class FetchAddressIntentService extends IntentService {
 
             deliverResultToReceiver(Constants.SUCCESS_RESULT,
                     TextUtils.join(System.getProperty("line.separator"),
-                            addressFragments), address);
+                            addressFragments), announcementsAddress);
         }
     }
 
-    private void deliverResultToReceiver(int resultCode, String message, Address address) {
+    private void deliverResultToReceiver(int resultCode, String message, TreeMap<Integer, Address> ads) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.RESULT_ADDRESS, address);
+        bundle.putParcelable(Constants.ANNOUNCEMENTS, (Parcelable) ads);
         bundle.putString(Constants.RESULT_DATA_DISTANCE, message);
         resultReceiver.send(resultCode, bundle);
     }

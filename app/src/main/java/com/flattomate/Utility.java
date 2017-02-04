@@ -86,7 +86,7 @@ public class Utility {
     }
 
     public static boolean checkGPS(final Activity activity){
-        //write sdcard
+        //gps
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {

@@ -22,6 +22,8 @@ import com.squareup.picasso.Transformation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -239,5 +241,26 @@ public class ImageController extends AppCompatActivity implements Parcelable{
             return new ImageController[size];
         }
     };
+
+    //Save photo in device
+    public void savePhoto(Bitmap photo, File destinationFile){
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+        FileOutputStream fo;
+
+        try {
+            destinationFile.createNewFile();
+            fo = new FileOutputStream(destinationFile);
+            fo.write(bytes.toByteArray());
+            fo.close();
+            Log.d("savePhoto()","Photo -> "+destinationFile.getPath()+" saved.");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

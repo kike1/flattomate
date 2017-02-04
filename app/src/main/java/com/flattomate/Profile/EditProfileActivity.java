@@ -708,11 +708,10 @@ public class EditProfileActivity extends AppCompatActivity{
     //intent for launch camera
     private void cameraIntent()
     {
-//        destination = new File(Environment.getExternalStorageDirectory(),
-//                idUser + ".jpg");
+        destination = new File(Environment.getExternalStorageDirectory(), idUser+".jpg");
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, destination.toString());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, destination);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
     //intent for launch gallery
@@ -764,9 +763,11 @@ public class EditProfileActivity extends AppCompatActivity{
 
     //image from camera
     private void onCaptureImageResult(Intent data) {
-        thumbnail = (Bitmap) data.getExtras().get("data");
-        destination = new File(Environment.getExternalStorageDirectory(),
-                idUser + ".jpg");
+        try {
+            thumbnail = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(destination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //compresses photo and save it
         savePhoto(thumbnail, destination);

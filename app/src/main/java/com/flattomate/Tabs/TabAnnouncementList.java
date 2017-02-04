@@ -1,6 +1,8 @@
 package com.flattomate.Tabs;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.flattomate.AnnouncementAdapter;
 import com.flattomate.Constants;
@@ -24,17 +27,22 @@ import com.flattomate.REST.restAPI;
 import com.flattomate.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.flattomate.Constants.RESULT_ADDRESS;
 
 /**
  * Class that represent a tab in dashboard that is a list of Announcement
@@ -44,23 +52,25 @@ public class TabAnnouncementList extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     ListView list_view;
-    public static final String ARG_OBJECT = "object";
+    //public static final String ARG_OBJECT = "object";
 
     FlattomateService api;
-    //SharedPreferences manager;
+    //Context context = getActivity().getApplicationContext();
     ArrayList<Announcement> announcements;
     GoogleApiClient mGoogleApiClient = null;
     Location mLastLocation;
     private AddressResultReceiver mResultReceiver;
-    HashMap<Float, Announcement> nearAds = new HashMap<>();
+    ArrayList<Integer> nearAds = new ArrayList<>();
     TreeMap<Float, Integer> distanceIDAds = new TreeMap<>();
+    TreeMap<Integer, Address> distanceAddress = new TreeMap<>();
+
+    LocationRequest mLocationRequest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
-
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                     .addConnectionCallbacks(this)
@@ -69,6 +79,47 @@ public class TabAnnouncementList extends Fragment implements
                     .build();
         }
 
+        createLocationRequest();
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode)
+        {
+            case Constants.REQUEST_LOCATION:
+                switch (resultCode)
+                {
+                    case Activity.RESULT_OK:
+                    {
+                        // All required changes were successfully made
+                        populateAnnouncementList();
+                        Toast.makeText(getActivity(), "Location enabled by user!", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    case Activity.RESULT_CANCELED:
+                    {
+                        // The user was asked to change settings, but chose not to
+                        Toast.makeText(getActivity(), "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                break;
+        }
     }
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -78,8 +129,6 @@ public class TabAnnouncementList extends Fragment implements
                 R.layout.tab_announcement_list, container, false);
         list_view = (ListView) rootView.findViewById(R.id.dashboard_list_view);
         populateAnnouncementList();
-
-        Bundle args = getArguments();
 
         return rootView;
     }
@@ -92,13 +141,9 @@ public class TabAnnouncementList extends Fragment implements
                                    final Response<ArrayList<Announcement>> response) {
                 announcements = response.body();
 
-                ArrayList<Announcement> nearAnnouncements = new ArrayList<>();
-
                 if (announcements != null) {
-                    AnnouncementAdapter adapter = new AnnouncementAdapter(getContext(),
-                            R.layout.announcement_adapter, announcements);
-                    list_view.setAdapter(adapter);
-                    mGoogleApiClient.connect();
+                    setAdapterWithAnnouncements(announcements);
+                    //mGoogleApiClient.connect();
                 }
             }
             @Override
@@ -118,34 +163,95 @@ public class TabAnnouncementList extends Fragment implements
     }
 
     /*
-    * Connect to GoogleApi and calculate distances between user and announcements
+    * Request location and check permissions about GPS allowing enable GPS as well
      */
     @Override
     public void onConnected(Bundle connectionHint) {
-        boolean result = Utility.checkPermission(getActivity().getApplicationContext());
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                //final LocationSettingsStates = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        //populateAnnouncementList();
+                        getLocationAndStartIntentService();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    getActivity(),
+                                    Constants.REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;
+                }
+            }
+        });
+    }
+
+    /*
+    * Calculates distances between ads and user.
+    * Set the adapter to the nearAnnouncements
+     */
+    private void getLocationAndStartIntentService(){
+        boolean result = Utility.checkPermission(getActivity());
         result = Utility.checkGPS(getActivity());
         if(result){
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
 
             if (mLastLocation != null) {
-                for (Announcement ad: announcements){
-                    //if the ad does not have an addres not show it
-                    if(!ad.getAccommodation().getLocation().contains("") &&
-                            ad.getAccommodation().getLocation() != null)
-                        startIntentService(ad);
-                }
-
+               startIntentService(announcements);
             }
 
         }
     }
 
-    protected void startIntentService(Announcement ad) {
-        Intent intent = new Intent(getActivity(), FetchAddressIntentService.class);
+    private void setNearAnnouncements(){
+        //create the announcements to be display on screen
+        ArrayList<Announcement> nearAnnouncements = new ArrayList<>();
+        int index = 0;
+        for (Announcement ad : announcements){
+            if (nearAds.size() > 0 && index < nearAds.size() && ad.getId() == nearAds.get(index))
+                nearAnnouncements.add(ad);
+            ++index;
+        }
+
+        setAdapterWithAnnouncements(nearAnnouncements);
+    }
+    private void setAdapterWithAnnouncements(ArrayList<Announcement> nearAnnouncements) {
+        //set adapter with near ads
+        AnnouncementAdapter adapter = new AnnouncementAdapter(getContext(),
+                R.layout.announcement_adapter, nearAnnouncements);
+        list_view.setAdapter(adapter);
+    }
+
+    protected void startIntentService(ArrayList<Announcement> ads) {
+        Intent intent = new Intent(getActivity().getApplicationContext(), FetchAddressIntentService.class);
+        mResultReceiver = new AddressResultReceiver(new Handler());
+        //intent.putExtra(Constants.LOCATION_NAME_DATA_EXTRA, ad.getAccommodation().getLocation());
+        intent.putExtra(Constants.ANNOUNCEMENTS, ads);
+        intent.putExtra(Constants.FETCH_TYPE_EXTRA, Constants.USE_ADDRESS_NAME);
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
-        intent.putExtra(Constants.LOCATION_NAME_DATA_EXTRA, ad.getAccommodation().getLocation());
-        //intent.putExtra(Constants.ID_ANNOUNCEMENT, ad.getId());
+        //intent.putExtra(RESULT_DATA_ID_ANNOUNCEMENT, ad.getId());
         getContext().startService(intent);
     }
 
@@ -167,26 +273,34 @@ public class TabAnnouncementList extends Fragment implements
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
-            // Display the address string
-            // or an error message sent from the intent service.
-            Float distance = Float.parseFloat(resultData.getString(Constants.RESULT_DATA_DISTANCE));
-            Integer idAnnouncement = Integer.parseInt(resultData.getString(Constants.RESULT_DATA_ID_ANNOUNCEMENT));
-            Address address = resultData.getParcelable(Constants.RESULT_ADDRESS);
-            Log.d("Address", address.getExtras().getString(RESULT_ADDRESS));
-            distanceIDAds.put(distance, idAnnouncement);
-            //displayDistanceOutput();
+            //Receive ads by distance to user and idAd
 
             // Show a toast message if an address was found.
-            /*f (resultCode == Constants.SUCCESS_RESULT) {
-                showToast(getString(R.string.address_found));
-            }*/
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                distanceAddress = resultData.getParcelable(Constants.ANNOUNCEMENTS);
+                if(distanceAddress != null && distanceAddress.size() > 0){
+                    calculateDistances();
+                    setNearAnnouncements();
+                }
+            }
 
         }
     }
 
-    private void displayDistanceOutput() {
+    private void calculateDistances() {
 
-        //TODO put distance on top tag
+        for(Map.Entry<Integer, Address> entry : distanceAddress.entrySet()){
+            Integer idAd = entry.getKey();
+            Address address = entry.getValue();
+            Log.d("Address", address.getLatitude() + ", " + address.getLongitude());
+            Location locAd = new Location("");
+            locAd.setLatitude(address.getLatitude());
+            locAd.setLongitude(address.getLongitude());
+
+            Float distance = mLastLocation.distanceTo(locAd);
+            if(distance < Constants.DISTANCE_FROM_AD)
+                distanceIDAds.put(distance, idAd);
+        }
     }
 }
 

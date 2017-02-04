@@ -506,15 +506,18 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                String jsonString = response.body().toString();
-                Gson gson = new Gson();
-                restStatus status = gson.fromJson(jsonString, restStatus.class);
-                //Log.i(LOG_TAG, String.valueOf(status.status_code));
+                if(response.body() != null){
+                    String jsonString = response.body().toString();
+                    Gson gson = new Gson();
+                    restStatus status = gson.fromJson(jsonString, restStatus.class);
+                    //Log.i(LOG_TAG, String.valueOf(status.status_code));
 
-                if(response.code() == 200 && status.requested){
-                    btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
-                    btn_request.setText(R.string.requested);
+                    if(response.code() == 200 && status.requested){
+                        btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
+                        btn_request.setText(R.string.requested);
+                    }
                 }
+
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {

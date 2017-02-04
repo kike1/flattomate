@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class restAPI {
 
-    //public static final String API_BASE_URL = "http://192.168.1.102:8000/";
+    //public static final String API_BASE_URL = "http://192.168.1.46:8000/";
     public static final String API_BASE_URL = "http://52.212.207.63/";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -62,7 +62,7 @@ public class restAPI {
         // add your other interceptors …
 
         // add logging as last interceptor
-        httpClient.addInterceptor(logging);  // <-- this is the important line!
+        //httpClient.addInterceptor(logging);  // <-- this is the important line!
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)

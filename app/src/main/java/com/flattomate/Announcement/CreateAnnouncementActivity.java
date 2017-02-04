@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -118,7 +121,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
     String userChoosenTask;
     Context context = this;
     Intent intent = new Intent(ACTION_IMAGE_CAPTURE);
-
+    Uri photoURI;
 
     boolean[] servicesPressed;
 
@@ -387,10 +390,10 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
 
                 try {
                     if (requestCode == SELECT_FILE) {
-                        imageController.onSelectFromGalleryResult(data);
+                        onSelectFromGalleryResult(data);
                         //Uri image = imageController.getRealPathFromURI();
                         //imageController.putImage(data.getData());
-                        images.add(data.getData());
+                        //images.add(data.getData());
                     }
                     else if (requestCode == REQUEST_CAMERA) { //the photo is returned and positioned
 
@@ -407,9 +410,34 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
         }
     }
 
+    //image from gallery
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) throws IOException {
+        Bitmap thumbnail = null;
+        Uri imagePath = data.getData();
+
+        if (data != null) {
+
+            thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imagePath);
+            File destination = createImageFile();//new File(Environment.getExternalStorageDirectory(), idUser+".jpg");
+
+            images.add(Uri.fromFile(destination));
+            imageController.savePhoto(thumbnail, destination);
+
+            imageController.putImage(imagePath);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.create_announcement, menu);
+        for (int i = 0; i < menu.size(); i++) {
+            Drawable drawable = menu.getItem(i).getIcon();
+            if (drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.icons), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
         return true;
     }
 
@@ -757,7 +785,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
                 // Continue only if the File was successfully created
                 if (imageController.destination != null) {
 
-                    Uri photoURI = FileProvider.getUriForFile(context,
+                    photoURI = FileProvider.getUriForFile(context,
                             "com.flattomate.fileprovider",
                             imageController.destination);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
