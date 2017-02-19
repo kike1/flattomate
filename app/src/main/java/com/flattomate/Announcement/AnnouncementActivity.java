@@ -1,6 +1,8 @@
 package com.flattomate.Announcement;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -19,11 +21,13 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.flattomate.Constants;
 import com.flattomate.CustomGrid;
 import com.flattomate.ExpandableHeightGridView;
 import com.flattomate.GoogleMaps.Map;
 import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
+import com.flattomate.Model.Chat;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Service;
 import com.flattomate.Model.User;
@@ -75,12 +79,17 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     TextView txt_title;
     @Bind(R.id.txt_username)
     TextView txt_username;
-    @Bind(R.id.ratingBar)
+
+    @Bind(R.id.ad_adapter_user_ratingbar)
     RatingBar ratingBar;
+    @Bind(R.id.ad_adapter_user_rating)
+    TextView ratingSum;
+    @Bind(R.id.ad_adapter_user_num_reviews)
+    TextView numberOfOpinions;
+
     @Bind(R.id.img_username)
     ImageView img_username;
-    @Bind(R.id.lbl_reviews)
-    TextView lbl_reviews;
+
     @Bind(R.id.btn_request)
     Button btn_request;
 
@@ -140,10 +149,17 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
     Accommodation accommodation;
     User user;
     int idUser;
+    int idAnnouncement;
     ArrayList<Service> services;
     ArrayList<Image> images;
 
     Transformation transformation;
+
+    int numReviews;
+    float reviewsSum;
+    float avg;
+
+    SharedPreferences manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,10 +173,15 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
             Log.e("BUTTERKNIFE", e.getCause().toString());
         }
 
+        manager = getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
 
-        int idAnnouncement = getIntent().getExtras().getInt("idAnnouncement");
+        idAnnouncement = getIntent().getExtras().getInt("idAnnouncement");
+
+        numReviews = getIntent().getExtras().getInt("numReviews");
+        reviewsSum = getIntent().getExtras().getFloat("reviewsSum");
+        avg = getIntent().getExtras().getFloat("avg");
 
         idUser = getIntent().getExtras().getInt("idUser");
 
@@ -188,24 +209,7 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                 actionBar.setTitle("Anuncio");
             }
 
-            //Getting Announcement
-            Call<Announcement> callAnnouncement = api.getAnnouncement(idAnnouncement);
-            callAnnouncement.enqueue(new Callback<Announcement>() {
-                @Override
-                public void onResponse(Call<Announcement> call, Response<Announcement> response) {
-                    if(response.code() == 200) {
-                        announcement = response.body();
-                        Log.e("ANNOUNCEMENT", announcement.getTitle());
-                        if(announcement != null)
-                            fillAnnouncementInfo();
-                    }else
-                        Log.e("ANNOUNCEMENT", "ERROR");
-                }
-                @Override
-                public void onFailure(Call<Announcement> call, Throwable t) {
-                    call.cancel();
-                }
-            });
+
 
             //Getting Accommodation
             Call<Accommodation> callAccommodation = api.getAnnouncementAccommodation(idAnnouncement);
@@ -299,7 +303,8 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                                    intent.putExtra("idUser", user.getId());
+                                    intent.putExtra(Constants.ID_USER, user.getId());
+                                    intent.putExtra(Constants.ID_ANNOUNCEMENT, idAnnouncement);
                                     startActivity(intent);
                                 }
                             });
@@ -316,6 +321,22 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                                             if(response.code() == 200) {
                                                 btn_request.setBackground(getResources().getDrawable(R.drawable.roundedbuttonrequested));
                                                 btn_request.setText(R.string.requested);
+
+                                                //send a message for appear in chats
+                                                Chat chat = new Chat(user.getId(), idUser, announcement.getId(), "Petición de negociación");
+                                                Call<ResponseBody> sendChatMessageRQ = api.sendChatMessage(chat);
+                                                sendChatMessageRQ.enqueue(new Callback<ResponseBody>() {
+                                                    @Override
+                                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                        if(response.code() == 200) {
+                                                            //refresh messages including the new one
+                                                            Toast.makeText(getApplicationContext(), "Solicitud enviada!", Toast.LENGTH_SHORT).show();
+                                                        }else
+                                                            Toast.makeText(getApplicationContext(), "La solicitud no pudo ser en enviada", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    @Override
+                                                    public void onFailure(Call<ResponseBody> call, Throwable t) {call.cancel();}
+                                                });
                                             }
                                         }
                                         @Override
@@ -324,7 +345,25 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
                                 }
                             });
 
-                            fillUserInfo();
+                            //Getting Announcement
+                            Call<Announcement> callAnnouncement = api.getAnnouncement(idAnnouncement);
+                            callAnnouncement.enqueue(new Callback<Announcement>() {
+                                @Override
+                                public void onResponse(Call<Announcement> call, Response<Announcement> response) {
+                                    if(response.code() == 200) {
+                                        announcement = response.body();
+                                        Log.e("ANNOUNCEMENT", announcement.getTitle());
+                                        if(announcement != null)
+                                            fillAnnouncementInfo();
+                                            fillUserInfo();
+                                    }else
+                                        Log.e("ANNOUNCEMENT", "ERROR");
+                                }
+                                @Override
+                                public void onFailure(Call<Announcement> call, Throwable t) {
+                                    call.cancel();
+                                }
+                            });
                         }
                     }
                 }
@@ -362,6 +401,16 @@ public class AnnouncementActivity extends AppCompatActivity implements OnMapRead
         img_favorite.setImageResource(R.drawable.heart_empty);
         txt_title.setText(Html.fromHtml("<b>" + announcement.getTitle()+ "</b>"));
         txt_description.setText(announcement.getDescription());
+
+        //reviews
+        ratingBar.setRating(avg);
+
+        if(Float.isNaN(avg))
+            ratingSum.setText("("+0+") ");
+        else
+            ratingSum.setText("("+String.format("%.1f", avg)+") ");
+        //ratingSum.setText(String.valueOf("("+avg)+") ");
+        numberOfOpinions.setText(numReviews + " evaluaciones");
 
         //3 icons - bed, room, availability
         //room type

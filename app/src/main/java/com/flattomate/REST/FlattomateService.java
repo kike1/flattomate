@@ -2,6 +2,7 @@ package com.flattomate.REST;
 
 import com.flattomate.Model.Accommodation;
 import com.flattomate.Model.Announcement;
+import com.flattomate.Model.Chat;
 import com.flattomate.Model.Image;
 import com.flattomate.Model.Language;
 import com.flattomate.Model.Review;
@@ -60,6 +61,19 @@ public interface FlattomateService{
                                             @Path("idUserAnnouncement") Integer idUserAnnouncement,
                                             @Path("idAnnouncement") Integer idAnnouncement);
 
+    @GET("user/{id}/chats")
+    Call<ArrayList<Chat>> chatsFromUser(@Path("id") Integer id);
+    @POST("user/chat")
+    Call<ResponseBody> sendChatMessage(@Body Chat chat);
+
+    @GET("user/{id}/chats/recent")
+    Call<ArrayList<Chat>> lastChatsFromUser(@Path("id") Integer id);
+
+    @GET("user/{idr}/chats/{idw}/announcement/{idad}")
+    Call<ArrayList<Chat>> chatsFromAnnouncement(@Path("idr") Integer idr,
+                                                @Path("idw") Integer idw,
+                                                @Path("idad") Integer idad);
+
     @POST("user/{name}/{password}")
     Call<User> login(@Path("name") String name, @Path("password") String password);
 
@@ -92,6 +106,10 @@ public interface FlattomateService{
 
     @GET("announcement")
     Call<ArrayList<Announcement>> getAnnouncements();
+
+    @GET("announcement/search/{title}")
+    Call<ArrayList<Announcement>> getAnnouncementsWithQuery(@Path("title") String title);
+
     @GET("announcement/{id}")
     Call<Announcement> getAnnouncement(@Path("id") Integer id);
 
@@ -115,8 +133,14 @@ public interface FlattomateService{
     @GET("service")
     Call<ArrayList<Service>> getServices();
 
+    //get ad reviews
     @GET("announcement/{id}/reviews")
     Call<ArrayList<Review>> getReviews(@Path("id") Integer id);
+    @GET("user/{id}/reviews")
+    Call<ArrayList<Review>> getReviewsFromUser(@Path("id") Integer id);
+    //make a review
+    @POST("announcement/review")
+    Call<ResponseBody> makeReview(@Body Review review);
 
    /*
     *

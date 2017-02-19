@@ -19,6 +19,8 @@ public final class Constants {
     public static final int REQUEST_PHOTO_ANNOUNCEMENT = 4;
     public static final int REQUEST_PHOTO_PROFILE = 5;
     public static final Float DISTANCE_FROM_AD = 2000.0f;
+    public static final String ID_USER = "id";
+    public static final String ID_ANNOUNCEMENT = "id_announcement";
     public static int REQUEST_CHECK_SETTINGS = 1;
     public static final int REQUEST_LOCATION = 199;
 

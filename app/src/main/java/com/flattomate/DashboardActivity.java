@@ -1,5 +1,6 @@
 package com.flattomate;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,13 +12,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.support.v7.widget.SearchView;
 
 import com.flattomate.Announcement.CreateAnnouncementActivity;
 import com.flattomate.Profile.ProfileFragment;
@@ -33,7 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends ActionBarActivity {
 
     @Bind(R.id.tabs)
     TabLayout tabs;
@@ -133,14 +134,26 @@ public class DashboardActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         CollectionPagerAdapter adapter = new CollectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(tabAnnouncementList, getString(R.string.title_tab_ad_list));
-        adapter.addFragment(tabChats, getString(R.string.title_tab_chats));
         adapter.addFragment(tabMyAccount, getString(R.string.title_tab_my_account));
+        adapter.addFragment(tabChats, getString(R.string.title_tab_chats));
         viewPager.setAdapter(adapter);
     }
+
+    public FragmentRefreshListener getFragmentRefreshListener() {
+        return fragmentRefreshListener;
+    }
+
+    public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+        this.fragmentRefreshListener = fragmentRefreshListener;
+    }
+
+    private FragmentRefreshListener fragmentRefreshListener;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
+        MenuItem item= menu.findItem(R.id.action_settings);
+        item.setVisible(false);
         for (int i = 0; i < menu.size(); i++) {
             Drawable drawable = menu.getItem(i).getIcon();
             if (drawable != null) {
@@ -148,6 +161,38 @@ public class DashboardActivity extends AppCompatActivity {
                 drawable.setColorFilter(getResources().getColor(R.color.icons), PorterDuff.Mode.SRC_ATOP);
             }
         }
+
+        SearchManager searchManager = (SearchManager)
+                getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                /*TabAnnouncementList newAds = new TabAnnouncementList();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id., newAds).commit();*/
+                if(getFragmentRefreshListener() != null){
+                    getFragmentRefreshListener().onRefresh(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(getFragmentRefreshListener() != null){
+                    getFragmentRefreshListener().onRefresh(newText);
+                }
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -156,7 +201,7 @@ public class DashboardActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_search:
                 //Snackbar.make(, R.string.action_edit, Snackbar.LENGTH_LONG).show();
-                Toast.makeText(this, "prueba", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "prueba", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -203,6 +248,10 @@ public class DashboardActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+
+    public interface FragmentRefreshListener{
+        void onRefresh(String query);
     }
 
 }

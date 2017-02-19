@@ -34,7 +34,7 @@
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginLeft="15dp"
                             android:layout_weight="4"
                             android:layout_gravity="center_vertical">
@@ -47,7 +47,8 @@
                                 android:id="@+id/txt_name"
                                 android:gravity="center_vertical"
                                 android:textSize="16dp"
-                                android:textColor="@color/primary_text" />
+                                android:textColor="@color/primary_text"
+                                android:layout_marginTop="30dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -57,7 +58,19 @@
                                 android:id="@+id/txt_age"
                                 android:gravity="center_vertical"
                                 android:textColor="@color/secondary_text"
-                                android:textSize="14dp" />
+                                android:textSize="14dp"
+                                android:layout_marginBottom="20dp" />
+
+                            <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/btn_review"
+                                style="@style/RobotoButtonStyle"
+                                android:textSize="14dp"
+                                android:id="@+id/btn_review"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/roundedbutton"
+                                android:layout_marginLeft="30dp" />
 
                         </LinearLayout>
 
@@ -294,22 +307,64 @@
                                 android:layout_marginLeft="30dp" />
                         </LinearLayout>
 
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:background="#c0c0c0"
+                    android:id="@+id/divider_5"
+                    style="@style/divider"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_profile_fragment_review"
+                        android:id="@+id/lbl_reviews"
+                        style="@style/title_card" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="match_parent">
+
+                        <RatingBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ratingBar"
+                            android:isIndicator="false"
+                            android:numStars="5"
+                            android:elevation="18dp"
+                            android:layout_gravity="center_horizontal" />
+
+                        <TextView
+                            android:id="@+id/user_rating_reviews"
+                            style="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="fill_parent"
-                        android:background="#c0c0c0"
-                        android:id="@+id/divider_5"
-                        style="@style/divider"/>
+                </LinearLayout>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/btn_logout"
-                        android:padding="10dp"
-                        android:text="@string/logout"
-                        android:background="#FF0000"
-                        android:radius="2dp"/>
+                <View
+                    android:layout_width="fill_parent"
+                    android:background="#c0c0c0"
+                    android:id="@+id/divider_6"
+                    style="@style/divider"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_logout"
+                    android:padding="10dp"
+                    android:text="@string/logout"
+                    android:background="#FF0000"
+                    android:radius="2dp"/>
+
             </LinearLayout>
         </ScrollView>
 </RelativeLayout>

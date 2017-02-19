@@ -675,7 +675,7 @@ public class CreateAnnouncementActivity extends AppCompatActivity {
             etMinStay.setError(getResources().getString(R.string.error_min_stay));
         if(max_stay.equals(""))
             etMaxStay.setError(getResources().getString(R.string.error_max_stay));
-        if(!(Integer.parseInt(min_stay.toString()) < Integer.parseInt(max_stay.toString()))) {
+        if(min_stay != null && max_stay != null && !(Integer.parseInt(min_stay.toString()) < Integer.parseInt(max_stay.toString()))) {
             etMinStay.setError(getResources().getString(R.string.error_minmax_stay));
             etMaxStay.setError(getResources().getString(R.string.error_minmax_stay));
         }

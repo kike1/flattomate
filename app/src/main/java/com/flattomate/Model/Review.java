@@ -14,6 +14,9 @@ public class Review {
     @SerializedName("id_user_wrote")
     @Expose
     private Integer idUserWrote;
+    @SerializedName("id_user_receive")
+    @Expose
+    private Integer idUserReceiver;
     @SerializedName("id_announcement")
     @Expose
     private Integer idAnnouncement;
@@ -21,6 +24,15 @@ public class Review {
     @Expose
     private float rating;
 
+    public Review(String description, Integer idUserWrote,
+                  Integer idUserReceiver, Integer idAnnouncement, float rating){
+
+        this.description = description;
+        this.idUserWrote = idUserWrote;
+        this.idUserReceiver = idUserReceiver;
+        this.idAnnouncement = idAnnouncement;
+        this.rating = rating;
+    }
     /**
      *
      * @return
@@ -73,6 +85,14 @@ public class Review {
      */
     public void setIdUserWrote(Integer idUserWrote) {
         this.idUserWrote = idUserWrote;
+    }
+
+    public Integer getIdUserReceiver() {
+        return idUserReceiver;
+    }
+
+    public void setIdUserReceiver(Integer idUserReceiver) {
+        this.idUserReceiver = idUserReceiver;
     }
 
     /**

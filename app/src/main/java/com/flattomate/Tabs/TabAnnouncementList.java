@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.flattomate.AnnouncementAdapter;
 import com.flattomate.Constants;
+import com.flattomate.DashboardActivity;
 import com.flattomate.FetchAddressIntentService;
 import com.flattomate.Model.Announcement;
 import com.flattomate.R;
@@ -103,7 +104,7 @@ public class TabAnnouncementList extends Fragment implements
                     case Activity.RESULT_OK:
                     {
                         // All required changes were successfully made
-                        populateAnnouncementList();
+                        populateAnnouncementList("");
                         Toast.makeText(getActivity(), "Location enabled by user!", Toast.LENGTH_LONG).show();
                         break;
                     }
@@ -121,6 +122,7 @@ public class TabAnnouncementList extends Fragment implements
                 break;
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -128,13 +130,27 @@ public class TabAnnouncementList extends Fragment implements
         View rootView = inflater.inflate(
                 R.layout.tab_announcement_list, container, false);
         list_view = (ListView) rootView.findViewById(R.id.dashboard_list_view);
-        populateAnnouncementList();
+        populateAnnouncementList("");
 
+        ((DashboardActivity)getActivity()).setFragmentRefreshListener(new DashboardActivity.FragmentRefreshListener() {
+            public void onRefresh(String query) {
+
+                populateAnnouncementList(query);
+            }
+        });
         return rootView;
     }
 
-    private void populateAnnouncementList() {
-        final Call<ArrayList<Announcement>> request = api.getAnnouncements();
+    private void populateAnnouncementList(String query) {
+
+        final Call<ArrayList<Announcement>> request;
+
+        if(query.isEmpty()){
+            request = api.getAnnouncements();
+        }else
+            request = api.getAnnouncementsWithQuery(query);
+
+
         request.enqueue(new Callback<ArrayList<Announcement>>() {
             @Override
             public void onResponse(final Call<ArrayList<Announcement>> call,
@@ -302,6 +318,7 @@ public class TabAnnouncementList extends Fragment implements
                 distanceIDAds.put(distance, idAd);
         }
     }
+
 }
 
 /*class AddressResultReceiver extends ResultReceiver {

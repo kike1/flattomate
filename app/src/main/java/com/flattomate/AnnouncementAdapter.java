@@ -31,6 +31,7 @@ import static com.flattomate.R.id.ad_adapter_image;
 import static com.flattomate.R.id.ad_adapter_price;
 import static com.flattomate.R.id.ad_adapter_title;
 import static com.flattomate.R.id.ad_adapter_user_num_reviews;
+import static com.flattomate.R.id.ad_adapter_user_rating;
 import static com.flattomate.R.id.ad_adapter_user_ratingbar;
 
 /**
@@ -46,6 +47,8 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
 
     FlattomateService api;
     SharedPreferences manager;
+
+
 
 
     public AnnouncementAdapter(Context context, int resource, ArrayList<Announcement> announcements){
@@ -74,6 +77,7 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
             holder.ad_adapter_title = (TextView) convertView.findViewById(ad_adapter_title);
             holder.ad_adapter_price = (TextView) convertView.findViewById(ad_adapter_price);
             holder.ad_adapter_user_ratingbar = (RatingBar) convertView.findViewById(ad_adapter_user_ratingbar);
+            holder.ad_adapter_user_rating = (TextView) convertView.findViewById(ad_adapter_user_rating);
             holder.ad_adapter_user_num_reviews = (TextView) convertView.findViewById(ad_adapter_user_num_reviews);
 
             convertView.setTag(holder);
@@ -94,6 +98,7 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
                         Log.e("IMAGEN PRINCIPAL2" , response.body().getName());
                         Picasso.with(_context)
                                 .load(restAPI.API_BASE_URL+"announcements/"+response.body().getName())
+                                .placeholder(R.drawable.no_camera_24)
                                 .resize(holder.ad_adapter_image.getWidth(), holder.ad_adapter_image.getHeight())
                                 .into(holder.ad_adapter_image);
                     }else
@@ -127,6 +132,7 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
 
         //call to API for getting reviews from ad
         Call<ArrayList<Review>> reviewsCall = api.getReviews(idAnnouncement);
+        final View finalConvertView = convertView;
         reviewsCall.enqueue(new Callback<ArrayList<Review>>() {
             @Override
             public void onResponse(Call<ArrayList<Review>> call, Response<ArrayList<Review>> response) {
@@ -136,31 +142,45 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
                     Log.e("ERROR", "Reviews can not be retrieved");
 
                 if(_reviews != null){
-                    int numReviews = _reviews.size();
-                    float reviewsSum = 0;
-                    float avg = reviewsSum / numReviews;
+                    final int numReviews;
+                    final float reviewsSum;
+                    final float avg;
+                    float reviewsSumTemp = 0;
+                    numReviews = _reviews.size();
 
                     for (Review review: _reviews)  //get rating average
-                        reviewsSum += review.getRating();
+                        reviewsSumTemp += review.getRating();
+
+                    reviewsSum = reviewsSumTemp;
+                    avg = reviewsSum / numReviews;
 
                     //set ratingbar and number of reviews
                     holder.ad_adapter_user_ratingbar.setRating(avg);
+
+                    if(Float.isNaN(avg))
+                        holder.ad_adapter_user_rating.setText("("+0+") ");
+                    else
+                        holder.ad_adapter_user_rating.setText("("+String.format("%.1f", avg)+") ");
+
                     holder.ad_adapter_user_num_reviews.setText(numReviews + " evaluaciones");
+
+                    LinearLayout dashboard_adapter_layout = (LinearLayout) finalConvertView.findViewById(R.id.dashboard_adapter_layout);
+                    dashboard_adapter_layout.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            // Perform action on click
+                            Intent activityAnnouncement = new Intent(_context, AnnouncementActivity.class);
+                            activityAnnouncement.putExtra("idAnnouncement", idAnnouncement);
+                            activityAnnouncement.putExtra("idUser", manager.getInt("id", 0));
+                            activityAnnouncement.putExtra("avg", avg);
+                            activityAnnouncement.putExtra("reviewsSum", reviewsSum);
+                            activityAnnouncement.putExtra("numReviews", numReviews);
+                            _context.startActivity(activityAnnouncement);
+                        }
+                    });
                 }
             }
             @Override
             public void onFailure(Call<ArrayList<Review>> call, Throwable t) { call.cancel(); }
-        });
-
-        LinearLayout dashboard_adapter_layout = (LinearLayout) convertView.findViewById(R.id.dashboard_adapter_layout);
-        dashboard_adapter_layout.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                Intent activityAnnouncement = new Intent(_context, AnnouncementActivity.class);
-                activityAnnouncement.putExtra("idAnnouncement", idAnnouncement);
-                activityAnnouncement.putExtra("idUser", manager.getInt("id", 0));
-                _context.startActivity(activityAnnouncement);
-            }
         });
 
         return convertView;
@@ -171,6 +191,7 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement>{
         TextView ad_adapter_title;
         TextView ad_adapter_price;
         RatingBar ad_adapter_user_ratingbar;
+        TextView ad_adapter_user_rating;
         TextView ad_adapter_user_num_reviews;
     }
 

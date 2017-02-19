@@ -7,13 +7,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.flattomate.Constants;
 import com.flattomate.R;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    int idUser;
+    int idUser, idAnnouncement;
     private static final String ID_USER = "id";
     SharedPreferences manager;
 
@@ -27,15 +28,18 @@ public class ProfileActivity extends AppCompatActivity {
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-            idUser = savedInstanceState.getInt(ID_USER);
+            idUser = savedInstanceState.getInt(Constants.ID_USER);
+            idAnnouncement = savedInstanceState.getInt(Constants.ID_ANNOUNCEMENT);
         } else {
-            idUser = getIntent().getExtras().getInt("idUser");
+            idUser = getIntent().getExtras().getInt(Constants.ID_USER);
+            idAnnouncement = getIntent().getExtras().getInt(Constants.ID_ANNOUNCEMENT);
         }
 
         if(idUser != 0){
             ProfileFragment fragment = new ProfileFragment();
             Bundle args = new Bundle();
-            args.putInt(ID_USER, idUser);
+            args.putInt(Constants.ID_USER, idUser);
+            args.putInt(Constants.ID_ANNOUNCEMENT, idAnnouncement);
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -70,7 +74,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current game state
-        savedInstanceState.putInt(ID_USER, idUser);
+        savedInstanceState.putInt(Constants.ID_USER, idUser);
+        savedInstanceState.putInt(Constants.ID_ANNOUNCEMENT, idAnnouncement);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);

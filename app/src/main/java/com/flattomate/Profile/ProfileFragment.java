@@ -1,5 +1,7 @@
 package com.flattomate.Profile;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -7,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,11 +20,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flattomate.Constants;
 import com.flattomate.HomeActivity;
 import com.flattomate.Model.Language;
+import com.flattomate.Model.Review;
 import com.flattomate.Model.User;
 import com.flattomate.R;
 import com.flattomate.REST.FlattomateService;
@@ -36,6 +42,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,10 +95,24 @@ public class ProfileFragment extends Fragment {
 
     @Bind(R.id.btn_logout)
     Button btn_logout;
+    @Bind(R.id.btn_review)
+    Button btn_review;
+
+    @Bind(R.id.ratingBar)
+    RatingBar ratingBarReviews;
+    @Bind(R.id.user_rating_reviews)
+    TextView user_rating_reviews;
+
+
+    //dialog review items
+    RatingBar ratingBar;
+    TextView tvReviewDescription;
 
     User user;
     FlattomateService api;
     int idUser;
+    int idAnnouncement;
+    Boolean ownUser;
     public static SharedPreferences _manager;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -126,8 +147,9 @@ public class ProfileFragment extends Fragment {
 
         api = restAPI.createService(FlattomateService.class, "user", "secretpassword");
 
-        idUser = getArguments().getInt(ID_USER);
-
+        idUser = getArguments().getInt(Constants.ID_USER);
+        idAnnouncement = getArguments().getInt(Constants.ID_ANNOUNCEMENT);
+        ownUser = false;
         Log.e("","ProfileFragment.onCreate");
     }
 
@@ -149,6 +171,7 @@ public class ProfileFragment extends Fragment {
     private void populateFragment() {
         //hide the button until user is the same than profile
         btn_logout.setVisibility(View.GONE);
+        btn_review.setVisibility(View.GONE);
 
         if (getArguments() != null) {
             idUser = getArguments().getInt(ID_USER);
@@ -171,9 +194,13 @@ public class ProfileFragment extends Fragment {
                         //user.setLanguages();
                         if(user != null) {
                             //hide logout if not own user
-                            if(user.getId() == _manager.getInt(ID_USER,0))
+                            if(user.getId() == _manager.getInt(ID_USER,0)) {
                                 btn_logout.setVisibility(View.VISIBLE);
+                                ownUser = true;
+                            }
 
+                            if(getActivity() != null && !getActivity().getTitle().equals("Dashboard"))
+                                getActivity().setTitle(user.getName());
                             fillUserInfo();
                         }
                     }
@@ -198,6 +225,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        btn_review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //launch dialog with stars
+                //Toast.makeText(getContext(), "REVIEW", Toast.LENGTH_SHORT).show();
+                onCreateDialog().show();
+            }
+        });
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +246,66 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    public Dialog onCreateDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // Get the layout inflater
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog_review, null);
+        ratingBar = (RatingBar)v.findViewById(R.id.ratingBar);
+        ratingBar.setNumStars(5);
+        ratingBar.setMax(5);
+        tvReviewDescription = (TextView) v.findViewById(R.id.description);
+
+        builder.setView(v)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String reviewDescription = ""+ tvReviewDescription.getText();
+                        float rating = (Float) ratingBar.getRating();
+
+                        //TODO api review
+                        Log.d("review", reviewDescription);
+                        Log.d("rating", String.valueOf(rating));
+
+                        int myIdUser =_manager.getInt("id",0);
+                        if(myIdUser != 0){
+                            Review review = new Review(reviewDescription, myIdUser, idUser, idAnnouncement, rating);
+
+                            Call<ResponseBody> requestReview = api.makeReview(review);
+                            requestReview.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if(response.code() == 200) {
+                                        Toast.makeText(getContext(), getString(R.string.txt_review_ok), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) { call.cancel(); }
+                            });
+                        }
+
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+            }
+        });
+
+        return builder.create();
     }
 
     void fillUserInfo(){
@@ -310,6 +406,64 @@ public class ProfileFragment extends Fragment {
                     .transform(transformation)
                     .into(ivProfileImg);
         }
+
+        //set ratingBar
+        //if(!ownUser){
+            ratingBarReviews.setNumStars(5);
+            ratingBarReviews.setMax(5);
+            ratingBarReviews.setIsIndicator(true);
+
+            Call<ArrayList<Review>> requestReviews = api.getReviewsFromUser(idUser);
+
+            requestReviews.enqueue(new Callback<ArrayList<Review>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Review>> call, Response<ArrayList<Review>> response) {
+                    if(response.code() == 200) {
+                        ArrayList<Review> reviews = response.body();
+                        float ratingSum = 0;
+                        float ratingAvg = 0;
+                        Boolean userHasReviewed = false;
+
+                        if(reviews != null && reviews.size() != 0){
+                            int myId = _manager.getInt(Constants.ID_USER,0);
+                            for(Review review : reviews){
+                                ratingSum += review.getRating();
+
+                                //did user review this ad?
+                                if(myId != 0 &&
+                                        review.getIdUserWrote() == myId &&
+                                        review.getIdAnnouncement() == idAnnouncement){
+                                    userHasReviewed = true;
+                                }
+                            }
+
+                            ratingAvg = ratingSum / reviews.size();
+                            ratingBarReviews.setRating(ratingAvg);
+                            user_rating_reviews.setText("("+String.format("%.1f", ratingAvg)+") ");
+                        }else{
+                            ratingBarReviews.setRating(0);
+                            user_rating_reviews.setText("("+0+") ");
+                        }
+
+                        //if I am the user of the profile,
+                        if(ownUser || userHasReviewed)
+                            btn_review.setVisibility(View.GONE);
+                        else
+                            btn_review.setVisibility(View.VISIBLE);
+                    }else{
+                        Log.e("REST-rating", "User " + idUser + "no tiene reviews, codigo de error:" + String.valueOf(response.code()));
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Review>> call, Throwable t) {
+                    call.cancel();
+                    Toast.makeText(getActivity(), "Error de conexión al servidor", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        //}
     }
 
     @Override
