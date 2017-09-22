@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/chat_adapter_layout"
+    android:padding="10dp"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="10"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/txt_no_chats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/title"
+        android:visibility="gone"
+        android:fontFamily="sans-serif-medium" />
+
+    <ImageView
+        android:id="@+id/chat_adapter_image"
+        android:layout_width="55dp"
+        android:layout_weight="2"
+        android:layout_height="55dp" />
+
+    <TextView
+        android:id="@+id/txt_adapter_user"
+        android:text="Name"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/chat_adapter_image"
+        android:layout_toEndOf="@+id/chat_adapter_image"/>
+
+    <TextView
+        android:id="@+id/txt_adapter_message"
+        android:text="Message"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/txt_adapter_user"
+        android:layout_alignStart="@+id/txt_adapter_user" />
+
+    <TextView
+        android:id="@+id/txt_adapter_hour"
+        android:text="14:55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="10sp"
+        android:textColor="@color/place_autocomplete_search_hint"
+        android:layout_below="@+id/txt_adapter_message"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <!--<TextView
+        android:id="@+id/txt_adapter_new_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="right"/>-->
+    </RelativeLayout>

@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.flattomate.Profile.ProfileActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/edit_profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@android:color/white" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_layout"
+        android:orientation="vertical"
+        android:layout_marginTop="55dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView2" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!-- PICTURE CARD -->
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_img_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    card_view:cardCornerRadius="4dp"
+                    style="@style/card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:id="@+id/img_name_layout"
+                        android:paddingLeft="35dp"
+                        android:paddingRight="35dp">
+
+                        <FrameLayout
+                            android:layout_width="125dp"
+                            android:layout_height="125dp"
+                            android:layout_gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="125dp"
+                                android:layout_height="125dp"
+                                android:id="@+id/img_ownprofile"
+                                android:scaleType="centerInside"
+                                android:layout_gravity="center_vertical" />
+
+                            <ImageView
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:id="@+id/background_edit"
+                                android:layout_gravity="bottom|right"
+
+                                />
+                            <ImageView
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:id="@+id/transparent_edit_image"
+                                android:layout_gravity="bottom|right"
+                                android:tint="@color/accent" />
+                        </FrameLayout>
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_modify_profile_photo"
+                            style="@style/RobotoButtonStyle"
+                            android:id="@+id/btn_camera_gallery"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/roundedbutton"
+                            android:layout_marginLeft="30dp" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <!--PERSONAL INFO CARD-->
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_personality"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="4dp"
+                    style="@style/card"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <!-- LAYOUT PERSONAL INFO-->
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_personal_info"
+                        style="@style/layout_card">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lbl_personal_info"
+                            android:id="@+id/lbl_personal_info"
+                            style="@style/title_card" />
+
+                        <!-- LAYOUT NAME_EMAIL_BIRTHDATE-->
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/name_age_layout"
+                            android:descendantFocusability="beforeDescendants"
+                            android:focusableInTouchMode="true">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="*nombre"
+                                android:inputType="textPersonName"
+                                android:ems="10"
+                                android:id="@+id/et_edit_name" />
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textEmailAddress"
+                                android:hint="*email"
+                                android:ems="10"
+                                android:id="@+id/et_edit_email" />
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="date"
+                                android:ems="10"
+                                android:hint="*fecha de nacimiento"
+                                android:id="@+id/et_availability"
+                                android:layout_gravity="center_horizontal" />
+
+                            <!--<EditText-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:hint="*ciudad"-->
+                                <!--android:ems="20"-->
+                                <!--android:id="@+id/et_edit_city" />-->
+
+                            <!--<EditText-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:hint="*país"-->
+                                <!--android:ems="20"-->
+                                <!--android:id="@+id/et_edit_country" />-->
+                        </LinearLayout>
+
+                        <!-- LINEARLAYOUT PERSONALITY -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:paddingTop="10dp"
+                            android:paddingRight="20dp"
+                            android:paddingBottom="10dp">
+
+                            <!-- SEX -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_sex"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_sex"
+                                    android:layout_gravity="center" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:text="Sex"
+                                    android:id="@+id/txt_sex"
+                                    android:textColor="@color/secondary_text"
+                                    android:layout_gravity="bottom|center_horizontal" />
+                            </LinearLayout>
+
+                            <!-- ACTIVITY -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginRight="30dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_activity"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_activity"
+                                    android:layout_gravity="center" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:id="@+id/txt_activity"
+                                    android:textColor="@color/secondary_text"
+                                    android:text="Activity"
+                                    android:layout_gravity="bottom|center_horizontal"/>
+                            </LinearLayout>
+
+                            <!-- SMOKE -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="75dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginRight="15dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/layout_smoke"
+                                android:background="@drawable/border"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:id="@+id/img_smoke"
+                                    android:layout_gravity="center"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:text="Smoke"
+                                    android:id="@+id/txt_smoke"
+                                    android:textColor="@color/secondary_text"
+                                    android:layout_gravity="bottom|center_horizontal"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <!-- BIO CARD -->
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_bio"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="4dp"
+                    style="@style/card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="170dp"
+                        android:layout_below="@+id/linearLayout"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/description_layout"
+                        android:orientation="vertical"
+                        style="@style/layout_card"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/description"
+                            android:id="@+id/lbl_bio"
+                            style="@style/title_card" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/inputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="300">
+
+                            <EditText
+
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/txt_bio"
+                                android:layout_weight="1"
+                                android:maxLength="300"
+                                android:hint="@string/hint_bio"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_languages"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="4dp"
+                    style="@style/card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/languages"
+                            android:id="@+id/lbl_languages"
+                            style="@style/title_card" />
+
+                        <RelativeLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_languages">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/nolanguages"
+                                android:id="@+id/txt_languages"
+                                android:textSize="16dp"
+
+                                android:textColor="@color/primary_text"
+                                android:layout_gravity="left"
+                                android:gravity="left"
+                                android:layout_marginRight="20dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:layout_width="70dp"
+                                android:text="@string/btn_add_language"
+                                android:layout_alignParentRight="true"
+                                android:background="@drawable/roundedbutton"
+                                android:layout_height="40dp"
+                                android:id="@+id/btn_add_language" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_extra_personality"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    card_view:cardCornerRadius="4dp"
+                    android:padding="20dp"
+                    style="@style/card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/extra_information"
+                            android:id="@+id/lbl_extra_information"
+                            style="@style/title_card"/>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sociable"
+                            android:id="@+id/lbl_sociable"
+                            android:textColor="@color/primary_text" />
+
+                        <RelativeLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:weightSum="1"
+                            android:id="@+id/layout">
+
+                            <SeekBar
+                                android:layout_width="280dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/sliderSociable"
+                                android:max="10" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="10"
+                                android:id="@+id/txt_sociable"
+                                android:layout_marginLeft="30dp"
+                                android:layout_alignParentRight="true"
+                                />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp">
+
+                            <TextView
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tidy"
+                                android:id="@+id/lbl_tidy"
+                                android:textColor="@color/primary_text" />
+
+                            <RelativeLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:weightSum="1">
+
+                                <SeekBar
+                                    android:layout_width="280dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/sliderTidy"
+                                    android:max="10" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="10"
+                                    android:id="@+id/txt_tidy"
+                                    android:layout_marginLeft="30dp"
+                                    android:layout_alignParentRight="true"
+                                    />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
+
+
+
+
+

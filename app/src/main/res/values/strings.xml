@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flattomate</string>
+    <string name="app_name">flattomate</string>
     <string name="action_settings">Como funciona</string>
     <string name="title_activity_login">Iniciar sesión</string>
 
@@ -15,4 +15,122 @@
     <string name="permission_rationale">"Permiso sobre la agenda es requerido para completar el registro por email."
     </string>
     <string name="title_activity_activity_signin">Registrarse</string>
+    <string name="profile_edit_title">Editar perfil</string>
+    <string name="action_edit">Editar</string>
+    <string name="lbl_about_me">Sobre mí</string>
+    <string name="img_image_of_user">Image of user</string>
+    <string name="description">DESCRIPCIÓN:</string>
+    <string name="languages">IDIOMAS:</string>
+    <string name="nolanguages">Ninguno</string>
+    <string name="extra_information">INFORMACIÓN EXTRA:</string>
+    <string name="sociable">Sociable:</string>
+    <string name="tidy">Ordenado:</string>
+
+    <string name="title_activity_show_image_profile">ShowImageProfile</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_button">Dummy Button</string>
+
+    <!-- Edit profile -->
+    <string name="edit_name">NOMBRE:</string>
+    <string name="edit_birthdate">FECHA NACIMIENTO:</string>
+    <string name="hint_bio">Escriba algo sobre ti para que te conozcan un poco más</string>
+    <string-array name="sex_array">
+        <item>Hombre</item>
+        <item>Mujer</item>
+    </string-array>
+    <string-array name="activity_array">
+        <item>Trabaja</item>
+        <item>Estudia</item>
+    </string-array>
+    <string-array name="smoke_array">
+        <item>Fuma</item>
+        <item>No fuma</item>
+    </string-array>
+    <string name="sex_title">¿Hombre o mujer?</string>
+    <string name="activity_title">¿A que te dedicas?</string>
+    <string name="smoke_title">¿Fumador?</string>
+    <string name="btn_add_language">Añadir</string>
+    <string name="language_title">Idiomas</string>
+    <string name="save_changes">ACTUALIZAR PERFIL</string>
+    <string name="undefined">No definido</string>
+    <string name="lbl_personal_info">INFORMACIÓN PERSONAL:</string>
+    <string name="solicitar">SOLICITAR</string>
+    <string name="requested">SOLICITADO</string>
+    <string name="lbl_description">DESCRIPCIÓN</string>
+    <string-array name="languages_array">
+        <item>Español</item>
+        <item>Inglés</item>
+        <item>Alemán</item>
+        <item>Italiano</item>
+        <item>Francés</item>
+    </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="lbl_price">Price</string>
+
+    <!-- Announcement -->
+    <string name="beds">camas</string>
+    <string name="single_bed">Cama individual</string>
+    <string name="double_bed">Cama doble</string>
+    <string name="_single_bed">Individual</string>
+    <string name="_double_bed">Doble</string>
+    <string name="shared_room">Habitación compartida</string>
+    <string name="no_shared_room">Habitación privada</string>
+    <string name="available">Disponibilidad</string>
+    <string name="lbl_min_stay">Estancia mínima: </string>
+    <string name="lbl_max_stay">Estancia máxima: </string>
+    <string name="lbl_reviews"> Evaluaciones</string>
+    <string name="btn_modify_profile_photo">MODIFICAR FOTO PERFIL</string>
+    <string name="logout">CERRAR SESIÓN</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="lbl_no_account"><u>¿No tienes cuenta? Crea una</u></string>
+
+    <!-- CreateAnnouncementActivity -->
+    <string name="lbl_img">IMÁGENES</string>
+    <string name="hint_title">Título</string>
+    <string name="hint_price">Precio</string>
+    <string name="hint_address">Dirección</string>
+    <string name="hint_description">Descripción</string>
+    <string name="lbl_bed">CAMA</string>
+    <string name="lbl_rent">ALQUILER</string>
+    <string name="lbl_extra">EXTRAS</string>
+    <string name="create_announcement_title">Crear anuncio</string>
+    <string name="lbl_room">HABITACIÓN</string>
+    <string name="_single_room">Privada</string>
+    <string name="_shared_room">Compartida</string>
+    <string-array name="rent_array">
+        <item>Por días</item>
+        <item>Por semanas</item>
+        <item>Por meses</item>
+        <item>Por años</item>
+    </string-array>
+    <!-- errors -->
+    <string name="error_title">Escribe un título</string>
+    <string name="error_price">Escribe un precio</string>
+    <string name="error_address">Escribe una dirección</string>
+    <string name="error_description">Escribe una descripción</string>
+    <string name="error_availability">Escribe una fecha de disponibilidad</string>
+    <string name="error_availability_date">Fecha incorrecta</string>
+    <string name="error_min_stay">Escribe la estancia mínima</string>
+    <string name="error_max_stay">Escribe la estancia máxima</string>
+    <string name="error_minmax_stay">Estancia mínima debe de ser mayor que la máxima</string>
+    <string name="any_fields_error">Faltan algunos datos o son incorrectos</string>
+    <string name="title_tab_ad_list">ANUNCIOS</string>
+    <string name="title_tab_my_account">MI CUENTA</string>
+    <string name="title_tab_chats">CHATS</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="search">Buscar</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lbl_kind_rent">Tipo de alquiler:</string>
+    <string name="app_label">flattomate</string>
+    <string name="search_hint">Buscar anuncio</string>
+    <string name="btn_review">HACER REVIEW</string>
+    <string name="dialog_review_hint">Escribe tu opinión</string>
+    <string name="txt_review_ok">Review realizada correctamente</string>
+    <string name="title_profile_fragment_review">REVIEWS:</string>
+    <string name="lbl_no_chats">No tienes chats nuevos</string>
+    <string name="write_something">Escribe algo</string>
+
+
 </resources>
